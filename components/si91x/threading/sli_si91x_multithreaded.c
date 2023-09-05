@@ -887,7 +887,7 @@ static sl_status_t bus_write_frame(sl_si91x_queue_type_t queue_type,
 
 #ifndef RSI_M4_INTERFACE
   if (RSI_WLAN_DATA_Q == trace->firmware_queue_id) {
-    sl_si91x_semaphore_post(&cmd_lock);
+//    sl_si91x_semaphore_post(&cmd_lock);
   }
 #endif
 

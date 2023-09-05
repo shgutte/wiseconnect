@@ -507,8 +507,8 @@ sl_status_t sl_si91x_driver_init(const sl_wifi_device_configuration_t *config, s
   device_initialized   = true;
   initialized_opermode = config->boot_config.oper_mode;
 #ifndef RSI_M4_INTERFACE
-  sl_si91x_semaphore_create(&cmd_lock, 0);
-  sl_si91x_semaphore_post(&cmd_lock);
+//  sl_si91x_semaphore_create(&cmd_lock, 0);
+//  sl_si91x_semaphore_post(&cmd_lock);
 #endif
 
   if ((config->boot_config.oper_mode == SL_SI91X_CLIENT_MODE)
