@@ -17,7 +17,6 @@
  ******************************************************************************/
 #include "sl_system_init.h"
 #include "sl_si91x_peripheral_i2c.h"
-#include "rsi_board.h"
 #include "rsi_power_save.h"
 #include "rsi_rom_clks.h"
 #include "rsi_rom_ulpss_clk.h"

@@ -585,7 +585,7 @@ typedef struct rsi_ble_prepare_write_resp_s {
   /**attribute value offset*/
   uint8_t offset[2];
   /**length of attribute value*/
-  uint16_t length;
+  uint8_t length;
   /**This contains the attribute value. The maximum value is 240, please refer RSI_DEV_ATT_LEN Macro*/
   uint8_t att_value[RSI_DEV_ATT_LEN];
 } rsi_ble_prepare_write_resp_t;

@@ -18,7 +18,7 @@
 #include "sl_si91x_config_timer.h"
 #include "sl_system_init.h"
 #include "rsi_ct.h"
-#include "rsi_board.h"
+#include "rsi_debug.h"
 #include "unity.h"
 
 /*******************************************************************************

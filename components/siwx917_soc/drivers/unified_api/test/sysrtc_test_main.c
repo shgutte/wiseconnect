@@ -18,7 +18,7 @@
 #include "sl_si91x_sysrtc.h"
 #include "sl_system_init.h"
 #include "rsi_sysrtc.h"
-#include "rsi_board.h"
+#include "rsi_debug.h"
 #include "unity.h"
 
 /*******************************************************************************

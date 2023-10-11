@@ -38,7 +38,7 @@
  ============================================================================**/
 #include "adxl345.h"
 #include "sensor_hub.h"
-#include "rsi_board.h"
+#include "rsi_debug.h"
 #include "math.h"
 
 //TODO:We need to turn off the macros and test the sensor's operation.

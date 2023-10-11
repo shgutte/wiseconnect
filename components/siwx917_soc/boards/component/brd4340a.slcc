@@ -5,41 +5,24 @@
 - description: Board support for BRD4340A.
 - category: Platform|Board|Starter Kit
 - quality: production
-- root_path: components/siwx917_soc/boards/config/brd4340a
 - requires:
   - name: siwg917m111mgtba
   - name: brd4340a_config
+  - name: hardware_board_mainboard
+  - name: external_flash_none
+  - name: external_psram_8mb
+  - name: rsilib_board
 - provides:
   - name: brd4340a
   - name: hardware_board
   - name: hardware_board_rb
-  - name: device_has_psram
-  - name: device_has_external_psram
-  - name: si91x_platform
-  - name: multi_slave
-  - name: device_needs_ram_execution
-  - name: si91x_b0_chip 
+  - name: hardware_board_supports_multi_slave
   - name: si91x_common_flash
-  - name: device_si91x  
-- include:
-  - path: .
-    condition: [wifi]
-  - path: config
-    condition: [wifi]
+  - name: si91x_b0_board
 - recommends:
+  - id: brd4002a
   - id: "%extension-wiseconnect3_sdk%psram_aps6404l_sqh"
-- template_contribution:
-  - name: psram_present
-    value: 1
-  - name: device_psram_addr
-    value: 167772160 # 0x0A00_0000
-  - name: device_psram_size
-    value: 8388608 # 8MB
 - define:
-  - name: CHIP_917
-    value: '1'
-  - name: CHIP_917B0
-    value: '1'
   - name: SL_BOARD_NAME
     value: '"BRD4340A"'
   - name: SL_BOARD_REV
@@ -48,14 +31,54 @@
     value: '1'
   - name: FLASH_BASED_EXECUTION_ENABLE
     value: '1'
-  - name: COMMON_FLASH_EN
-    value: '1'
   - name: SI917_RADIO_BOARD_V2
     value: '1'
-  - name: IVT_OFFSET_ADDR
-    value: 0x81C2000
-  - name: WKP_RAM_USAGE_LOCATION
-    value: 0x24061EFC
+  - name: COMMON_FLASH_EN
+    value: '1'
+
+- template_contribution:
+  # Default Memory configuration
+  - name: device_flash_addr
+    value: 136060928 # 0x081C 2000
+    priority: -1
+    condition:
+      - si917_mem_config_1
+  - name: device_flash_size
+    value: 450560 # 0x0006 E000
+    priority: -1
+    condition:
+      - si917_mem_config_1
+  # Medium Memory configuration
+  - name: device_flash_addr
+    value: 136060928 # 0x081C 2000
+    priority: -1
+    condition:
+      - si917_mem_config_2
+  - name: device_flash_size
+    value: 450560 # 0x0006 E000
+    priority: -1
+    condition:
+      - si917_mem_config_2
+  # Advanced Memory configuration
+  - name: device_flash_addr
+    value: 136060928 # 0x081C 2000
+    priority: -1
+    condition:
+      - si917_mem_config_3
+  - name: device_flash_size
+    value: 450560 # 0x0006 E000
+    priority: -1
+    condition:
+      - si917_mem_config_3
+
 - tag:
   - board:pn:BRD4340
   - board:variant:A
+  - board:revision:A00
+  - board:device:siwg917m111mgtba
+  - hardware:has:vcom
+#  - hardware:has:pti
+#  - hardware:has:led:2
+#  - hardware:has:button:2
+#  - hardware:has:exp_header:uart
+#  - hardware:shares:button:led

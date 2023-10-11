@@ -18,7 +18,6 @@
 // Include Files
 
 #include "rsi_cts.h"
-#include "rsi_board.h"
 
 #if defined(__CC_ARM)
 uint32_t Threshold __attribute__((at(0x24063FD8)));

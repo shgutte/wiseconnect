@@ -30,6 +30,7 @@ slc:
         - aws_client_certificate.pem.crt.h
         - aws_client_private_key.pem.key.h
         - aws_starfield_ca.pem.h
+        - azure_baltimore_ca.pem.h
         - cacert.pem.h
         - clientcert.pem.h
         - clientkey.pem.h

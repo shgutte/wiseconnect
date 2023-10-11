@@ -30,7 +30,6 @@
 #include "sl_si91x_config_timer.h"
 #include "sl_si91x_config_timer_config.h"
 #include "rsi_ct.h"
-#include "rsi_board.h"
 #include "rsi_chip.h"
 
 /*******************************************************************************

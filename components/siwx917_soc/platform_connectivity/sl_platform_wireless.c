@@ -389,7 +389,7 @@ void sl_si91x_configure_ram_retention(uint32_t rams_in_use, uint32_t rams_retent
                              | M4SS_RAM_RETENTION_MODE_EN);
     }
     /* Set the 16KB SRAM memory retention */
-    if (rams_in_use & WISEMCU_16KB_RAM_IN_USE) {
+    if (rams_in_use == WISEMCU_16KB_RAM_IN_USE) {
       RSI_PS_SetRamRetention(M4ULP_RAM16K_RETENTION_MODE_EN);
     }
 #ifdef CHIP_917

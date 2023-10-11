@@ -173,6 +173,9 @@ sl_status_t sl_si91x_calendar_set_date_time(sl_calendar_datetime_config_t *confi
       status = SL_STATUS_INVALID_PARAMETER;
       break;
     }
+    // This API call sets the register bit to bypass the soft resets and retain the date and time
+    // after it.
+    RSI_RTC_BypassReset();
     // If everything is as required, and the date and time is successfully configured then,
     // it returns SL_STATUS_OK
     status = SL_STATUS_OK;

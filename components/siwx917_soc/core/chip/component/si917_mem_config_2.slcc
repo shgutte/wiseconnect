@@ -1,0 +1,15 @@
+id: si917_mem_config_2
+label: RAM_LEVEL_NWP_MEDIUM_MCU_MEDIUM
+package: platform
+description: EXT_FEAT_448K_M4SS_256K
+category: Platform|si91x|core
+quality: internal
+provides:
+  - name: si917_mem_config
+  - name: si917_mem_config_2
+define:
+  - name: MEM_CONFIG_917
+    value: '2'
+conflicts:
+  - name: si917_mem_config_3
+  - name: si917_memory_config

@@ -29,7 +29,6 @@
  ******************************************************************************/
 
 #include "rsi_i2s.h"
-#include "rsi_board.h"
 #include "rsi_rom_clks.h"
 #include "clock_update.h"
 #include "sl_si91x_i2s.h"

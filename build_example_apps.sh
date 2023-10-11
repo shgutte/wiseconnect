@@ -18,19 +18,25 @@ make -C output/ble_accept_list-brd4325c -f ble_accept_list.Makefile -j$((`nproc`
 /slc_cli/slc -daemon generate /gsdk/extension/wiseconnect3/examples/snippets/ble/ble_accept_list/ble_accept_list.slcp --force --with "brd4325g;wiseconnect3_sdk" -np -d output/ble_accept_list-brd4325g
 make -C output/ble_accept_list-brd4325g -f ble_accept_list.Makefile -j$((`nproc`/4))
 
-/slc_cli/slc -daemon generate /gsdk/extension/wiseconnect3/examples/snippets/ble/ble_ae_central/ble_ae_central.slcp --force --with "brd4325a;wiseconnect3_sdk" -np -d output/ble_ae_central-brd4325a
-make -C output/ble_ae_central-brd4325a -f ble_ae_central.Makefile -j$((`nproc`/4))
-/slc_cli/slc -daemon generate /gsdk/extension/wiseconnect3/examples/snippets/ble/ble_ae_central/ble_ae_central.slcp --force --with "brd4325c;wiseconnect3_sdk" -np -d output/ble_ae_central-brd4325c
-make -C output/ble_ae_central-brd4325c -f ble_ae_central.Makefile -j$((`nproc`/4))
-/slc_cli/slc -daemon generate /gsdk/extension/wiseconnect3/examples/snippets/ble/ble_ae_central/ble_ae_central.slcp --force --with "brd4325g;wiseconnect3_sdk" -np -d output/ble_ae_central-brd4325g
-make -C output/ble_ae_central-brd4325g -f ble_ae_central.Makefile -j$((`nproc`/4))
+/slc_cli/slc -daemon generate /gsdk/extension/wiseconnect3/examples/snippets/ble/ble_ae_central/ble_ae_central_ncp.slcp --force --with "brd4180b" -np -d output/ble_ae_central_ncp-brd4180b
+make -C output/ble_ae_central_ncp-brd4180b -f ble_ae_central_ncp.Makefile -j$((`nproc`/4))
 
-/slc_cli/slc -daemon generate /gsdk/extension/wiseconnect3/examples/snippets/ble/ble_ae_peripheral/ble_ae_peripheral.slcp --force --with "brd4325a;wiseconnect3_sdk" -np -d output/ble_ae_peripheral-brd4325a
-make -C output/ble_ae_peripheral-brd4325a -f ble_ae_peripheral.Makefile -j$((`nproc`/4))
-/slc_cli/slc -daemon generate /gsdk/extension/wiseconnect3/examples/snippets/ble/ble_ae_peripheral/ble_ae_peripheral.slcp --force --with "brd4325c;wiseconnect3_sdk" -np -d output/ble_ae_peripheral-brd4325c
-make -C output/ble_ae_peripheral-brd4325c -f ble_ae_peripheral.Makefile -j$((`nproc`/4))
-/slc_cli/slc -daemon generate /gsdk/extension/wiseconnect3/examples/snippets/ble/ble_ae_peripheral/ble_ae_peripheral.slcp --force --with "brd4325g;wiseconnect3_sdk" -np -d output/ble_ae_peripheral-brd4325g
-make -C output/ble_ae_peripheral-brd4325g -f ble_ae_peripheral.Makefile -j$((`nproc`/4))
+/slc_cli/slc -daemon generate /gsdk/extension/wiseconnect3/examples/snippets/ble/ble_ae_central/ble_ae_central_soc.slcp --force --with "brd4325a;wiseconnect3_sdk" -np -d output/ble_ae_central_soc-brd4325a
+make -C output/ble_ae_central_soc-brd4325a -f ble_ae_central_soc.Makefile -j$((`nproc`/4))
+/slc_cli/slc -daemon generate /gsdk/extension/wiseconnect3/examples/snippets/ble/ble_ae_central/ble_ae_central_soc.slcp --force --with "brd4325c;wiseconnect3_sdk" -np -d output/ble_ae_central_soc-brd4325c
+make -C output/ble_ae_central_soc-brd4325c -f ble_ae_central_soc.Makefile -j$((`nproc`/4))
+/slc_cli/slc -daemon generate /gsdk/extension/wiseconnect3/examples/snippets/ble/ble_ae_central/ble_ae_central_soc.slcp --force --with "brd4325g;wiseconnect3_sdk" -np -d output/ble_ae_central_soc-brd4325g
+make -C output/ble_ae_central_soc-brd4325g -f ble_ae_central_soc.Makefile -j$((`nproc`/4))
+
+/slc_cli/slc -daemon generate /gsdk/extension/wiseconnect3/examples/snippets/ble/ble_ae_peripheral/ble_ae_peripheral_ncp.slcp --force --with "brd4180b" -np -d output/ble_ae_peripheral_ncp-brd4180b
+make -C output/ble_ae_peripheral_ncp-brd4180b -f ble_ae_peripheral_ncp.Makefile -j$((`nproc`/4))
+
+/slc_cli/slc -daemon generate /gsdk/extension/wiseconnect3/examples/snippets/ble/ble_ae_peripheral/ble_ae_peripheral_soc.slcp --force --with "brd4325a;wiseconnect3_sdk" -np -d output/ble_ae_peripheral_soc-brd4325a
+make -C output/ble_ae_peripheral_soc-brd4325a -f ble_ae_peripheral_soc.Makefile -j$((`nproc`/4))
+/slc_cli/slc -daemon generate /gsdk/extension/wiseconnect3/examples/snippets/ble/ble_ae_peripheral/ble_ae_peripheral_soc.slcp --force --with "brd4325c;wiseconnect3_sdk" -np -d output/ble_ae_peripheral_soc-brd4325c
+make -C output/ble_ae_peripheral_soc-brd4325c -f ble_ae_peripheral_soc.Makefile -j$((`nproc`/4))
+/slc_cli/slc -daemon generate /gsdk/extension/wiseconnect3/examples/snippets/ble/ble_ae_peripheral/ble_ae_peripheral_soc.slcp --force --with "brd4325g;wiseconnect3_sdk" -np -d output/ble_ae_peripheral_soc-brd4325g
+make -C output/ble_ae_peripheral_soc-brd4325g -f ble_ae_peripheral_soc.Makefile -j$((`nproc`/4))
 
 /slc_cli/slc -daemon generate /gsdk/extension/wiseconnect3/examples/snippets/ble/ble_central/ble_central_ncp.slcp --force --with "brd4180b" -np -d output/ble_central_ncp-brd4180b
 make -C output/ble_central_ncp-brd4180b -f ble_central_ncp.Makefile -j$((`nproc`/4))
@@ -83,12 +89,15 @@ make -C output/ble_ibeacon_soc-brd4325c -f ble_ibeacon_soc.Makefile -j$((`nproc`
 /slc_cli/slc -daemon generate /gsdk/extension/wiseconnect3/examples/snippets/ble/ble_ibeacon/ble_ibeacon_soc.slcp --force --with "brd4325g;wiseconnect3_sdk" -np -d output/ble_ibeacon_soc-brd4325g
 make -C output/ble_ibeacon_soc-brd4325g -f ble_ibeacon_soc.Makefile -j$((`nproc`/4))
 
-/slc_cli/slc -daemon generate /gsdk/extension/wiseconnect3/examples/snippets/ble/ble_longrange_2mbps/ble_longrange_2mbps.slcp --force --with "brd4325a;wiseconnect3_sdk" -np -d output/ble_longrange_2mbps-brd4325a
-make -C output/ble_longrange_2mbps-brd4325a -f ble_longrange_2mbps.Makefile -j$((`nproc`/4))
-/slc_cli/slc -daemon generate /gsdk/extension/wiseconnect3/examples/snippets/ble/ble_longrange_2mbps/ble_longrange_2mbps.slcp --force --with "brd4325c;wiseconnect3_sdk" -np -d output/ble_longrange_2mbps-brd4325c
-make -C output/ble_longrange_2mbps-brd4325c -f ble_longrange_2mbps.Makefile -j$((`nproc`/4))
-/slc_cli/slc -daemon generate /gsdk/extension/wiseconnect3/examples/snippets/ble/ble_longrange_2mbps/ble_longrange_2mbps.slcp --force --with "brd4325g;wiseconnect3_sdk" -np -d output/ble_longrange_2mbps-brd4325g
-make -C output/ble_longrange_2mbps-brd4325g -f ble_longrange_2mbps.Makefile -j$((`nproc`/4))
+/slc_cli/slc -daemon generate /gsdk/extension/wiseconnect3/examples/snippets/ble/ble_longrange_2mbps/ble_longrange_2mbps_ncp.slcp --force --with "brd4180b" -np -d output/ble_longrange_2mbps_ncp-brd4180b
+make -C output/ble_longrange_2mbps_ncp-brd4180b -f ble_longrange_2mbps_ncp.Makefile -j$((`nproc`/4))
+
+/slc_cli/slc -daemon generate /gsdk/extension/wiseconnect3/examples/snippets/ble/ble_longrange_2mbps/ble_longrange_2mbps_soc.slcp --force --with "brd4325a;wiseconnect3_sdk" -np -d output/ble_longrange_2mbps_soc-brd4325a
+make -C output/ble_longrange_2mbps_soc-brd4325a -f ble_longrange_2mbps_soc.Makefile -j$((`nproc`/4))
+/slc_cli/slc -daemon generate /gsdk/extension/wiseconnect3/examples/snippets/ble/ble_longrange_2mbps/ble_longrange_2mbps_soc.slcp --force --with "brd4325c;wiseconnect3_sdk" -np -d output/ble_longrange_2mbps_soc-brd4325c
+make -C output/ble_longrange_2mbps_soc-brd4325c -f ble_longrange_2mbps_soc.Makefile -j$((`nproc`/4))
+/slc_cli/slc -daemon generate /gsdk/extension/wiseconnect3/examples/snippets/ble/ble_longrange_2mbps/ble_longrange_2mbps_soc.slcp --force --with "brd4325g;wiseconnect3_sdk" -np -d output/ble_longrange_2mbps_soc-brd4325g
+make -C output/ble_longrange_2mbps_soc-brd4325g -f ble_longrange_2mbps_soc.Makefile -j$((`nproc`/4))
 
 /slc_cli/slc -daemon generate /gsdk/extension/wiseconnect3/examples/snippets/ble/ble_multiconnection_gatt_test/ble_multiconnection_gatt_test.slcp --force --with "brd4325a;wiseconnect3_sdk" -np -d output/ble_multiconnection_gatt_test-brd4325a
 make -C output/ble_multiconnection_gatt_test-brd4325a -f ble_multiconnection_gatt_test.Makefile -j$((`nproc`/4))
@@ -381,6 +390,11 @@ make -C output/sl_si91x_i2s_secondary-brd4325c -f sl_si91x_i2s_secondary.Makefil
 /slc_cli/slc -daemon generate /gsdk/extension/wiseconnect3/examples/si91x_soc/peripheral/sl_si91x_i2s_secondary/sl_si91x_i2s_secondary.slcp --force --with "brd4325g;wiseconnect3_sdk" -np -d output/sl_si91x_i2s_secondary-brd4325g
 make -C output/sl_si91x_i2s_secondary-brd4325g -f sl_si91x_i2s_secondary.Makefile -j$((`nproc`/4))
 
+/slc_cli/slc -daemon generate /gsdk/extension/wiseconnect3/examples/si91x_soc/peripheral/sl_si91x_ml_blink/sl_si91x_ml_blink.slcp --force --with "brd4325c;wiseconnect3_sdk" -np -d output/sl_si91x_ml_blink-brd4325c
+make -C output/sl_si91x_ml_blink-brd4325c -f sl_si91x_ml_blink.Makefile -j$((`nproc`/4))
+/slc_cli/slc -daemon generate /gsdk/extension/wiseconnect3/examples/si91x_soc/peripheral/sl_si91x_ml_blink/sl_si91x_ml_blink.slcp --force --with "brd4325g;wiseconnect3_sdk" -np -d output/sl_si91x_ml_blink-brd4325g
+make -C output/sl_si91x_ml_blink-brd4325g -f sl_si91x_ml_blink.Makefile -j$((`nproc`/4))
+
 /slc_cli/slc -daemon generate /gsdk/extension/wiseconnect3/examples/si91x_soc/peripheral/sl_si91x_ml_model_profiler/sl_si91x_ml_model_profiler.slcp --force --with "brd4325c;wiseconnect3_sdk" -np -d output/sl_si91x_ml_model_profiler-brd4325c
 make -C output/sl_si91x_ml_model_profiler-brd4325c -f sl_si91x_ml_model_profiler.Makefile -j$((`nproc`/4))
 /slc_cli/slc -daemon generate /gsdk/extension/wiseconnect3/examples/si91x_soc/peripheral/sl_si91x_ml_model_profiler/sl_si91x_ml_model_profiler.slcp --force --with "brd4325g;wiseconnect3_sdk" -np -d output/sl_si91x_ml_model_profiler-brd4325g
@@ -589,12 +603,15 @@ make -C output/wifi_embedded_mqtt_client_soc-brd4325c -f wifi_embedded_mqtt_clie
 /slc_cli/slc -daemon generate /gsdk/extension/wiseconnect3/examples/snippets/wlan/embedded_mqtt_client/embedded_mqtt_client_soc.slcp --force --with "brd4325g;wiseconnect3_sdk" -np -d output/wifi_embedded_mqtt_client_soc-brd4325g
 make -C output/wifi_embedded_mqtt_client_soc-brd4325g -f wifi_embedded_mqtt_client_soc.Makefile -j$((`nproc`/4))
 
-/slc_cli/slc -daemon generate /gsdk/extension/wiseconnect3/examples/snippets/wlan/embedded_mqtt_client_twt/embedded_mqtt_client_twt.slcp --force --with "brd4325a;wiseconnect3_sdk" -np -d output/wifi_embedded_mqtt_client_twt-brd4325a
-make -C output/wifi_embedded_mqtt_client_twt-brd4325a -f wifi_embedded_mqtt_client_twt.Makefile -j$((`nproc`/4))
-/slc_cli/slc -daemon generate /gsdk/extension/wiseconnect3/examples/snippets/wlan/embedded_mqtt_client_twt/embedded_mqtt_client_twt.slcp --force --with "brd4325c;wiseconnect3_sdk" -np -d output/wifi_embedded_mqtt_client_twt-brd4325c
-make -C output/wifi_embedded_mqtt_client_twt-brd4325c -f wifi_embedded_mqtt_client_twt.Makefile -j$((`nproc`/4))
-/slc_cli/slc -daemon generate /gsdk/extension/wiseconnect3/examples/snippets/wlan/embedded_mqtt_client_twt/embedded_mqtt_client_twt.slcp --force --with "brd4325g;wiseconnect3_sdk" -np -d output/wifi_embedded_mqtt_client_twt-brd4325g
-make -C output/wifi_embedded_mqtt_client_twt-brd4325g -f wifi_embedded_mqtt_client_twt.Makefile -j$((`nproc`/4))
+/slc_cli/slc -daemon generate /gsdk/extension/wiseconnect3/examples/snippets/wlan/embedded_mqtt_client_twt/embedded_mqtt_client_twt_ncp.slcp --force --with "brd4180b" -np -d output/wifi_embedded_mqtt_client_twt_ncp-brd4180b
+make -C output/wifi_embedded_mqtt_client_twt_ncp-brd4180b -f wifi_embedded_mqtt_client_twt_ncp.Makefile -j$((`nproc`/4))
+
+/slc_cli/slc -daemon generate /gsdk/extension/wiseconnect3/examples/snippets/wlan/embedded_mqtt_client_twt/embedded_mqtt_client_twt_soc.slcp --force --with "brd4325a;wiseconnect3_sdk" -np -d output/wifi_embedded_mqtt_client_twt_soc-brd4325a
+make -C output/wifi_embedded_mqtt_client_twt_soc-brd4325a -f wifi_embedded_mqtt_client_twt_soc.Makefile -j$((`nproc`/4))
+/slc_cli/slc -daemon generate /gsdk/extension/wiseconnect3/examples/snippets/wlan/embedded_mqtt_client_twt/embedded_mqtt_client_twt_soc.slcp --force --with "brd4325c;wiseconnect3_sdk" -np -d output/wifi_embedded_mqtt_client_twt_soc-brd4325c
+make -C output/wifi_embedded_mqtt_client_twt_soc-brd4325c -f wifi_embedded_mqtt_client_twt_soc.Makefile -j$((`nproc`/4))
+/slc_cli/slc -daemon generate /gsdk/extension/wiseconnect3/examples/snippets/wlan/embedded_mqtt_client_twt/embedded_mqtt_client_twt_soc.slcp --force --with "brd4325g;wiseconnect3_sdk" -np -d output/wifi_embedded_mqtt_client_twt_soc-brd4325g
+make -C output/wifi_embedded_mqtt_client_twt_soc-brd4325g -f wifi_embedded_mqtt_client_twt_soc.Makefile -j$((`nproc`/4))
 
 /slc_cli/slc -daemon generate /gsdk/extension/wiseconnect3/examples/snippets/wlan/sntp_client/sntp_client_ncp.slcp --force --with "brd4180b" -np -d output/wifi_embedded_sntp_client_ncp-brd4180b
 make -C output/wifi_embedded_sntp_client_ncp-brd4180b -f wifi_embedded_sntp_client_ncp.Makefile -j$((`nproc`/4))
@@ -626,12 +643,15 @@ make -C output/wifi_firmware_update_soc-brd4325c -f wifi_firmware_update_soc.Mak
 /slc_cli/slc -daemon generate /gsdk/extension/wiseconnect3/examples/featured/firmware_update/firmware_update_soc.slcp --force --with "brd4325g;wiseconnect3_sdk" -np -d output/wifi_firmware_update_soc-brd4325g
 make -C output/wifi_firmware_update_soc-brd4325g -f wifi_firmware_update_soc.Makefile -j$((`nproc`/4))
 
-/slc_cli/slc -daemon generate /gsdk/extension/wiseconnect3/examples/snippets/wlan/http_otaf/http_otaf.slcp --force --with "brd4325a;wiseconnect3_sdk" -np -d output/wifi_http_otaf-brd4325a
-make -C output/wifi_http_otaf-brd4325a -f wifi_http_otaf.Makefile -j$((`nproc`/4))
-/slc_cli/slc -daemon generate /gsdk/extension/wiseconnect3/examples/snippets/wlan/http_otaf/http_otaf.slcp --force --with "brd4325c;wiseconnect3_sdk" -np -d output/wifi_http_otaf-brd4325c
-make -C output/wifi_http_otaf-brd4325c -f wifi_http_otaf.Makefile -j$((`nproc`/4))
-/slc_cli/slc -daemon generate /gsdk/extension/wiseconnect3/examples/snippets/wlan/http_otaf/http_otaf.slcp --force --with "brd4325g;wiseconnect3_sdk" -np -d output/wifi_http_otaf-brd4325g
-make -C output/wifi_http_otaf-brd4325g -f wifi_http_otaf.Makefile -j$((`nproc`/4))
+/slc_cli/slc -daemon generate /gsdk/extension/wiseconnect3/examples/snippets/wlan/http_otaf/http_otaf_ncp.slcp --force --with "brd4180b" -np -d output/wifi_http_otaf_ncp-brd4180b
+make -C output/wifi_http_otaf_ncp-brd4180b -f wifi_http_otaf_ncp.Makefile -j$((`nproc`/4))
+
+/slc_cli/slc -daemon generate /gsdk/extension/wiseconnect3/examples/snippets/wlan/http_otaf/http_otaf_soc.slcp --force --with "brd4325a;wiseconnect3_sdk" -np -d output/wifi_http_otaf_soc-brd4325a
+make -C output/wifi_http_otaf_soc-brd4325a -f wifi_http_otaf_soc.Makefile -j$((`nproc`/4))
+/slc_cli/slc -daemon generate /gsdk/extension/wiseconnect3/examples/snippets/wlan/http_otaf/http_otaf_soc.slcp --force --with "brd4325c;wiseconnect3_sdk" -np -d output/wifi_http_otaf_soc-brd4325c
+make -C output/wifi_http_otaf_soc-brd4325c -f wifi_http_otaf_soc.Makefile -j$((`nproc`/4))
+/slc_cli/slc -daemon generate /gsdk/extension/wiseconnect3/examples/snippets/wlan/http_otaf/http_otaf_soc.slcp --force --with "brd4325g;wiseconnect3_sdk" -np -d output/wifi_http_otaf_soc-brd4325g
+make -C output/wifi_http_otaf_soc-brd4325g -f wifi_http_otaf_soc.Makefile -j$((`nproc`/4))
 
 /slc_cli/slc -daemon generate /gsdk/extension/wiseconnect3/examples/snippets/wlan_ble/wifi_https_ble_dual_role/wifi_https_ble_dual_role.slcp --force --with "brd4325a;wiseconnect3_sdk" -np -d output/wifi_https_ble_dual_role-brd4325a
 make -C output/wifi_https_ble_dual_role-brd4325a -f wifi_https_ble_dual_role.Makefile -j$((`nproc`/4))
@@ -731,12 +751,15 @@ make -C output/wifi_station_ping_v6-brd4325c -f wifi_station_ping_v6.Makefile -j
 /slc_cli/slc -daemon generate /gsdk/extension/wiseconnect3/examples/snippets/wlan/station_ping_v6/station_ping_v6.slcp --force --with "brd4325g;wiseconnect3_sdk" -np -d output/wifi_station_ping_v6-brd4325g
 make -C output/wifi_station_ping_v6-brd4325g -f wifi_station_ping_v6.Makefile -j$((`nproc`/4))
 
-/slc_cli/slc -daemon generate /gsdk/extension/wiseconnect3/examples/snippets/wlan/three_ssl_concurrent_client_sockets/three_ssl_client_sockets.slcp --force --with "brd4325a;wiseconnect3_sdk" -np -d output/wifi_three_ssl_client_sockets-brd4325a
-make -C output/wifi_three_ssl_client_sockets-brd4325a -f wifi_three_ssl_client_sockets.Makefile -j$((`nproc`/4))
-/slc_cli/slc -daemon generate /gsdk/extension/wiseconnect3/examples/snippets/wlan/three_ssl_concurrent_client_sockets/three_ssl_client_sockets.slcp --force --with "brd4325c;wiseconnect3_sdk" -np -d output/wifi_three_ssl_client_sockets-brd4325c
-make -C output/wifi_three_ssl_client_sockets-brd4325c -f wifi_three_ssl_client_sockets.Makefile -j$((`nproc`/4))
-/slc_cli/slc -daemon generate /gsdk/extension/wiseconnect3/examples/snippets/wlan/three_ssl_concurrent_client_sockets/three_ssl_client_sockets.slcp --force --with "brd4325g;wiseconnect3_sdk" -np -d output/wifi_three_ssl_client_sockets-brd4325g
-make -C output/wifi_three_ssl_client_sockets-brd4325g -f wifi_three_ssl_client_sockets.Makefile -j$((`nproc`/4))
+/slc_cli/slc -daemon generate /gsdk/extension/wiseconnect3/examples/snippets/wlan/three_ssl_concurrent_client_sockets/three_ssl_client_sockets_ncp.slcp --force --with "brd4180b" -np -d output/wifi_three_ssl_client_sockets_ncp-brd4180b
+make -C output/wifi_three_ssl_client_sockets_ncp-brd4180b -f wifi_three_ssl_client_sockets_ncp.Makefile -j$((`nproc`/4))
+
+/slc_cli/slc -daemon generate /gsdk/extension/wiseconnect3/examples/snippets/wlan/three_ssl_concurrent_client_sockets/three_ssl_client_sockets_soc.slcp --force --with "brd4325a;wiseconnect3_sdk" -np -d output/wifi_three_ssl_client_sockets_soc-brd4325a
+make -C output/wifi_three_ssl_client_sockets_soc-brd4325a -f wifi_three_ssl_client_sockets_soc.Makefile -j$((`nproc`/4))
+/slc_cli/slc -daemon generate /gsdk/extension/wiseconnect3/examples/snippets/wlan/three_ssl_concurrent_client_sockets/three_ssl_client_sockets_soc.slcp --force --with "brd4325c;wiseconnect3_sdk" -np -d output/wifi_three_ssl_client_sockets_soc-brd4325c
+make -C output/wifi_three_ssl_client_sockets_soc-brd4325c -f wifi_three_ssl_client_sockets_soc.Makefile -j$((`nproc`/4))
+/slc_cli/slc -daemon generate /gsdk/extension/wiseconnect3/examples/snippets/wlan/three_ssl_concurrent_client_sockets/three_ssl_client_sockets_soc.slcp --force --with "brd4325g;wiseconnect3_sdk" -np -d output/wifi_three_ssl_client_sockets_soc-brd4325g
+make -C output/wifi_three_ssl_client_sockets_soc-brd4325g -f wifi_three_ssl_client_sockets_soc.Makefile -j$((`nproc`/4))
 
 /slc_cli/slc -daemon generate /gsdk/extension/wiseconnect3/examples/snippets/wlan_ble/wifi_throughput_ble_dual_role/wifi_throughput_ble_dual_role.slcp --force --with "brd4325a;wiseconnect3_sdk" -np -d output/wifi_throughput_ble_dual_role-brd4325a
 make -C output/wifi_throughput_ble_dual_role-brd4325a -f wifi_throughput_ble_dual_role.Makefile -j$((`nproc`/4))
@@ -900,12 +923,8 @@ make -C output/wifi_ble_power_save-brd4325c -f wifi_ble_power_save.Makefile -j$(
 /slc_cli/slc -daemon generate /gsdk/extension/wiseconnect3/examples/_internal/Wireless_Examples/wlan_ble/wifi_ble_power_save/wifi_ble_power_save.slcp --force --with "brd4325g;wiseconnect3_sdk" -np -d output/wifi_ble_power_save-brd4325g
 make -C output/wifi_ble_power_save-brd4325g -f wifi_ble_power_save.Makefile -j$((`nproc`/4))
 
-/slc_cli/slc -daemon generate /gsdk/extension/wiseconnect3/examples/_internal/Wireless_Examples/wlan/http_client/http_client_app.slcp --force --with "brd4325a;wiseconnect3_sdk" -np -d output/wifi_http_client_app-brd4325a
-make -C output/wifi_http_client_app-brd4325a -f wifi_http_client_app.Makefile -j$((`nproc`/4))
-/slc_cli/slc -daemon generate /gsdk/extension/wiseconnect3/examples/_internal/Wireless_Examples/wlan/http_client/http_client_app.slcp --force --with "brd4325c;wiseconnect3_sdk" -np -d output/wifi_http_client_app-brd4325c
-make -C output/wifi_http_client_app-brd4325c -f wifi_http_client_app.Makefile -j$((`nproc`/4))
-/slc_cli/slc -daemon generate /gsdk/extension/wiseconnect3/examples/_internal/Wireless_Examples/wlan/http_client/http_client_app.slcp --force --with "brd4325g;wiseconnect3_sdk" -np -d output/wifi_http_client_app-brd4325g
-make -C output/wifi_http_client_app-brd4325g -f wifi_http_client_app.Makefile -j$((`nproc`/4))
+/slc_cli/slc -daemon generate /gsdk/extension/wiseconnect3/examples/_internal/Wireless_Examples/wlan/http_client/http_client_ncp.slcp --force --with "brd4180b" -np -d output/wifi_http_client_ncp-brd4180b
+make -C output/wifi_http_client_ncp-brd4180b -f wifi_http_client_ncp.Makefile -j$((`nproc`/4))
 
 /slc_cli/slc -daemon generate /gsdk/extension/wiseconnect3/examples/_internal/Wireless_Examples/wlan/http_client_post_data/http_client_post_data_app.slcp --force --with "brd4325a;wiseconnect3_sdk" -np -d output/wifi_http_client_post_data-brd4325a
 make -C output/wifi_http_client_post_data-brd4325a -f wifi_http_client_post_data.Makefile -j$((`nproc`/4))
@@ -913,6 +932,13 @@ make -C output/wifi_http_client_post_data-brd4325a -f wifi_http_client_post_data
 make -C output/wifi_http_client_post_data-brd4325c -f wifi_http_client_post_data.Makefile -j$((`nproc`/4))
 /slc_cli/slc -daemon generate /gsdk/extension/wiseconnect3/examples/_internal/Wireless_Examples/wlan/http_client_post_data/http_client_post_data_app.slcp --force --with "brd4325g;wiseconnect3_sdk" -np -d output/wifi_http_client_post_data-brd4325g
 make -C output/wifi_http_client_post_data-brd4325g -f wifi_http_client_post_data.Makefile -j$((`nproc`/4))
+
+/slc_cli/slc -daemon generate /gsdk/extension/wiseconnect3/examples/_internal/Wireless_Examples/wlan/http_client/http_client_soc.slcp --force --with "brd4325a;wiseconnect3_sdk" -np -d output/wifi_http_client_soc-brd4325a
+make -C output/wifi_http_client_soc-brd4325a -f wifi_http_client_soc.Makefile -j$((`nproc`/4))
+/slc_cli/slc -daemon generate /gsdk/extension/wiseconnect3/examples/_internal/Wireless_Examples/wlan/http_client/http_client_soc.slcp --force --with "brd4325c;wiseconnect3_sdk" -np -d output/wifi_http_client_soc-brd4325c
+make -C output/wifi_http_client_soc-brd4325c -f wifi_http_client_soc.Makefile -j$((`nproc`/4))
+/slc_cli/slc -daemon generate /gsdk/extension/wiseconnect3/examples/_internal/Wireless_Examples/wlan/http_client/http_client_soc.slcp --force --with "brd4325g;wiseconnect3_sdk" -np -d output/wifi_http_client_soc-brd4325g
+make -C output/wifi_http_client_soc-brd4325g -f wifi_http_client_soc.Makefile -j$((`nproc`/4))
 
 /slc_cli/slc -daemon generate /gsdk/extension/wiseconnect3/examples/_internal/Wireless_Examples/wlan_ble/wifi_https_ble_dual_role_v6/wifi_https_ble_dual_role_v6.slcp --force --with "brd4325a;wiseconnect3_sdk" -np -d output/wifi_https_ble_dual_role_v6-brd4325a
 make -C output/wifi_https_ble_dual_role_v6-brd4325a -f wifi_https_ble_dual_role_v6.Makefile -j$((`nproc`/4))

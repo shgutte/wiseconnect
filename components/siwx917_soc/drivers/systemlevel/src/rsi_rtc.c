@@ -18,7 +18,8 @@
 // Includes
 
 #include "rsi_chip.h"
-#define CENTURTY_START 0
+#define CENTURTY_START   0
+#define BYPASS_RESET_BIT 0x02
 /** @addtogroup SOC19
 * @{
 */
@@ -421,6 +422,17 @@ void RSI_RTC_ROCLK_Calib(TIME_PERIOD_Type *rtc,
 uint32_t RSI_RTC_GetIntrStatus(void)
 {
   return NPSS_INTR_STATUS_REG;
+}
+
+/*==============================================*/
+/**
+ * @fn			  void  RSI_RTC_BypassReset(void)
+ * @brief   	This API is used to bypass the soft reset of mcu.
+ * @return    none
+ */
+void RSI_RTC_BypassReset(void)
+{
+  NWPAON_POR_CTRL_BITS |= BYPASS_RESET_BIT;
 }
 /** @} */
 /*End of file not truncated*/

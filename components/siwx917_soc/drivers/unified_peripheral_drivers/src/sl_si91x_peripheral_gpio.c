@@ -28,7 +28,9 @@
  *
  ******************************************************************************/
 #include "sl_si91x_peripheral_gpio.h"
-#include "rsi_board.h"
+#ifdef DEBUG_UART
+#include "rsi_debug.h"
+#endif
 
 /*******************************************************************************
  ***************************  DEFINES / MACROS   ********************************
@@ -1222,7 +1224,12 @@ void sl_si91x_gpio_clear_ulp_group_interrupt(sl_si91x_group_interrupt_t group_in
  ******************************************************************************/
 void sl_assert_failed(uint8_t *file, uint32_t line)
 {
+#ifdef DEBUG_UART
   DEBUGOUT("Assert failed: file %s on line %lu \r\n", file, line);
+#else
+  (void)file;
+  (void)line;
+#endif
 }
 
 /*******************************************************************************

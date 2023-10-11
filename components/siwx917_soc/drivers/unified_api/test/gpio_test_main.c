@@ -24,7 +24,7 @@
 *   module.
 *******************************************************************************/
 #include "sl_si91x_peripheral_gpio.h"
-#include "rsi_board.h"
+#include "rsi_debug.h"
 #include "unity.h"
 #include "sl_system_init.h"
 #include "rsi_power_save.h"

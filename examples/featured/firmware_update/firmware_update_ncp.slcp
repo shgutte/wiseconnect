@@ -24,6 +24,7 @@ define:
   - name: RSI_DEBUG_PRINTS
   - name: EXECUTION_FROM_RAM
     condition: [device_needs_ram_execution]
+
 requires:
 - name: sl_system
 - name: bsd_socket

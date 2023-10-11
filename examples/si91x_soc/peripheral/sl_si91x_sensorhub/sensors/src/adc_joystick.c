@@ -30,7 +30,7 @@
 
 #include "adc_joystick.h"
 #include "sensor_hub.h"
-#include "rsi_board.h"
+#include "rsi_debug.h"
 #include "sl_si91x_adc.h"
 #include "rsi_error.h"
 

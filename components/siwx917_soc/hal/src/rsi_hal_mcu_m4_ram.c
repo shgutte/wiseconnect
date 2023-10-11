@@ -19,7 +19,6 @@
 //! This file should be in RAM
 #include "rsi_driver.h"
 #include "rsi_m4.h"
-#include "rsi_board.h"
 
 /*==================================================*/
 /**

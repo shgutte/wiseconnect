@@ -418,9 +418,12 @@ void convert_performance_profile_to_power_save_command(sl_performance_profile_t 
                                                        sl_si91x_power_save_request_t *power_save_request)
 {
   SL_ASSERT(power_save_request != NULL);
+  if (performance_profile.wifi_performance_profile.monitor_interval) {
+    power_save_request->monitor_interval = performance_profile.wifi_performance_profile.monitor_interval;
+  } else {
+    power_save_request->monitor_interval = DEFAULT_MONITOR_INTERVAL;
+  }
 
-  // Initialize the power_save_request structure with default values based on the specified performance profile
-  power_save_request->monitor_interval  = DEFAULT_MONITOR_INTERVAL;
   power_save_request->ulp_mode_enable   = SL_ULP_WITH_RAM_RETENTION;
   power_save_request->dtim_aligned_type = performance_profile.wifi_performance_profile.dtim_aligned_type;
   power_save_request->num_of_dtim_skip  = performance_profile.wifi_performance_profile.num_of_dtim_skip;

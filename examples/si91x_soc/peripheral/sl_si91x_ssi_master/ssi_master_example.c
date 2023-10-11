@@ -17,7 +17,7 @@
 // Include Files
 
 #include "sl_si91x_ssi.h"
-#include "rsi_board.h"
+#include "rsi_debug.h"
 #include "rsi_rom_clks.h"
 #include "ssi_master_example.h"
 

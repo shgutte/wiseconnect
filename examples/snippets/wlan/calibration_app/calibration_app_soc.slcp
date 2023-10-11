@@ -46,7 +46,6 @@ component:
 - {id: brd4002a}
 - {from: wiseconnect3_sdk, id: udma_linker_config}
 - {from: wiseconnect3_sdk, id: cmsis_udma}
-- {from: wiseconnect3_sdk, id: si917_memory_default_config}
 requires:
 - name: sl_system
 - name: bsd_socket

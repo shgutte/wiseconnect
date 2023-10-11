@@ -409,9 +409,7 @@ sl_status_t si91x_set_sni_for_embedded_socket(si91x_socket_type_length_value_t *
 
   request->protocol = SI91X_SNI_FOR_HTTPS;
   request->offset   = sizeof(si91x_socket_type_length_value_t);
-  memcpy(&request->tls_extension_data,
-         sni_extension,
-         sizeof(si91x_sni_for_embedded_socket_request_t) + SI91X_MAX_SIZE_OF_EXTENSION_DATA);
+  memcpy(&request->tls_extension_data, sni_extension, SI91X_MAX_SIZE_OF_EXTENSION_DATA);
   request->offset += sni_extension->length;
   packet_length = sizeof(si91x_sni_for_embedded_socket_request_t) + SI91X_MAX_SIZE_OF_EXTENSION_DATA;
 

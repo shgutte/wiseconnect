@@ -16,7 +16,6 @@
  ******************************************************************************/
 #include "sl_si91x_led.h"
 #include "rsi_chip.h"
-#include "rsi_board.h"
 #include "si91x_device.h"
 
 void sl_si91x_led_init(const sl_led_t *handle)

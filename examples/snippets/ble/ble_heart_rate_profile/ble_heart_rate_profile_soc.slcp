@@ -24,10 +24,19 @@ include:
 define:
   - name: RSI_DEBUG_PRINTS
   - name: WIRELESS_BASED_WAKEUP_TO_USE
+template_contribution:
+- name: event_handler
+  condition: [rsi_m4_interface]
+  value:
+    event: platform_init
+    include: rsi_wisemcu_hardware_setup.h
+    handler: sl_si91x_hardware_setup
+  priority: -9995
 component:
 - {from: wiseconnect3_sdk, id: si917_memory_default_config}
 - {from: wiseconnect3_sdk, id: sllib_m4_power_save}
 - {from: wiseconnect3_sdk, id: si91x_debug}
+- {from: wiseconnect3_sdk, id: syscalls}
 requires:
 - name: sl_system
 - name: network_manager

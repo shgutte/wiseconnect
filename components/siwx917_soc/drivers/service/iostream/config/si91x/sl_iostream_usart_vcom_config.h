@@ -77,8 +77,8 @@
 #define SL_IOSTREAM_USART_VCOM_FLOW_CONTROL_TYPE SL_USART_FLOW_CONTROL_NONE
 
 // <q SL_SI91X_VCOM_ENABLE> VCOM enable
-// <i> Default: 0
-#define SL_SI91X_VCOM_ENABLE 0
+// <i> Default: 1
+#define SL_SI91X_VCOM_ENABLE 1
 
 #define USART0_MODULE   0
 #define UART1_MODULE    1

@@ -36,11 +36,6 @@
 
 #define RSI_HAL_MAX_WR_BUFF_LEN 4096
 
-#if defined(__GNUC__)
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Warray-bounds"
-#pragma GCC diagnostic ignored "-Wcast-align"
-
 #define SI91X_INTERFACE_OUT_REGISTER       (*(uint32_t *)(RSI_HOST_INTF_REG_OUT))
 #define SI91X_INTERFACE_IN_REGISTER        (*(uint32_t *)(RSI_HOST_INTF_REG_IN))
 #define SI91X_INTERFACE_STATUS_REGISTER    (*(uint32_t *)(RSI_HOST_INTF_STATUS_REG))
@@ -53,6 +48,12 @@ typedef struct {
 
 #define SI91X_PING_BUFFER ((sli_si91x_pingpong_buffer_t *)(0x19000))
 #define SI91X_PONG_BUFFER ((sli_si91x_pingpong_buffer_t *)(0x1A000))
+
+// #if defined(__GNUC__)
+// #pragma GCC diagnostic push
+// #pragma GCC diagnostic ignored "-Warray-bounds"
+// #pragma GCC diagnostic ignored "-Wcast-align"
+// #endif // __GNUC__
 
 /**
  *@}
@@ -68,9 +69,9 @@ typedef struct {
 //  UNUSED_PARAMETER(len);
 //  *(uint32_t *)dBuf = *(uint32_t *)addr;
 //}
-
-#pragma GCC diagnostic pop
-#endif // __GNUC__
+// #if defined(__GNUC__)
+// #pragma GCC diagnostic pop
+// #endif // __GNUC__
 
 /**
  * @fn          int16_t rsi_bl_select_option(uint8_t cmd)

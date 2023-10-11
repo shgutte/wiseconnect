@@ -38,7 +38,7 @@
  ============================================================================**/
 #include "apds9960.h"
 #include "sensor_hub.h"
-#include "rsi_board.h"
+#include "rsi_debug.h"
 
 #pragma GCC diagnostic ignored "-Wpedantic"
 

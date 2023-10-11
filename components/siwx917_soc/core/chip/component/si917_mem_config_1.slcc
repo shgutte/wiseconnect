@@ -1,0 +1,11 @@
+id: si917_mem_config_1
+label: si917_memory_default_config
+package: platform
+description: Default memory configuration EXT_FEAT_512K_M4SS_192K
+category: Platform|si91x|core
+quality: internal
+provides:
+  - name: si917_mem_config_1
+define:
+  - name: MEM_CONFIG_917
+    value: '1'

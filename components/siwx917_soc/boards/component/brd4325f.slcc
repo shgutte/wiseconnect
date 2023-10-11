@@ -6,33 +6,22 @@
 - category: Platform|Board|Starter Kit
 - quality: production
 - requires:
-  - name: siwg917M141xgtba_ext_flash_int_psram
+  - name: siwg917m141xgtba
   - name: brd4325f_config
+  - name: hardware_board_mainboard
+  - name: external_flash_8mb
+  - name: external_psram_none
+  - name: rsilib_board
 - provides:
   - name: brd4325f
   - name: hardware_board
   - name: hardware_board_rb
-  - name: device_has_psram
-  - name: device_has_stacked_psram
-  - name: si91x_platform
-  - name: multi_slave
-  - name: si91x_b0_chip
+  - name: hardware_board_supports_multi_slave
   - name: si91x_dual_flash
-  - name: device_si91x  
+  - name: si91x_b0_board
 - recommends:
-  - id: "%extension-wiseconnect3_sdk%psram_aps6404l_sqh"
-- template_contribution:
-  - name: psram_present
-    value: 1
-  - name: device_psram_addr
-    value: 167772160 # 0x0A00_0000
-  - name: device_psram_size
-    value: 8388608 # 8MB
+  - id: brd4002a
 - define:
-  - name: CHIP_917
-    value: '1'
-  - name: CHIP_917B0
-    value: '1'
   - name: SL_BOARD_NAME
     value: '"BRD4325F"'
   - name: SL_BOARD_REV
@@ -45,6 +34,50 @@
     value: 0x8012000
   - name: WKP_RAM_USAGE_LOCATION
     value: 0x24061EFC
+
+- template_contribution:
+  # Default Memory configuration
+  - name: device_flash_addr
+    value: 136060928 # 0x081C 2000
+    priority: -1
+    condition:
+      - si917_mem_config_1
+  - name: device_flash_size
+    value: 450560 # 0x0006 E000
+    priority: -1
+    condition:
+      - si917_mem_config_1
+  # Medium Memory configuration
+  - name: device_flash_addr
+    value: 136060928 # 0x081C 2000
+    priority: -1
+    condition:
+      - si917_mem_config_2
+  - name: device_flash_size
+    value: 450560 # 0x0006 E000
+    priority: -1
+    condition:
+      - si917_mem_config_2
+  # Advanced Memory configuration
+  - name: device_flash_addr
+    value: 136060928 # 0x081C 2000
+    priority: -1
+    condition:
+      - si917_mem_config_3
+  - name: device_flash_size
+    value: 450560 # 0x0006 E000
+    priority: -1
+    condition:
+      - si917_mem_config_3
+
 - tag:
   - board:pn:BRD4325
   - board:variant:F
+  - board:revision:A00
+  - board:device:siwg917m141xgtba
+  - hardware:has:vcom
+#  - hardware:has:pti
+#  - hardware:has:led:2
+#  - hardware:has:button:2
+#  - hardware:has:exp_header:uart
+#  - hardware:shares:button:led

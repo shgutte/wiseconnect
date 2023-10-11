@@ -20,7 +20,6 @@
  ******************************************************************************/
 
 #include "rsi_chip.h"
-#include "rsi_board.h"
 #include "sl_common.h"
 #include "sl_si91x_button.h"
 #include "sl_si91x_button_config.h"

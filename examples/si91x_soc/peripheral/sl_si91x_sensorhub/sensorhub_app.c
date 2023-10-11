@@ -39,7 +39,7 @@
 #include <stdio.h>
 #include "rsi_chip.h"
 #include "rsi_os.h"
-#include "rsi_board.h"
+#include "rsi_debug.h"
 #include "cmsis_os2.h"
 
 /*******************************************************************************
@@ -79,7 +79,7 @@ static uint32_t sensor_scan_cnt = 0; // Sensor scan count
  ************************* Local functions  ************************************
  ******************************************************************************/
 void sl_si91x_sensorhub_app_task(void);                               // application task
-void sl_si91x_sensorhub_app_init(void);                               // application initialization
+void sensorhub_app_init(void);                                        // application initialization
 void sl_si91x_sensor_event_handler(uint8_t sensor_id, uint8_t event); // application event handler
 
 /**************************************************************************/ /**

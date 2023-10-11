@@ -22,6 +22,7 @@ include:
       - path: app.h
 define:
   - name: RSI_DEBUG_PRINTS
+
 requires:
 - name: sl_system
 - name: bsd_socket

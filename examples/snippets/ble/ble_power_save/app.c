@@ -47,6 +47,7 @@
 #include "rsi_rom_timer.h"
 #include "rsi_rom_power_save.h"
 #include "sl_event_handler.h"
+#include "rsi_ps_config.h"
 #endif
 
 /*=======================================================================*/
@@ -68,25 +69,10 @@
 sl_wifi_performance_profile_t wifi_profile = { ASSOCIATED_POWER_SAVE, 0, 0, 1000 };
 
 #ifdef RSI_M4_INTERFACE
-#ifdef COMMON_FLASH_EN
-#ifdef CHIP_917B0
-#define IVT_OFFSET_ADDR 0x81C2000 /*<!Application IVT location VTOR offset for B0>  */
-#else
-#define IVT_OFFSET_ADDR 0x8212000 /*<!Application IVT location VTOR offset for A0>  */
-#endif
-#else
-#define IVT_OFFSET_ADDR 0x8012000 /*<!Application IVT location VTOR offset for dual flash A0 and B0>  */
-#endif
-#ifdef CHIP_917B0
-#define WKP_RAM_USAGE_LOCATION 0x24061EFC /*<!Bootloader RAM usage location upon wake up  for B0 */
-#else
-#define WKP_RAM_USAGE_LOCATION 0x24061000 /*<!Bootloader RAM usage location upon wake up for A0  */
-#endif
 #define WIRELESS_WAKEUP_IRQ_PRI    8
 #define portNVIC_SHPR3_REG         (*((volatile uint32_t *)0xe000ed20))
 #define portNVIC_PENDSV_PRI        (((uint32_t)(0x3f << 4)) << 16UL)
 #define portNVIC_SYSTICK_PRI       (((uint32_t)(0x3f << 4)) << 24UL)
-#define WKP_RAM_USAGE_LOCATION     0x24061EFC /*<! Bootloader RAM usage location upon wake up  */
 #define WIRELESS_WAKEUP_IRQHandler NPSS_TO_MCU_WIRELESS_INTR_IRQn
 void M4_sleep_wakeup(void);
 void IRQ026_Handler();

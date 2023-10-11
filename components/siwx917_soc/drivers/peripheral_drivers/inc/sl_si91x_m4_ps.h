@@ -19,7 +19,7 @@
 #define SL_SI91X_M4_POWERSAVE_H_
 
 #ifdef DEBUG_UART
-#include "rsi_board.h"
+#include "rsi_debug.h"
 #endif
 #ifdef RSI_M4_INTERFACE
 #include "rsi_rtc.h"

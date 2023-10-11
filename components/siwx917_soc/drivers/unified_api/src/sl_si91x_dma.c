@@ -32,7 +32,6 @@
 #include "rsi_rom_udma_wrapper.h"
 #include "rsi_udma.h"
 #include "si91x_device.h"
-#include "rsi_board.h"
 
 /*******************************************************************************
  ***************************  DEFINES / MACROS   ********************************
@@ -531,6 +530,31 @@ sl_status_t sl_si91x_dma_transfer(uint32_t dma_number, uint32_t channel_no, sl_d
   do {
     if ((channel_no > DMA_CHANNEL_32) && (channel_no == 0) && (dma_number > DMA_INSTANCE1)) {
       // Invalid channel number
+      status = SL_STATUS_INVALID_PARAMETER;
+      break;
+    }
+    if ((dma_transfer_t->dst_inc > SL_TRANSFER_DST_INC_NONE) || (dma_transfer_t->src_inc > SL_TRANSFER_SRC_INC_NONE)) {
+      // Invalid addr increment
+      status = SL_STATUS_INVALID_PARAMETER;
+      break;
+    }
+    if ((dma_transfer_t->dma_mode != SL_DMA_BASIC_MODE) && (dma_transfer_t->dma_mode != SL_DMA_PINGPONG_MODE)) {
+      // DMA mode not supported
+      status = SL_STATUS_INVALID_PARAMETER;
+      break;
+    }
+    if ((dma_transfer_t->transfer_type > SL_DMA_PERIPHERAL_TO_MEMORY)) {
+      // Transfer type not supported
+      status = SL_STATUS_INVALID_PARAMETER;
+      break;
+    }
+    if ((dma_transfer_t->signal > SL_I2C_ACK)) {
+      // Invalid DMA signal
+      status = SL_STATUS_INVALID_PARAMETER;
+      break;
+    }
+    if ((dma_transfer_t->xfer_size > SL_TRANSFER_SIZE_32)) {
+      // Invalid transfer size
       status = SL_STATUS_INVALID_PARAMETER;
       break;
     }

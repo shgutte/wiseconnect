@@ -36,6 +36,10 @@
 #include "sl_wifi.h"
 #include "sl_si91x_driver.h"
 
+#ifdef RSI_M4_INTERFACE
+#include "rsi_ps_config.h"
+#endif // RSI_M4_INTERFACE
+
 /******************************************************
  *               Function Declarations
  ******************************************************/

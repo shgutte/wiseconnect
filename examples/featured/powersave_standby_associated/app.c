@@ -43,6 +43,7 @@
 
 #ifdef RSI_M4_INTERFACE
 #include "rsi_wisemcu_hardware_setup.h"
+#include "rsi_ps_config.h"
 #endif
 
 /******************************************************
@@ -141,7 +142,7 @@ static void application_start(void *argument)
 {
   UNUSED_PARAMETER(argument);
   sl_status_t status;
-  sl_wifi_performance_profile_t performance_profile = { .profile = ASSOCIATED_POWER_SAVE };
+  sl_wifi_performance_profile_t performance_profile = { .profile = ASSOCIATED_POWER_SAVE, .monitor_interval = 50 };
 
   status = sl_net_init(SL_NET_WIFI_CLIENT_INTERFACE, &station_init_configuration, NULL, NULL);
   if (status != SL_STATUS_OK) {

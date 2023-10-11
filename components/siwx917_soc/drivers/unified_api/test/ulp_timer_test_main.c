@@ -20,7 +20,7 @@
 #include "sl_si91x_ulp_timer_inst_config.h"
 #include "sl_system_init.h"
 #include "rsi_timers.h"
-#include "rsi_board.h"
+#include "rsi_debug.h"
 #include "unity.h"
 
 /*******************************************************************************

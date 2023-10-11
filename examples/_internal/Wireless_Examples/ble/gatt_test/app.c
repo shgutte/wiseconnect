@@ -40,20 +40,24 @@
 //! local device name
 #define RSI_BLE_APP_GATT_TEST (void *)"BLE_GATT_TEST"
 
+//! Service ID to query
+#define SERVICE_UUID 0x1234
+
 //! application events list
-#define RSI_BLE_ADV_REPORT_EVENT   0x01
-#define RSI_BLE_CONN_EVENT         0x02
-#define RSI_BLE_DISCONN_EVENT      0x03
-#define RSI_BLE_GATT_WRITE_EVENT   0x04
-#define RSI_BLE_GATT_PROFILES      0x05
-#define RSI_BLE_GATT_PROFILE       0x06
-#define RSI_BLE_GATT_CHAR_SERVICES 0x07
-#define RSI_BLE_GATT_INC_SERVICES  0x08
-#define RSI_BLE_GATT_DESC_SERVICES 0x09
-#define RSI_BLE_GATT_READ          0x0A
-#define RSI_BLE_GATT_WRITE         0x0B
-#define RSI_BLE_GATT_ERROR         0x0C
-#define RSI_BLE_GATT_DESC_VAL      0x0D
+#define RSI_BLE_ADV_REPORT_EVENT        0x01
+#define RSI_BLE_CONN_EVENT              0x02
+#define RSI_BLE_DISCONN_EVENT           0x03
+#define RSI_BLE_GATT_WRITE_EVENT        0x04
+#define RSI_BLE_GATT_PROFILES           0x05
+#define RSI_BLE_GATT_PROFILE            0x06
+#define RSI_BLE_GATT_CHAR_SERVICES      0x07
+#define RSI_BLE_GATT_INC_SERVICES       0x08
+#define RSI_BLE_GATT_DESC_SERVICES      0x09
+#define RSI_BLE_GATT_READ               0x0A
+#define RSI_BLE_GATT_WRITE              0x0B
+#define RSI_BLE_GATT_ERROR              0x0C
+#define RSI_BLE_GATT_DESC_VAL           0x0D
+#define RSI_BLE_PREPARE_WRITE_RSP_EVENT 0x0E
 
 //! Address type of the device to connect
 #define RSI_BLE_DEV_ADDR_TYPE LE_PUBLIC_ADDRESS
@@ -75,6 +79,13 @@ static uint8_t device_found          = 0;
 static rsi_ble_event_conn_status_t conn_event_to_app;
 static rsi_ble_event_disconnect_t disconn_event_to_app;
 static rsi_ble_event_write_t app_ble_write_event;
+static rsi_ble_prepare_write_resp_t app_ble_write_rsp_event;
+rsi_ble_event_profile_by_uuid_t p_profile;
+rsi_ble_event_read_by_type1_t char_serv;
+rsi_ble_event_read_by_type3_t p_att_desc;
+uint8_t remote_dev_addr_conn[18]                   = { 0 };
+uint16_t offset                                    = 0;
+uint8_t prepare_write_cnt                          = 0;
 static const sl_wifi_device_configuration_t config = {
   .boot_option = LOAD_NWP_FW,
   .mac_address = NULL,
@@ -301,7 +312,7 @@ static void rsi_ble_on_connect_event(rsi_ble_event_conn_status_t *resp_conn)
 static void rsi_ble_on_disconnect_event(rsi_ble_event_disconnect_t *resp_disconnect, uint16_t reason)
 {
   UNUSED_PARAMETER(reason); //This statement is added only to resolve compilation warning, value is unchanged
-  memcpy(&disconn_event_to_app, resp_disconnect, sizeof(rsi_ble_event_conn_status_t));
+  memcpy(&disconn_event_to_app, resp_disconnect, sizeof(rsi_ble_event_disconnect_t));
   rsi_ble_app_set_event(RSI_BLE_DISCONN_EVENT);
 }
 
@@ -320,6 +331,26 @@ static void rsi_ble_on_gatt_write_event(uint16_t event_id, rsi_ble_event_write_t
   UNUSED_PARAMETER(event_id); //This statement is added only to resolve compilation warning, value is unchanged
   memcpy(&app_ble_write_event, rsi_ble_write, sizeof(rsi_ble_event_write_t));
   rsi_ble_app_set_event(RSI_BLE_GATT_WRITE_EVENT);
+}
+
+/*==============================================*/
+/**
+ * @fn         rsi_ble_on_gatt_prepare_write_resp
+ * @brief      this is call back function, it is invoked when prepare write response event is received.
+ * @param[in]  event_status, it indicates the status of the event
+ * @param[in]  rsi_ble_prepare_write_resp, prepare write response parameters.
+ * @return     none.
+ * @section description
+ * This is a callback function
+ */
+
+static void rsi_ble_on_gatt_prepare_write_resp(uint16_t event_status,
+                                               rsi_ble_prepare_write_resp_t *rsi_ble_prepare_write_resp)
+{
+  memcpy(&app_ble_write_rsp_event, rsi_ble_prepare_write_resp, sizeof(rsi_ble_prepare_write_resp_t));
+  offset += rsi_ble_prepare_write_resp->length;
+  prepare_write_cnt++;
+  rsi_ble_app_set_event(RSI_BLE_PREPARE_WRITE_RSP_EVENT);
 }
 
 /*==============================================*/
@@ -355,6 +386,9 @@ static void rsi_ble_profile_event(uint16_t resp_status, rsi_ble_event_profile_by
     rsi_ble_event_profile);      //This statement is added only to resolve compilation warning, value is unchanged
   UNUSED_PARAMETER(resp_status); //This statement is added only to resolve compilation warning, value is unchanged
   LOG_PRINT("\n in rsi_ble_profile_event\n");
+
+  memcpy(&p_profile, rsi_ble_event_profile, sizeof(rsi_ble_event_profile_by_uuid_t));
+
   rsi_ble_app_set_event(RSI_BLE_GATT_PROFILE);
   return;
 }
@@ -373,6 +407,7 @@ static void rsi_ble_char_services_event(uint16_t resp_status,
   UNUSED_PARAMETER(
     rsi_ble_event_char_services); //This statement is added only to resolve compilation warning, value is unchanged
   UNUSED_PARAMETER(resp_status);  //This statement is added only to resolve compilation warning, value is unchanged
+  memcpy(&char_serv, rsi_ble_event_char_services, sizeof(rsi_ble_event_read_by_type1_t));
   rsi_ble_app_set_event(RSI_BLE_GATT_CHAR_SERVICES);
   return;
 }
@@ -407,6 +442,7 @@ static void rsi_ble_on_att_desc_event(uint16_t resp_status, rsi_ble_event_read_b
   UNUSED_PARAMETER(
     rsi_ble_event_att_desc);     //This statement is added only to resolve compilation warning, value is unchanged
   UNUSED_PARAMETER(resp_status); //This statement is added only to resolve compilation warning, value is unchanged
+  memcpy(&p_att_desc, rsi_ble_event_att_desc, sizeof(rsi_ble_event_read_by_type3_t));
   rsi_ble_app_set_event(RSI_BLE_GATT_DESC_SERVICES);
   return;
 }
@@ -492,8 +528,12 @@ void rsi_ble_simple_gatt_test(void)
   int32_t status = 0;
   int32_t event_id;
   uuid_t search_serv;
-  uint8_t loop;
-  uint8_t adv[31] = { 2, 1, 6 };
+  uint8_t loop          = 0;
+  uint8_t adv[31]       = { 2, 1, 6 };
+  uint8_t i             = 0;
+  uint16_t write_handle = 0;
+  uint8_t inc_query;
+  uint8_t data[DATA_LENGTH] = { 01, 02, 03, 04, 05, 06, 07, 10, 01, 02, 03, 04, 05, 06, 07 };
 
   sl_wifi_version_string_t fw_version = { 0 };
 
@@ -546,7 +586,8 @@ void rsi_ble_simple_gatt_test(void)
                                   (rsi_ble_on_event_read_resp_t)rsi_ble_on_read_event,
                                   rsi_ble_write_event,
                                   NULL,
-                                  NULL);
+                                  rsi_ble_on_gatt_prepare_write_resp);
+
   //!  initializing the application events map
   rsi_ble_app_init_events();
 
@@ -597,6 +638,8 @@ void rsi_ble_simple_gatt_test(void)
         rsi_ble_app_clear_event(RSI_BLE_CONN_EVENT);
         rsi_6byte_dev_address_to_ascii(remote_dev_addr, (uint8_t *)conn_event_to_app.dev_addr);
         LOG_PRINT("\r\n Module connected to address : %s \r\n", remote_dev_addr);
+        rsi_ble_app_set_event(RSI_BLE_GATT_PROFILES);
+
       } break;
       case RSI_BLE_DISCONN_EVENT: {
         //! event invokes when disconnection was completed
@@ -633,34 +676,56 @@ adv:
         LOG_PRINT("\nin gatt test:rsi_ble_gatt_profiles\n");
         memset(&search_serv, 0, sizeof(search_serv));
         search_serv.size      = 0x02;
-        search_serv.val.val16 = 0x1800;
-        rsi_ble_get_profile_async(conn_event_to_app.dev_addr, search_serv, NULL);
+        search_serv.val.val32 = SERVICE_UUID;
+        rsi_6byte_dev_address_to_ascii(remote_dev_addr_conn, conn_event_to_app.dev_addr);
+        LOG_PRINT("\n triggering profile asyn for %s", remote_dev_addr_conn);
+        status = rsi_ble_get_profile_async(conn_event_to_app.dev_addr, search_serv, NULL);
+        if (status != RSI_SUCCESS) {
+          LOG_PRINT("\n rsi_ble_get_profile_async failed with %lx", status);
+        } else {
+          LOG_PRINT("\n rsi_ble_get_profile_async success \n");
+        }
       } break;
 
       case RSI_BLE_GATT_PROFILE: {
         //! clear the served event
         rsi_ble_app_clear_event(RSI_BLE_GATT_PROFILE);
-
-        rsi_ble_get_char_services_async(conn_event_to_app.dev_addr, 1, 0xFFFF, NULL);
+        LOG_PRINT("\n rsi_ble_get_profile_async success start handle = %x , end handle = %x",
+                  *(uint16_t *)p_profile.start_handle,
+                  *(uint16_t *)p_profile.end_handle);
+        status = rsi_ble_get_char_services_async(conn_event_to_app.dev_addr,
+                                                 *(uint16_t *)p_profile.start_handle,
+                                                 *(uint16_t *)p_profile.end_handle,
+                                                 NULL /* &char_serv*/);
+        if (status != RSI_SUCCESS) {
+          LOG_PRINT("\n rsi_ble_get_char_services_async failed with %lx", status);
+        } else {
+          LOG_PRINT("\n rsi_ble_get_char_services_async success \n");
+        }
       } break;
 
       case RSI_BLE_GATT_CHAR_SERVICES: {
         rsi_ble_app_clear_event(RSI_BLE_GATT_CHAR_SERVICES);
-
-        rsi_ble_get_inc_services_async(conn_event_to_app.dev_addr, 1, 0x10, NULL);
+        inc_query = 1;
+        status    = rsi_ble_get_inc_services_async(conn_event_to_app.dev_addr, 0, 0xFF, NULL);
+        if (status != RSI_SUCCESS) {
+          LOG_PRINT("\n rsi_ble_get_inc_services_async failed with %lx", status);
+        }
 
       } break;
 
       case RSI_BLE_GATT_INC_SERVICES: {
         rsi_ble_app_clear_event(RSI_BLE_GATT_INC_SERVICES);
-        rsi_ble_get_att_descriptors_async(conn_event_to_app.dev_addr, 1, 0xFFFF, NULL);
+        if (inc_query) {
+          rsi_ble_app_set_event(RSI_BLE_GATT_DESC_VAL);
+        }
 
       } break;
 
       case RSI_BLE_GATT_DESC_SERVICES: {
         rsi_ble_app_clear_event(RSI_BLE_GATT_DESC_SERVICES);
 
-        rsi_ble_get_att_value_async(conn_event_to_app.dev_addr, 3, NULL);
+        rsi_ble_get_att_value_async(conn_event_to_app.dev_addr, *(uint16_t *)p_att_desc.handle, NULL);
         loop = 0;
       } break;
 
@@ -690,18 +755,48 @@ adv:
       } break;
       case RSI_BLE_GATT_ERROR: {
         rsi_ble_app_clear_event(RSI_BLE_GATT_ERROR);
-        scanf("loop is %c:", &loop);
         LOG_PRINT("get att descriptor value");
-        rsi_ble_get_att_descriptors_async(remote_dev_bd_addr, 1, 0x10, NULL);
-      } break;
+        if (inc_query) {
+        }
+        break;
 
-      case RSI_BLE_GATT_DESC_VAL: {
-        rsi_ble_app_clear_event(RSI_BLE_GATT_DESC_VAL);
-        LOG_PRINT("\n get att value \n");
-        rsi_ble_get_att_value_async(remote_dev_bd_addr, 3, NULL);
-        loop = 0;
-      } break;
-      default: {
+        case RSI_BLE_GATT_DESC_VAL: {
+          for (i = 0; i < char_serv.num_of_services; i++) {
+            if (char_serv.char_services[i].char_data.char_property & RSI_BLE_ATT_PROPERTY_WRITE) {
+              write_handle = char_serv.char_services[i].char_data.char_handle;
+              LOG_PRINT("\n write handle = %x", write_handle);
+              break;
+            }
+          }
+          rsi_ble_app_clear_event(RSI_BLE_GATT_DESC_VAL);
+          LOG_PRINT("\n get att value \n");
+          status = rsi_ble_prepare_write_async(conn_event_to_app.dev_addr, write_handle, 0, DATA_LENGTH, data);
+          if (status != RSI_SUCCESS) {
+            LOG_PRINT("\n rsi_ble_prepare_write_async failed with %lX ", status);
+          } else {
+            LOG_PRINT("\n rsi_ble_prepare_write_async success");
+          }
+          loop = 0;
+        } break;
+        case RSI_BLE_PREPARE_WRITE_RSP_EVENT: {
+          rsi_ble_app_clear_event(RSI_BLE_PREPARE_WRITE_RSP_EVENT);
+          if ((!memcmp(app_ble_write_rsp_event.att_value, data, app_ble_write_rsp_event.length))
+              && (prepare_write_cnt < 3)) {
+            status = rsi_ble_prepare_write_async(conn_event_to_app.dev_addr, write_handle, offset, DATA_LENGTH, data);
+            if (status != RSI_SUCCESS) {
+              LOG_PRINT("\n rsi_ble_prepare_write_async failed with %lX ", status);
+            } else {
+              LOG_PRINT("\n rsi_ble_prepare_write_async success");
+            }
+          } else {
+            status = rsi_ble_execute_write_async(conn_event_to_app.dev_addr, EXECUTE_WRITE);
+            if (status != RSI_SUCCESS) {
+              LOG_PRINT("\n rsi_ble_execute_write_async failed with %lX ", status);
+            }
+          }
+        } break;
+        default: {
+        }
       }
     }
   }

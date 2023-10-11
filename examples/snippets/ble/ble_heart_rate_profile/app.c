@@ -930,7 +930,7 @@ void ble_heart_rate_gatt_server(void *argument)
     //! checking for events list
     event_id = rsi_ble_app_get_event();
     if (event_id == -1) {
-#ifdef RSI_M4_INTERFACE
+#if RSI_M4_INTERFACE && ENABLE_POWER_SAVE
       //! if events are not received loop will be continued.
       if ((!(P2P_STATUS_REG & TA_wakeup_M4))) {
         P2P_STATUS_REG &= ~M4_wakeup_TA;

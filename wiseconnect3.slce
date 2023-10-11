@@ -55,6 +55,7 @@ component_path:
   - path: components/siwx917_soc/core/common/component
   - path: components/siwx917_soc/core/cmsis/component
   - path: components/siwx917_soc/core/config/component
+  - path: components/siwx917_soc/core/common/component
   - path: components/siwx917_soc/hal/component
   - path: components/segger_sysview
   - path: third_party/aws_sdk

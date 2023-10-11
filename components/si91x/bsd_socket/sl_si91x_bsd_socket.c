@@ -475,7 +475,14 @@ ssize_t sendto(int socket_id,
         ? &socket_address->sin_addr.s_addr
         : &((struct sockaddr_in *)&si91x_socket->remote_address)->sin_addr.s_addr;
 
+#if defined(__GNUC__)
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Warray-bounds"
+#endif // __GNUC__
     memcpy(request.dest_ip_addr.ipv4_address, destination_ip, SL_IPV4_ADDRESS_LENGTH);
+#if defined(__GNUC__)
+#pragma GCC diagnostic pop
+#endif // __GNUC__
   }
 
   // Set other parameters in the request structure

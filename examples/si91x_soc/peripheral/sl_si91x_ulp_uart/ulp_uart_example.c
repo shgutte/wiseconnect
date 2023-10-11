@@ -15,7 +15,7 @@
  *
  ******************************************************************************/
 #include "sl_si91x_usart.h"
-#include "rsi_board.h"
+#include "rsi_debug.h"
 #include "ulp_uart_example.h"
 #include "rsi_egpio.h"
 #include "rsi_rom_egpio.h"

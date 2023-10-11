@@ -35,7 +35,7 @@
  ============================================================================**/
 
 #include <stdio.h>
-#include "rsi_board.h"
+#include "rsi_debug.h"
 #include "sensor_hub.h"
 #include "sensor_type.h"
 

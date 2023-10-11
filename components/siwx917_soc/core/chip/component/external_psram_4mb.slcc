@@ -1,0 +1,27 @@
+id: external_psram_4mb
+label: 4MB PSRAM (External)
+package: platform # Does this need a different package?
+description: Component for 4MB External PSRAM on SIWG917 Chips
+category: Platform|Device|PSRAM Types
+quality: internal
+provides:
+  - name: external_psram_4mb
+  - name: external_psram_implementation
+
+template_contribution:
+    # TODO: Check these values
+    - name: external_psram_present
+      value: 1
+    - name: external_psram_addr
+      value: 0
+    - name: external_psram_size
+      value: 4194304
+
+metadata:
+    device:
+      memory:
+      - name: External PSRAM
+        # TODO: Check these values
+        size: 4194304
+        start: 167772160
+        type: volatile

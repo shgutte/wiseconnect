@@ -21,7 +21,7 @@
 #include "rsi_ccp_common.h"
 #include "rsi_chip.h"
 #ifdef DEBUG_UART
-#include "rsi_board.h"
+#include "rsi_debug.h"
 #endif
 
 void fpuInit(void);

@@ -26,7 +26,8 @@
 #include "sl_si91x_ulp_timer.h"
 #include "ulp_timer_example.h"
 #include "sl_si91x_ulp_timer_init.h"
-#include "rsi_board.h"
+#include "sl_si91x_led.h"
+#include "rsi_debug.h"
 #include "rsi_chip.h"
 #include <stdint.h>
 
@@ -219,7 +220,7 @@ static void SL_ULP_TIMER_CALLBACK(void)
   interrupt_count++;
   // To toggle LED0
   state = !state;
-  RSI_Board_LED_Set(LED0, state);
+  sl_si91x_led_toggle(SL_SI91x_LED0_PIN);
   // Checking interrupt count
   if (interrupt_count == FIFTH_INTERRUPT_COUNT) {
     //Stopping the timer instance, after five LED toggles.

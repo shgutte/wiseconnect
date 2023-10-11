@@ -120,6 +120,7 @@ void RSI_RTC_ROCLK_Calib(TIME_PERIOD_Type *rtc,
 void RSI_RTC_RCCLK_Calib(TIME_PERIOD_Type *rtc, uint8_t enable, uint8_t periodic_en, uint8_t trigger_time);
 /*Initilization RTC CALIBRATION*/
 void RSI_RTC_CalibInitilization(void);
+void RSI_RTC_BypassReset(void);
 void IRQ029_Handler(void);
 void IRQ028_Handler(void);
 

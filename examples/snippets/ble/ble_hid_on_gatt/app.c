@@ -60,6 +60,7 @@
 
 //! Remote Device Name to connect
 #define RSI_REMOTE_DEVICE_NAME "SILABS_DEV"
+#define MAX_DEVICE_NAME_LENGTH 31
 
 #define RSI_BLE_SMP_PASSKEY 0x000000
 
@@ -181,12 +182,12 @@ static rsi_bt_event_smp_passkey_display_t smp_passkey_display_event;
 static uint16_t rsi_ble_hid_in_report_val_hndl;
 static uint8_t remote_dev_addr[BD_ADDR_ARRAY_LEN];
 static uint8_t remote_dev_bd_addr[6];
-static uint8_t remote_addr_type   = 0;
-static uint8_t remote_name[31]    = { 0 };
-static uint8_t device_found       = 0;
-static uint32_t smp_passkey       = 0;
-uint16_t att_resp_status          = 0;
-uint8_t passkey[BLE_PASSKEY_SIZE] = { 0 };
+static uint8_t remote_addr_type                    = 0;
+static uint8_t remote_name[MAX_DEVICE_NAME_LENGTH] = { 0 };
+static uint8_t device_found                        = 0;
+static uint32_t smp_passkey                        = 0;
+uint16_t att_resp_status                           = 0;
+uint8_t passkey[BLE_PASSKEY_SIZE]                  = { 0 };
 
 uint8_t app_state                         = 0;
 uint8_t str_remote_address[18]            = { '\0' };
@@ -474,7 +475,7 @@ void rsi_ble_on_adv_report_event(rsi_ble_event_adv_report_t *adv_report)
   if (device_found == 1) {
     return;
   }
-
+  memset(remote_name, 0, MAX_DEVICE_NAME_LENGTH);
   BT_LE_ADPacketExtract(remote_name, adv_report->adv_data, adv_report->adv_data_len);
 
   remote_addr_type = adv_report->dev_addr_type;

@@ -44,7 +44,7 @@
 
 #include "SPI.h"
 #include "rsi_ccp_common.h"
-#include "rsi_board.h"
+#include "rsi_debug.h"
 #include "rsi_rom_clks.h"
 #include "rsi_common_apis.h"
 #include "UDMA.h"

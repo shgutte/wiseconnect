@@ -17,7 +17,7 @@
  ******************************************************************************/
 
 #include "sl_si91x_watchdog_timer.h"
-#include "rsi_board.h"
+#include "rsi_debug.h"
 #include "unity.h"
 #include "sl_system_init.h"
 

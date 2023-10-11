@@ -34,8 +34,10 @@ component:
   - id: psram_core
     from: wiseconnect3_sdk
   - id: psram_aps6404l_sqh
-    from: wiseconnect3_sdk   
+    from: wiseconnect3_sdk
   - id: si91x_debug
+    from: wiseconnect3_sdk
+  - id: syscalls
     from: wiseconnect3_sdk 
 define:
   - name: __SYSTICK

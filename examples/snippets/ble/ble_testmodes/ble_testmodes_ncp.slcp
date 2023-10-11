@@ -23,6 +23,7 @@ include:
       - path: ble_config.h
 define:
   - name: RSI_DEBUG_PRINTS
+
 requires:
 - name: sl_system
 - name: network_manager

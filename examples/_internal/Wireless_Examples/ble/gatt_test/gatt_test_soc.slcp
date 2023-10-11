@@ -24,9 +24,10 @@ include:
       - path: ble_config.h
 define:
   - name: RSI_DEBUG_PRINTS
+
 component:
-- {from: wiseconnect3_sdk, id: si917_memory_default_config}
 - {from: wiseconnect3_sdk, id: si91x_debug}
+- {from: wiseconnect3_sdk, id: syscalls}
 requires:
 - name: sl_system
 - name: network_manager

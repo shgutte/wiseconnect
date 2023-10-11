@@ -28,6 +28,8 @@ requires:
 component:
 - id: si91x_debug
   from: wiseconnect3_sdk
+- id: syscalls
+  from: wiseconnect3_sdk
 configuration:
   - name: NVM3_DEFAULT_MAX_OBJECT_SIZE
     value: 204

@@ -24,7 +24,7 @@
 
 /* Includes ------------------------------------------------------------------*/
 #include "pwm_example.h"
-#include "rsi_board.h"
+#include "rsi_debug.h"
 #include "rsi_chip.h"
 #include "sl_si91x_pwm.h"
 #include "sl_pwm_instances.h"

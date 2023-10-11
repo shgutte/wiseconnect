@@ -15,7 +15,7 @@ requires:
   - name: psram_config
   - name: rsilib_qspi
   - name: systemlevel_pll
-  - name: device_has_psram
+  - name: device_supports_psram
   - name: romdriver_clks
   - name: romdriver_qspi
 source:

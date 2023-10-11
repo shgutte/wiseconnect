@@ -1,0 +1,8 @@
+id: device_needs_ram_execution
+package: platform
+description: device needs ram execution component is used to execute few sources from the RAM.
+category: Platform|si91x|core
+label: Si91x Execution from RAM.
+quality: production
+provides:
+  - name: device_needs_ram_execution

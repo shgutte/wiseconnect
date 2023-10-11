@@ -17,14 +17,14 @@
 // Include Files
 
 #include "sl_si91x_ssi.h"
-#include "rsi_board.h"
+#include "rsi_debug.h"
 #include "rsi_rom_clks.h"
 #include "ulp_ssi_master_example.h"
 
 /*******************************************************************************
  ***************************  Defines / Macros  ********************************
  ******************************************************************************/
-#define BUFFER_SIZE             1024      // Length of data to be sent through SPI
+#define BUFFER_SIZE             2048      // Length of data to be sent through SPI
 #define DIVISION_FACTOR         0         // Division Factor
 #define INTF_PLL_CLK            180000000 // PLL Clock frequency
 #define INTF_PLL_REF_CLK        40000000  // PLL Ref Clock frequency
@@ -36,6 +36,9 @@
 #define SSI_BAUDRATE            10000000  // SSI baudrate
 #define MAX_BIT_WIDTH           16        // Maximum Bit width
 #define RECEIVE_SAMPLE_DELAY    0         // By default sample delay is 0
+#define ULP_BANK_OFFSET         0x800
+#define TX_BUF_MEMORY           (ULP_SRAM_START_ADDR + (1 * ULP_BANK_OFFSET))
+#define RX_BUF_MEMORY           (ULP_SRAM_START_ADDR + (2 * ULP_BANK_OFFSET))
 
 #define RESERVED_IRQ_COUNT   16                                   // Reserved IRQ count
 #define EXT_IRQ_COUNT        98                                   // External IRQ count
@@ -90,12 +93,6 @@ void ssi_master_example_init(void)
   memcpy(ramVector, (uint32_t *)SCB->VTOR, sizeof(uint32_t) * VECTOR_TABLE_ENTRIES);
   // Assigning the ram vector address to VTOR register
   SCB->VTOR = (uint32_t)ramVector;
-  // Switching MCU from PS4 to PS2 state(low power state)
-  // In this mode, whatever be the timer clock source value, it will run with 20MHZ only,
-  // as it trims higher clock frequencies to 20MHZ.
-  // To use timer in high power mode, don't call hardware_setup()
-  hardware_setup();
-  DEBUGINIT();
 
   uint16_t i            = 0;
   sl_status_t sl_status = 0;
@@ -114,11 +111,31 @@ void ssi_master_example_init(void)
   for (i = 0; i < BUFFER_SIZE; i++) {
     data_out[i] = (uint8_t)(i + 1);
   }
+  memcpy((uint8_t *)TX_BUF_MEMORY, data_out, BUFFER_SIZE);
   do {
     // Version information of SSI driver
     version = sl_si91x_ssi_get_version();
     DEBUGOUT("SSI version is fetched successfully \n");
     DEBUGOUT("API version is %d.%d.%d\n", version.release, version.major, version.minor);
+    // Clock Config for the SSI driver
+    sl_status = init_clock_configuration_structure(&clock_config);
+    if (sl_status != SL_STATUS_OK) {
+      DEBUGOUT("SSI Clock get Configuration Failed, Error Code : %lu \n", sl_status);
+      break;
+    }
+    DEBUGOUT("SSI Clock get Configuration Success\n");
+    sl_status = sl_si91x_ssi_configure_clock(&clock_config);
+    if (sl_status != SL_STATUS_OK) {
+      DEBUGOUT("SSI Clock Configuration Failed, Error Code : %lu \n", sl_status);
+      break;
+    }
+    DEBUGOUT("SSI Clock Configuration Success \n");
+    // Switching MCU from PS4 to PS2 state(low power state)
+    // In this mode, whatever be the timer clock source value, it will run with 20MHZ only,
+    // as it trims higher clock frequencies to 20MHZ.
+    // To use timer in high power mode, don't call hardware_setup()
+    hardware_setup();
+    DEBUGINIT();
     // Initialize the SSI driver
     sl_status = sl_si91x_ssi_init(config.device_mode, &ssi_driver_handle);
     if (sl_status != SL_STATUS_OK) {
@@ -174,7 +191,10 @@ void ssi_master_example_process_action(void)
       if (begin_transmission == true) {
         // Validation for executing the API only once
         sl_si91x_ssi_set_slave_number(SSI_SLAVE_0);
-        status = sl_si91x_ssi_transfer_data(ssi_driver_handle, data_out, data_in, sizeof(data_out) / division_factor);
+        status = sl_si91x_ssi_transfer_data(ssi_driver_handle,
+                                            (uint8_t *)TX_BUF_MEMORY,
+                                            (uint8_t *)RX_BUF_MEMORY,
+                                            BUFFER_SIZE);
         if (status != SL_STATUS_OK) {
           // If it fails to execute the API, it will not execute rest of the things
           DEBUGOUT("sl_si91x_ssi_transfer_data: Error Code : %lu \n", status);
@@ -186,6 +206,7 @@ void ssi_master_example_process_action(void)
       }
       if (transfer_complete) {
         transfer_complete = false;
+        memcpy(data_in, (uint8_t *)RX_BUF_MEMORY, BUFFER_SIZE);
         DEBUGOUT("SSI transfer completed successfully \n");
         // After comparing the loopback transfer, it compares the data_out and
         // data_in.
@@ -210,7 +231,7 @@ void ssi_master_example_process_action(void)
       if (begin_transmission) {
         // Validation for executing the API only once
         sl_si91x_ssi_set_slave_number(SSI_SLAVE_0);
-        status = sl_si91x_ssi_send_data(ssi_driver_handle, data_out, sizeof(data_out) / division_factor);
+        status = sl_si91x_ssi_send_data(ssi_driver_handle, (uint8_t *)TX_BUF_MEMORY, BUFFER_SIZE / division_factor);
         if (status != SL_STATUS_OK) {
           // If it fails to execute the API, it will not execute rest of the things
           DEBUGOUT("sl_si91x_ssi_send_data: Error Code : %lu \n", status);
@@ -240,7 +261,7 @@ void ssi_master_example_process_action(void)
       if (begin_transmission == true) {
         // Validation for executing the API only once
         sl_si91x_ssi_set_slave_number(SSI_SLAVE_0);
-        status = sl_si91x_ssi_receive_data(ssi_driver_handle, data_in, sizeof(data_in));
+        status = sl_si91x_ssi_receive_data(ssi_driver_handle, (uint8_t *)RX_BUF_MEMORY, BUFFER_SIZE);
         if (status != SL_STATUS_OK) {
           // If it fails to execute the API, it will not execute rest of the things
           DEBUGOUT("sl_si91x_ssi_receive_data: Error Code : %lu \n", status);
@@ -252,6 +273,7 @@ void ssi_master_example_process_action(void)
         //Waiting till the receive is completed
       }
       if (transfer_complete) {
+        memcpy(data_in, (uint8_t *)RX_BUF_MEMORY, BUFFER_SIZE);
         // If DMA is enabled, it will wait untill transfer_complete flag is set.
         transfer_complete = false;
         // At last current mode is set to completed.

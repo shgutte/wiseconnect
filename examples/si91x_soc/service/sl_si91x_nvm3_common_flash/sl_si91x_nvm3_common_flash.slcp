@@ -32,6 +32,8 @@ requires:
 component:
 - id: si91x_debug
   from: wiseconnect3_sdk
+- id: syscalls
+  from: wiseconnect3_sdk
 toolchain_settings: []
 configuration:
 - {name: SL_BOARD_ENABLE_VCOM, value: '1'}

@@ -1,0 +1,14 @@
+id: external_psram_none
+label: No External PSRAM
+package: platform # Does this need a different package?
+description: Component for No External PSRAM on SIWG917 Chips
+category: Platform|Device|PSRAM Types
+quality: internal
+provides:
+  - name: external_psram_none
+  - name: external_psram_implementation
+
+template_contribution:
+    # TODO: Check these values
+    - name: external_psram_present
+      value: 0

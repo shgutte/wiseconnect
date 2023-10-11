@@ -49,6 +49,7 @@
 #include "rsi_rtc.h"
 #include "rsi_chip.h"
 #include "rsi_wisemcu_hardware_setup.h"
+#include "rsi_ps_config.h"
 #endif
 
 /******************************************************

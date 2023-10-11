@@ -67,7 +67,15 @@ typedef struct calib_commands_t {
   uint8_t cmd[MAX_CALIB_COMMAND_LENGTH];
 } calib_commands_t;
 
-enum calib_cmd_types { FREQ_OFFSET, CALIB_WRITE, EVM_OFFSET, EVM_WRITE };
+enum calib_cmd_types {
+  FREQ_OFFSET,
+  CALIB_WRITE,
+  EVM_OFFSET,
+  EVM_WRITE,
+#ifdef CHIP_917
+  DPD_CALIB_WRITE
+#endif
+};
 
 calib_commands_t calib_commands[NO_OF_CALIB_COMMANDS] = { { "sl_freq_offset=" },
                                                           { "sl_calib_write=" },
@@ -95,7 +103,7 @@ const osThreadAttr_t thread_attributes = {
  ******************************************************************************/
 
 #ifndef BUFSIZE
-#define BUFFER_SIZE 80 //Input buffer size
+#define BUFFER_SIZE 200 //Input buffer size
 #endif
 
 /*******************************************************************************
@@ -150,10 +158,8 @@ static const sl_wifi_device_configuration_t sl_wifi_calibration_configuration = 
  ******************************************************/
 static void application_start(void *argument);
 sl_status_t calibration_app(void);
-#ifdef RSI_M4_INTERFACE
 void iostream_usart_init(void);
 void iostream_rx(void);
-#endif
 void display_calib_cmd_usage(void);
 void validate_input_cmd(void);
 
@@ -167,7 +173,6 @@ void app_init(const void *unused)
   osThreadNew((osThreadFunc_t)application_start, NULL, &thread_attributes);
 }
 
-#ifdef RSI_M4_INTERFACE
 void iostream_usart_init()
 {
   /* Prevent buffering of output/input.*/
@@ -176,16 +181,14 @@ void iostream_usart_init()
   setvbuf(stdin, NULL, _IONBF, 0);  /*Set unbuffered mode for stdin (newlib)*/
 #endif
 }
-#endif
 
 static void application_start(void *argument)
 {
   UNUSED_PARAMETER(argument);
   sl_status_t status;
-
-#ifdef RSI_M4_INTERFACE
+  printf("\r\n initializing usart \r\n");
   iostream_usart_init();
-#endif
+  printf("\r\n initialised usart \r\n");
 
   status = sl_net_init(SL_NET_WIFI_CLIENT_INTERFACE, &sl_wifi_calibration_configuration, NULL, NULL);
   if (status != SL_STATUS_OK) {
@@ -198,6 +201,7 @@ static void application_start(void *argument)
   status = sl_si91x_transmit_test_start(TX_TEST_POWER, TX_TEST_RATE, TX_TEST_LENGTH, TX_TEST_MODE, TEST_CHANNEL);
   if (status != SL_STATUS_OK) {
     printf("Transmit test start failed: 0x%lx\r\n", status);
+    return;
   } else {
     printf("Transmit test started\r\n");
   }
@@ -210,7 +214,6 @@ static void application_start(void *argument)
   }
 }
 
-#ifdef RSI_M4_INTERFACE
 void iostream_rx()
 {
   char c               = 0;
@@ -231,7 +234,6 @@ void iostream_rx()
     }
   }
 }
-#endif
 
 void display_calib_cmd_usage()
 {
@@ -348,19 +350,15 @@ sl_status_t calibration_app()
 
     printf("Enter the calibration command:\r\n");
 
-#ifdef RSI_M4_INTERFACE
     while (!end_of_cmd) {
       iostream_rx();
     }
-#endif
-
     end_of_cmd = false;
 
     printf("Command read complete\r\n");
 
     cmd_len = validate_and_set_cmd_index();
     offset  = cmd_len;
-
     if (cmd_valid) {
       switch (cmd_index) {
         case FREQ_OFFSET:

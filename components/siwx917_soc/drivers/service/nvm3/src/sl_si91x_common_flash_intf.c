@@ -16,7 +16,6 @@
  ******************************************************************************/
 #include "sl_si91x_common_flash_intf.h"
 #include "si91x_device.h"
-#include "rsi_board.h"
 #include "rsi_chip.h"
 #include "system_si91x.h"
 #include "sl_si91x_driver.h"

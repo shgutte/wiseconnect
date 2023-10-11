@@ -21,7 +21,6 @@
 #include "rsi_ulpss_clk.h"
 #include "rsi_rom_ulpss_clk.h"
 #include "rsi_rom_timer.h"
-#include "rsi_board.h"
 #include "si91x_device.h"
 #include "em_core.h"
 #include "clock_update.h"

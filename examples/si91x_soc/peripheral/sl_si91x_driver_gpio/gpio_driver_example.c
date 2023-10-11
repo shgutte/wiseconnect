@@ -20,7 +20,7 @@
  * This application demonstrates toggling, pin, group interrupts of GPIO pin
   for HP, ULP and UULP instances.
  ============================================================================**/
-#include "rsi_board.h"
+#include "rsi_debug.h"
 #include "gpio_driver_example.h"
 #include "sl_si91x_driver_gpio.h"
 #include "sl_gpio_board.h"

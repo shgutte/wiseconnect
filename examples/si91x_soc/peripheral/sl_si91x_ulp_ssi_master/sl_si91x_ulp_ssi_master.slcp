@@ -29,6 +29,7 @@ component:
 - {from: wiseconnect3_sdk, id: romdriver_timer}
 - {from: wiseconnect3_sdk, id: systemlevel_time_period}
 - {from: wiseconnect3_sdk, id: si91x_debug}
+- {from: wiseconnect3_sdk, id: syscalls}
 - id: si917_memory_default_config
   from: wiseconnect3_sdk
 - {id: status}

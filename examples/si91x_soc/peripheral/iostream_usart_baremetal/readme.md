@@ -60,13 +60,13 @@ Compile the application in Simplicity Studio using build icon
 ## Executing the Application
 ```c
 Note: 
-On 2.0 boards, To see the prints on vcom console turn on VCOM enable switch and perform the below steps
+On 1.2 boards, To see the prints on vcom console turn off VCOM enable switch and perform the below steps
 
 ```
 - In softwate components, search for iostream and open the configuration window
 ![Figure: Excecuting the application](resources/readme/image501d.png)
 
-- Turn on the vcom enable the button
+- Turn off the vcom enable the button
 ![Figure: Excecuting the application](resources/readme/image501e.png)
 
 1. Connect USART TX pin(GPIO_30) to RX pin, RX pin(GPIO_29) to TX pin pin of UART header to see prints on serial console.

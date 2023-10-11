@@ -22,7 +22,9 @@
 #include "rsi_ccp_user_config.h"
 #include "rsi_chip.h"
 #include "rsi_ps_ram_func.h"
-#include "rsi_board.h"
+#if defined(DEBUG_UART)
+#include "rsi_debug.h"
+#endif // DEBUG_UART
 #include "rsi_rom_table_si91x.h"
 
 /*Note : Enable the WiSe_MCU_MODE if it is WiSeMCU product, and comment off the MCU_MODE define*/

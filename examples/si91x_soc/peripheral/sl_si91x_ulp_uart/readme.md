@@ -27,9 +27,7 @@
 - Then register's user event callback for send ,recevie and transfer complete notification using
   \ref sl_si91x_uart_register_event_callback()
 - After user event callback registered data send and receive can happen through \ref sl_si91x_uart_send_data() and
-  \ref sl_si91x_uart_receive_data() respectively
-- Once the receive data event triggered ,compares both transmitt and receive buffers to confirm the received data if data is
-  same then it prints the Data comparison successful, Loop Back Test Passed on the uart console.
+  \ref sl_si91x_uart_receive_data() respectively.
 
 ## Running Example code
 

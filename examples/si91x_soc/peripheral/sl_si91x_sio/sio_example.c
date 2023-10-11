@@ -21,7 +21,7 @@
  *  in SPI mode and performing loop back test on data sent and received.
  ============================================================================**/
 #include "sio_example.h"
-#include "rsi_board.h"
+#include "rsi_debug.h"
 #include "rsi_chip.h"
 #include "sl_si91x_sio.h"
 #include "string.h"

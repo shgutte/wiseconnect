@@ -50,7 +50,7 @@ component:
   - {from: wiseconnect3_sdk, id: udma_linker_config}
   - {from: wiseconnect3_sdk, id: cmsis_udma}
   - {from: wiseconnect3_sdk, id: si917_memory_default_config}
-  - {from: wiseconnect3_sdk, id: sleeptimer_sysrtc}
+  - {from: wiseconnect3_sdk, id: sleeptimer_si91x}
   - {from: wiseconnect3_sdk, instance: [led0], id: pwm_instance}
   - {from: wiseconnect3_sdk, id: sl_pwm}
   - {from: wiseconnect3_sdk, id: driver_mvp_hal_si91x}

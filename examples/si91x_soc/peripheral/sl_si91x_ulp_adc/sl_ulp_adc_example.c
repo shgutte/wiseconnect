@@ -16,7 +16,7 @@
  ******************************************************************************/
 #include "sl_si91x_adc.h"
 #include "sl_ulp_adc_example.h"
-#include "rsi_board.h"
+#include "rsi_debug.h"
 #include "rsi_chip.h"
 #include "sl_adc_instances.h"
 

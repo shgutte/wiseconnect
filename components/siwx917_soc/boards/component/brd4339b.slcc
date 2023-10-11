@@ -6,22 +6,22 @@
 - category: Platform|Board|Starter Kit
 - quality: production
 - requires:
-  - name: siwg917m111mgtba_dual_flash
-  - name: brd4339b_config
+  - name: siwg917m111mgtba
+#  - name: brd4339b_config
+  - name: hardware_board_mainboard
+  - name: external_flash_8mb
+  - name: external_psram_none
+  - name: rsilib_board
 - provides:
   - name: brd4339b
   - name: hardware_board
   - name: hardware_board_rb
-  - name: si91x_platform
-  - name: multi_slave
-  - name: si91x_b0_chip  
+  - name: hardware_board_supports_multi_slave
   - name: si91x_dual_flash
-  - name: device_si91x
+  - name: si91x_b0_board
+- recommends:
+  - id: brd4002a
 - define:
-  - name: CHIP_917
-    value: '1'
-  - name: CHIP_917B0
-    value: '1'
   - name: SL_BOARD_NAME
     value: '"BRD4339B"'
   - name: SL_BOARD_REV
@@ -32,10 +32,50 @@
     value: '1'
   - name: SI917_RADIO_BOARD_V2
     value: '1'
-  - name: IVT_OFFSET_ADDR
-    value: 0x8012000
-  - name: WKP_RAM_USAGE_LOCATION
-    value: 0x24061EFC
+
+- template_contribution:
+  # Default Memory configuration
+  - name: device_flash_addr
+    value: 134291456 # 0x0801 2000
+    priority: -1
+    condition:
+      - si917_mem_config_1
+  - name: device_flash_size
+    value: 450560 # 0x0006 E000
+    priority: -1
+    condition:
+      - si917_mem_config_1
+  # Medium Memory configuration
+  - name: device_flash_addr
+    value: 134291456 # 0x0801 2000
+    priority: -1
+    condition:
+      - si917_mem_config_2
+  - name: device_flash_size
+    value: 450560 # 0x0006 E000
+    priority: -1
+    condition:
+      - si917_mem_config_2
+  # Advanced Memory configuration
+  - name: device_flash_addr
+    value: 134291456 # 0x0801 2000
+    priority: -1
+    condition:
+      - si917_mem_config_3
+  - name: device_flash_size
+    value: 450560 # 0x0006 E000
+    priority: -1
+    condition:
+      - si917_mem_config_3
+
 - tag:
-  - board:pn:BRD4339
+  - board:pn:BRD4325
   - board:variant:B
+  - board:revision:A00
+  - board:device:siwg917m111mgtba
+  - hardware:has:vcom
+#  - hardware:has:pti
+#  - hardware:has:led:2
+#  - hardware:has:button:2
+#  - hardware:has:exp_header:uart
+#  - hardware:shares:button:led

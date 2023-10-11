@@ -18,7 +18,8 @@
 #include "sl_sleeptimer.h"
 #include "sl_sleeptimer_config.h"
 #include "app.h"
-#include "rsi_board.h"
+#include "sl_si91x_led.h"
+#include "rsi_debug.h"
 #include "sleeptimer.h"
 
 #define TOOGLE_DELAY_MS1_ONESHOT  160000 //sleeptimer1 oneshot timeout in ticks
@@ -46,7 +47,7 @@ static void on_timeout_timer1(sl_sleeptimer_timer_handle_t *handle,
 void sleeptimer_init(void)
 {
   bool is_running = false;
-  RSI_Board_LED_Toggle(1);
+  sl_si91x_led_toggle(SL_SI91x_LED1_PIN);
   //Start a 5000ms oneshot timer
   sl_sleeptimer_start_timer(&timer1,
                             TOOGLE_DELAY_MS1_ONESHOT,
@@ -74,8 +75,8 @@ void sleeptimer_init(void)
 void sleeptimer_process_action(void)
 {
   if (toggle_timeout == true) {
-    //  Toggles the current state of a board '0' number LED.
-    RSI_Board_LED_Toggle(1);
+    //  Toggles the current state of a board '1' number LED.
+    sl_si91x_led_toggle(SL_SI91x_LED1_PIN);
     toggle_timeout = false;
   }
 }

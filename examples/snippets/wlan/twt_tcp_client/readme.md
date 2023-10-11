@@ -170,7 +170,9 @@ The application can be configured to suit your requirements and development envi
     #define SERVER_PORT         5001
     #define NUMBER_OF_PACKETS   1000
     ```
+
 3. In the Project explorer pane, expand as follows **wiseconnect3_sdk_xxx** > **components** > **si91x** > **socket_utility** > **inc** folder and open **sl_si91x_socket_constants.h** file. Configure TCP Keep Alive timeout, in seconds, in sl_si91x_socket_constants.h 
+
     ```c
     #define DEFAULT_TCP_KEEP_ALIVE_TIME 60
     ```    
@@ -178,9 +180,10 @@ The application can be configured to suit your requirements and development envi
 #### 4.1.1 **iTWT Configuration**
 
 There are three TWT configuration APIs. 
-> * sl_wifi_target_wake_time_auto_selection - This API calculates and automatically configures TWT parameters based on the given inputs. Enables or disables a TWT session.
-> * sl_wifi_enable_target_wake_time - Configures user given TWT parameters. Enables a TWT session.
-> * sl_wifi_disable_target_wake_time - Disables a TWT session.
+>
+> - sl_wifi_target_wake_time_auto_selection - This API calculates and automatically configures TWT parameters based on the given inputs. Enables or disables a TWT session.
+> - sl_wifi_enable_target_wake_time - Configures user given TWT parameters. Enables a TWT session.
+> - sl_wifi_disable_target_wake_time - Disables a TWT session.
 
 **sl_wifi_target_wake_time_auto_selection API**
 
@@ -189,6 +192,7 @@ sl_status_t sl_wifi_target_wake_time_auto_selection(sl_wifi_twt_selection_t *twt
 ```
 
 Parameters of this API can be configured in *sl_wifi_twt_selection_t* structure. Below given are the parameter descriptions:
+
 - twt_enable  :  1- Setup ; 0 - teardown
 - tx_latency  :  The period, in milliseconds, within which the given Tx operation needs to be completed. Valid values is either 0 or in the range of [200ms - 6hrs]
 - rx_latency  :  The maximum allowed receive latency, in milliseconds, when an Rx packet is buffered at the AP. If rx_latency is less than <= 1sec (except 0), session creation is not possible. For default configuration, input 0.
@@ -197,6 +201,7 @@ Parameters of this API can be configured in *sl_wifi_twt_selection_t* structure.
 Enable TWT_AUTO_CONFIG MACRO in the app.c file.
 
 Given below are sample configurations.
+
 ```c
 sl_wifi_twt_selection_t default_twt_selection_configuration = {
   .twt_enable                            = 1,
@@ -211,13 +216,17 @@ sl_wifi_twt_selection_t default_twt_selection_configuration = {
   .beacon_wake_up_count_after_sp         = MAX_BEACON_WAKE_UP_AFTER_SP
 };
 ```
+
 Sample API call is given as below : 
+
 ```c
 status                            = sl_wifi_target_wake_time_auto_selection(&performance_profile.twt_selection);
 ```
+
 There are default macro settings that are used for calculating the iTWT parameters. 
 
 Sample Macro Settings : 
+
 ```c
 #define DEVICE_AVG_THROUGHPUT                20000 \\ KBPS
 #define ESTIMATE_EXTRA_WAKE_DURATION_PERCENT 0 \\ in percentage
@@ -228,6 +237,7 @@ Sample Macro Settings :
 #define MAX_BEACON_WAKE_UP_AFTER_SP \
   2 // The number of beacons after the service period completion for which the module wakes up and listens for any pending RX.
 ```
+
 Note :  WLAN Keep Alive should not be disabled while using this API.
 
 **sl_wifi_enable_target_wake_time API**
@@ -263,6 +273,7 @@ sl_wifi_twt_request_t default_twt_setup_configuration = {
   .negotiation_type        = 0,
 };
 ```
+
 These parameters with their limits are defined as below.
 
 - **twt_enable**:  1- Setup ; 0 - teardown
@@ -284,29 +295,35 @@ These parameters with their limits are defined as below.
 - **twt_retry_limit**: This is the maximum number of retries allowed, if the TWT response frame is not received for the sent TWT request frame. Allowed values are 0 - 15.
 - **twt_retry_interval**: The interval, in seconds, between two twt request retries. Allowed values are 5 - 255.
 - **req_type**: This is the TWT request type.
-> * 0 - Request TWT
-> * 1 - Suggest TWT
-> * 2 - Demand TWT
+>
+> - 0 - Request TWT
+> - 1 - Suggest TWT
+> - 2 - Demand TWT
 
 Below is the sample TWT setup API call.
+
 ```c
 status                          = sl_wifi_enable_target_wake_time(&twt_request);
 ```
 
 > Note:
-> * TWT Wake duration depends on the wake duration unit. For example, for the above configuration, wake duration value is  (0xE0 * 256 = 57.3 msec).
-> * TWT Wake interval is calculated as mantissa *2 ^ exp.  For example, for the above configuration, wake interval value is (0x1B00 * 2^13  = 55.2 sec).
-> * Configuring TWT Wake interval beyond 1 min might lead to disconnections from the AP.
-> * There might be disconnections while using TWT with wake interval > 4sec when connected to an AP with non-zero GTK key renewal time.
-> * Keep Alive timeout should be non-zero when negotiated TWT setup is **unannounced**, otherwise there might be disconnections.
+>
+> - TWT Wake duration depends on the wake duration unit. For example, for the above configuration, wake duration value is  (0xE0 * 256 = 57.3 msec).
+> - TWT Wake interval is calculated as mantissa *2 ^ exp.  For example, for the above configuration, wake interval value is (0x1B00* 2^13  = 55.2 sec).
+> - Configuring TWT Wake interval beyond 1 min might lead to disconnections from the AP.
+> - There might be disconnections while using TWT with wake interval > 4sec when connected to an AP with non-zero GTK key renewal time.
+> - Keep Alive timeout should be non-zero when negotiated TWT setup is **unannounced**, otherwise there might be disconnections.
 
 **iTWT Teardown Configuration**
 
 To teardown TWT session use the matching TWT API:
+
 1. For TWT Auto Selection API :
+
 ```c
 status = sl_wifi_target_wake_time_auto_selection(twt_selection);
 ```
+
 Set twt_enable parameter to 0 in the twt_selection structure. The other parameters are ignored. 
 
 2. For user given TWT parameters API call the API as follows:
@@ -314,13 +331,15 @@ Set twt_enable parameter to 0 in the twt_selection structure. The other paramete
 ```c
 status = sl_wifi_disable_target_wake_time(&twt_req);
 ```
-* twt_req->twt_enable should be set to '0' for teardown operation.
 
-* twt_req->twt_flow_id should be configured as described below: 
-> * This paramater value range is 0-7. It should be same as setup flow ID, other wise error will be triggered.
-> * 0xFF - To teardown all active sessions. This value is valid only in case of teardown command.
+- twt_req->twt_enable should be set to '0' for teardown operation.
 
-* Rest of the parameters in the structure are ignored for a Teardown operation. 
+- twt_req->twt_flow_id should be configured as described below: 
+>
+> - This paramater value range is 0-7. It should be same as setup flow ID, other wise error will be triggered.
+> - 0xFF - To teardown all active sessions. This value is valid only in case of teardown command.
+
+- Rest of the parameters in the structure are ignored for a Teardown operation. 
 
 > Note : For setting a new TWT session, the existing TWT session must be teared down.
 

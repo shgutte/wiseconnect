@@ -16,7 +16,7 @@
  ******************************************************************************/
 #include "sl_si91x_peripheral_i2c.h"
 #include "i2c_follower_example.h"
-#include "rsi_board.h"
+#include "rsi_debug.h"
 #include "rsi_rom_egpio.h"
 #include "rsi_power_save.h"
 #include "rsi_rom_clks.h"

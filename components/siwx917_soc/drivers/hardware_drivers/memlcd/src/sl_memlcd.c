@@ -33,7 +33,6 @@
 #include "sl_sleeptimer.h"
 #include "RTE_Device_917.h"
 #include "rsi_chip.h"
-#include "rsi_board.h"
 #include "sl_memlcd_spi.h"
 #include "sl_si91x_ulp_timer.h"
 #include "rsi_timers.h"

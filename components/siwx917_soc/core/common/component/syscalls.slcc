@@ -1,0 +1,22 @@
+id: syscalls
+package: wiseconnect3_sdk
+description: >
+  system calls supoort for si91x.
+label: syscalls support for si91x
+category: Platform|Board|Radio Board
+quality: production
+component_root_path: "components/siwx917_soc/core/common"
+source:
+  - path: "src/syscalls.c"
+    unless: [no_syscalls]
+include:
+  - path: inc
+    file_list:
+      - path: syscalls.h
+        unless: [no_syscalls]
+provides:
+  - name: syscalls
+  - name: no_syscalls
+    condition: [sl_usart_iostream]
+requires:
+  - name: si91x_debug

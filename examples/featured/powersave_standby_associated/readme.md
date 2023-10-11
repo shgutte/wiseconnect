@@ -105,7 +105,13 @@ The application can be configured to suit your requirements and development envi
       #define NUMBER_OF_PACKETS   1000
       ```
 
-## Test the application
+```c
+#define SERVER_IP_ADDRESS   "192.168.0.198"
+#define SERVER_PORT         5656
+#define NUMBER_OF_PACKETS   1000
+```
+ - User can configure monitor interval through sl_wifi_set_performance_profile() API. The default interval is set to 50 
+   millisecs if montior_interval is set to 0. This is only valid when performance profile is set to ASSOCIATED_POWER_SAVE_LOW_LATENCY
 
 Refer to the instructions [here](https://docs.silabs.com/wiseconnect/latest/wiseconnect-getting-started/) to:
 

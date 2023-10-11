@@ -21,7 +21,7 @@
 #include <string.h>
 #include "ff.h"
 #include "diskio.h"
-#include "rsi_board.h"
+#include "rsi_debug.h"
 #include "rsi_chip.h"
 
 /* Private typedef ------------------------------------------------------------------------------------------------*/

@@ -11,31 +11,21 @@ provides:
 - name: brd4325g
 - name: hardware_board
 - name: hardware_board_rb
-- name: device_has_psram
-- name: device_has_external_psram
 - name: si91x_platform
 - name: multi_slave
-- name: device_needs_ram_execution
-- name: si91x_b0_chip
+- name: si91x_b0_board
 - name: si91x_common_flash
-- name: device_si91x
 include:
 - path: inc
 - path: config/brd4325g
-- path: config/brd4325g/config
 define:
 - name: SI917_RADIO_BOARD
 - {"name":"CHIP_917","value":1}
 - {"name":"CHIP_917B0","value":1}
 - {"name":"SL_BOARD_NAME","value":"\"BRD4325G\""}
 - {"name":"SL_BOARD_REV","value":"\"A01\""}
-- {"name":"DEBUG_UART","value":1}
 - {"name":"SI917_RADIO_BOARD","value":1}
-- {"name":"FLASH_BASED_EXECUTION_ENABLE","value":1}
-- {"name":"ENABLE_DEBUG_MODULE","value":1}
 - {"name":"COMMON_FLASH_EN","value":1}
-- {"name":"IVT_OFFSET_ADDR","value":136060928}
-- {"name":"WKP_RAM_USAGE_LOCATION","value":604380924}
 requires:
 - name: siwg917m111mgtba
 - name: brd4325g_config

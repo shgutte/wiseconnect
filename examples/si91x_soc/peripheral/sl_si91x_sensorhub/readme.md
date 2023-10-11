@@ -11,6 +11,7 @@
 - The application runs in PS4 state (Active mode) before switching to Power save modes.
 - After switching to PS2 state, In PS2 state the sensor data will be sampled and collected.
 - Sensor Hub relies on FreeRTOS using CMSIS RTOS version 2 wrapper.
+- ADXL345 sensor's maximum SPI clock speed is 5MHz.
 
 ## Sensor Hub Framework
 ![Figure: Architecture](resources/readme/image508b.png)
@@ -88,12 +89,6 @@ SL_SENSORHUB_POWERSAVE=1
 //Enabling this macro will move the application from PS4 state to PS2 state. In PS2 state the sensor data will be sampled and collected.
 ```
 
-- #### Configure the sleep time by using the below macro in **sensor_hub.c** file
-
-```C
-#define SL_SH_EXPECTED_SLEEP_TIME 70 //If the number of Ideal task ticks exceeds this value, the system is allowed to sleep.
-```
-
 - #### To configure the power states to PS4 sleep or PS2 Sleep, please update the defines in ***\gecko_sdk_4.3.1\util\third_party\freertos\kernel\include\FreeRTOS.h** file as below:
 ```C
 #ifndef configUSE_TICKLESS_IDLE
@@ -102,6 +97,12 @@ SL_SENSORHUB_POWERSAVE=1
 
 #ifndef configPRE_SLEEP_PROCESSING
 #define configPRE_SLEEP_PROCESSING(x) sli_si91x_sleep_wakeup(x)               // Here x is idle time, 
+#endif
+
+// Configure the sleep time by using the below macro. 
+// If the number of Ideal task ticks exceeds this value, the system is allowed to sleep.
+#ifndef configEXPECTED_IDLE_TIME_BEFORE_SLEEP
+    #define configEXPECTED_IDLE_TIME_BEFORE_SLEEP    70
 #endif
 ```
   ***Note***: 

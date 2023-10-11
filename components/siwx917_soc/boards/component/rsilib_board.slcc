@@ -8,8 +8,6 @@ quality: production
 component_root_path: "components/siwx917_soc/boards"
 source:
   - path: "src/rsi_board.c"
-  - path: "src/syscalls.c"
-    unless: [no_syscalls]
 include:
   - path: "inc"
     file_list:
@@ -18,13 +16,6 @@ include:
 provides:
   - name: rsilib_board
   - name: wiseconnect_platform_soc_mode
-  - name: no_syscalls
-    condition: [sl_usart_iostream]
-requires:
-  - name: rsilib_chip
-  - name: freertos_config
-    condition:
-      - wiseconnect_sapi_freertos
 define:
   - name: SRAM_BASE
     value: "0x0cUL"

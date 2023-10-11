@@ -22,8 +22,6 @@ include:
       - path: app.h
 define:
   - name: RSI_DEBUG_PRINTS
-component:
-- {from: wiseconnect3_sdk, id: si91x_debug}
 requires:
 - name: sl_system
 - name: network_manager

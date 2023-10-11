@@ -9,9 +9,9 @@ component_root_path: "components/siwx917_soc/drivers/service/sleeptimer"
 requires:
   - name: sleeptimer_core
   - name: sleeptimer_sysrtc
-    condition: [si91x_b0_chip]
+    condition: [si91x_b0_board]
   - name: sleeptimer_ulp
-    condition: [si91x_a0_chip]
+    condition: [si91x_a0_board]
 provides:
   - name: sleeptimer_si91x
   - name: sleeptimer

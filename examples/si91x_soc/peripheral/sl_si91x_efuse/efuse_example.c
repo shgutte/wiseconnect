@@ -15,7 +15,7 @@
 *
 ******************************************************************************/
 #include "efuse_example.h"
-#include "rsi_board.h"
+#include "rsi_debug.h"
 #include "rsi_chip.h"
 #include "sl_si91x_efuse.h"
 

@@ -31,7 +31,7 @@
 #include "sl_memlcd_spi.h"
 #include "SPI.h"
 #include "rsi_ccp_common.h"
-#include "rsi_board.h"
+#include "rsi_debug.h"
 #include "rsi_rom_clks.h"
 #include "Driver_Common.h"
 #include "Driver_SPI.h"

@@ -25,6 +25,8 @@
 #include "rsi_ccp_user_config.h"
 #include "rsi_chip.h"
 #include "rsi_board.h"
+#include "sl_si91x_led.h"
+#include "rsi_debug.h"
 
 #define RSI_BLINK_RATE (10) // 10 ticks per second
 
@@ -37,7 +39,7 @@
 void SysTick_Handler(void)
 {
   //  Toggles LED0 state
-  RSI_Board_LED_Toggle(0);
+  sl_si91x_led_toggle(SL_SI91x_LED0_PIN);
 }
 
 /*==============================================*/
@@ -57,7 +59,7 @@ int main(void)
   RSI_Board_Init();
 
   // Sets the state of LED0 to off(false).
-  RSI_Board_LED_Set(0, false);
+  sl_si91x_led_clear(SL_SI91x_LED0_PIN);
 
   // Enable SysTick Timer
   SysTick_Config(SystemCoreClock / RSI_BLINK_RATE);

@@ -21,6 +21,7 @@ component:
 - {from: wiseconnect3_sdk, id: rsilib_clock_update}
 - {from: wiseconnect3_sdk, id: romdriver_egpio}
 - {from: wiseconnect3_sdk, id: si91x_debug}
+- {from: wiseconnect3_sdk, id: syscalls}
 - id: sl_system
 - instance: [timer0]
   from: wiseconnect3_sdk
@@ -32,6 +33,9 @@ component:
 - id: romdriver_timer
   from: wiseconnect3_sdk
 - id: si917_memory_default_config
+  from: wiseconnect3_sdk
+- id: sl_si91x_led_917
+  instance: [led0]
   from: wiseconnect3_sdk
 - {from: wiseconnect3_sdk, id: systemlevel_wwdt}
 - {from: wiseconnect3_sdk, id: systemlevel_processor_sensor}

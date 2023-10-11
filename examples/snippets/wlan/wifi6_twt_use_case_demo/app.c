@@ -45,7 +45,7 @@
 #include "sl_net_wifi_types.h"
 #include "sl_si91x_socket_utility.h"
 #include "sl_si91x_socket_constants.h"
-#include "rsi_board.h"
+#include "rsi_debug.h"
 #include "sl_si91x_driver.h"
 #include "sl_si91x_socket.h"
 
@@ -53,6 +53,7 @@
 #include "rsi_power_save.h"
 #include "rsi_wisemcu_hardware_setup.h"
 #include "rsi_m4.h"
+#include "rsi_ps_config.h"
 #endif
 /******************************************************
  *                      Macros
@@ -88,26 +89,6 @@
 #define MAX_TX_AND_RX_LATENCY_LIMIT          22118400 // 6hrs in milli seconds
 #define MAX_BEACON_WAKE_UP_AFTER_SP \
   2 // The number of beacons after the service period completion for which the module wakes up and listens for any pending RX.
-
-#ifdef RSI_M4_INTERFACE
-#ifdef COMMON_FLASH_EN
-#ifdef CHIP_917B0
-#define IVT_OFFSET_ADDR 0x81C2000 /*<!Application IVT location VTOR offset>          B0 common flash Board*/
-#else
-#define IVT_OFFSET_ADDR 0x8212000 /*<!Application IVT location VTOR offset>          A0 Common flash Board*/
-#endif
-#else
-#define IVT_OFFSET_ADDR \
-  0x8012000 /*<!Application IVT location VTOR offset>          Dual Flash  (both A0 and B0) Board*/
-#endif
-#ifdef CHIP_917B0
-#define WKP_RAM_USAGE_LOCATION \
-  0x24061EFC /*<!Bootloader RAM usage location upon wake up  */ // B0 Boards (common flash & Dual flash)
-#else
-#define WKP_RAM_USAGE_LOCATION \
-  0x24061000 /*<!Bootloader RAM usage location upon wake up  */ // A0 Boards (common flash & Dual flash)
-#endif
-#endif
 
 #define WIRELESS_WAKEUP_IRQHandler           NPSS_TO_MCU_WIRELESS_INTR_IRQn
 #define WIRELESS_WAKEUP_IRQHandler_Periority 8

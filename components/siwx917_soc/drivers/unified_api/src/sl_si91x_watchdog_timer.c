@@ -29,7 +29,6 @@
  ******************************************************************************/
 #include "sl_si91x_watchdog_timer.h"
 #include "sl_si91x_watchdog_timer_config.h"
-#include "rsi_board.h"
 #include "rsi_chip.h"
 #include "rsi_rtc.h"
 /*******************************************************************************

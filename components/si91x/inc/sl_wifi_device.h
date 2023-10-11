@@ -942,10 +942,12 @@ typedef struct {
 
 /// Wi-Fi performance profile
 typedef struct {
-  sl_performance_profile_t profile;      ///< Performance profile.
-  uint8_t dtim_aligned_type;             ///< Set DTIM alignment required. @ref SI91X_DTIM_ALIGNMENT_TYPES.
-  uint8_t num_of_dtim_skip;              ///< Default value to be used is 0.
-  uint16_t listen_interval;              ///< Listen interval.
+  sl_performance_profile_t profile; ///< Performance profile.
+  uint8_t dtim_aligned_type;        ///< Set DTIM alignment required. @ref SI91X_DTIM_ALIGNMENT_TYPES.
+  uint8_t num_of_dtim_skip;         ///< Default value to be used is 0.
+  uint16_t listen_interval;         ///< Listen interval.
+  uint16_t
+    monitor_interval; ///< Monitor interval will be in millisecs, Default interval 50 milli secs is used if monitor_interval is set to 0. This is only valid when performance profile is set to ASSOCIATED_POWER_SAVE_LOW_LATENCY
   sl_wifi_twt_request_t twt_request;     ///< twt request.
   sl_wifi_twt_selection_t twt_selection; ///< twt selection request
 } sl_wifi_performance_profile_t;

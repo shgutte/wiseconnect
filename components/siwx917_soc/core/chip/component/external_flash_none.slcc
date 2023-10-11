@@ -1,0 +1,13 @@
+id: external_flash_none
+label: No External Flash
+package: platform # Does this need a different package?
+description: Component for No External Flash on SIWG917 Chips
+category: Platform|Device|Flash Types
+quality: internal
+provides:
+  - name: external_flash_none
+  - name: external_flash_implementation
+
+template_contribution:
+    - name: external_flash_present
+      value: 0

@@ -24,7 +24,7 @@
  ===================================================================================*/
 #include "sl_common.h"
 #include "sl_si91x_dma.h"
-#include "rsi_board.h"
+#include "rsi_debug.h"
 #include "sl_si91x_dma_inst_config.h"
 #include "dma_example.h"
 

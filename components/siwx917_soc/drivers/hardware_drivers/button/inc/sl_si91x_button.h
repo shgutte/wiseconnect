@@ -19,7 +19,7 @@
 #define SL_SI91X_BUTTON_H
 
 #include "sl_si91x_button_config.h"
-#include "rsi_board.h"
+#include <stdint.h>
 
 #ifdef __cplusplus
 extern "C" {

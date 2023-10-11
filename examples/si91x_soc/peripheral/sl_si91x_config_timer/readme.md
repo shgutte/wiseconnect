@@ -92,9 +92,13 @@
 #define CT_COUNTER_MODE_USECASE       1      -  To run normal counter code
 ```
 - Also enable CT-configuration & OCU-configuration buttons on UC for using PWM mode usecase.
-- Configure the following macros in config_timer_example.c file to change match value for counter Mode usecase and update/modify following macros if required.
+- Configure the following macros in config_timer_example.c file to change match value for counter-mode usecase, update/modify following macros if required.
 ```C
 #define CT_MATCH_VALUE             16000  -  For 1ms timer timeout
+```
+- Change following macros in config_timer_example.c file to change counter-number used for counter-mode usecase, by default application is using counter-0 to use counter-1 change it to 'SL_COUNTER_1'
+```C
+#define CT_COUNTER_USED            SL_COUNTER_0  -  For using counter-0
 ```
 
 ### Macros for CT Configurations:

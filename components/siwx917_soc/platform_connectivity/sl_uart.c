@@ -10,7 +10,6 @@
 #include "sl_board_configuration.h"
 #include "sl_constants.h"
 #include "USART.h"
-//#include "rsi_board.h"
 #include "sli_siwx917_soc.h"
 #include <stddef.h>
 #include <string.h>

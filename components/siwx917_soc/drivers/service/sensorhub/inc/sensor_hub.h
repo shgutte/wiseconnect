@@ -41,7 +41,7 @@
 #include "sl_status.h"
 #include "sensors_config.h"
 #include "sensorhub_error_codes.h"
-/***************************************************************************/ /**
+/**************************************************************************/ /**
  * @addtogroup SENSOR-HUB Sensor HUB APIs
  * @ingroup SL_SI91X_DRIVER_APIS
  * @{
@@ -50,19 +50,20 @@
 /*******************************************************************************
  ********************* Sensor_HUB Defines / Macros  ****************************
  ******************************************************************************/
-#define SL_SH_SENSOR_TASK_STACK_SIZE     (512 * 2) ///< Sensor task stack size
-#define SL_SH_EM_TASK_STACK_SIZE         (512 * 2) ///< EM task stack size
-#define SL_SH_POWER_SAVE_TASK_STACK_SIZE (512 * 2) ///< Power task stack size
-#define SL_EM_TASK_RUN_TICKS             100       ///< Event task Messageque maximum waiting time
+#define SL_SH_SENSOR_TASK_STACK_SIZE     (512 * 2)     ///< Sensor task stack size
+#define SL_SH_EM_TASK_STACK_SIZE         (512 * 2)     ///< EM task stack size
+#define SL_SH_POWER_SAVE_TASK_STACK_SIZE (512 * 2)     ///< Power task stack size
+#define SL_EM_TASK_RUN_TICKS             osWaitForever ///< Event task Messageque maximum waiting time
+#define MAP_TABLE_SIZE                   10            ///< Size of the interrupt MAP table
 
 /*******************************************************************************
  ***********************  GPIO IRQ Defines / Macros  ***************************
  ******************************************************************************/
-#define NPSS_GPIO_IRQHandler IRQ021_Handler             ///< UULP gpio IRQ handler
-#define NPSS_GPIO_NVIC       NPSS_TO_MCU_GPIO_INTR_IRQn ///< UULP gpio IRQ Number
+#define NPSS_GPIO_IRQHandler IRQ021_Handler             ///< NPSS gpio IRQ handler
+#define NPSS_GPIO_NVIC       NPSS_TO_MCU_GPIO_INTR_IRQn ///< NPSS gpio IRQ Number
 
 /*******************************************************************************
- ************************* Alarm Defines / Macros  *****************************
+ ******************** Wake UP Alarm Defines / Macros  **************************
  ******************************************************************************/
 #define SL_ALARM_PERIODIC_TIME         10   ///< Periodic alarm configuration in milliseconds
 #define RC_TRIGGER_TIME                5    ///< RC clock trigger time
@@ -100,7 +101,9 @@ typedef enum {
   SL_SH_NO_MODE,
 } sl_sensor_mode_t;
 
-///@brief Enumeration for Sensors HUB Events
+/*******************************************************************************
+///@brief Enumeration for Sensors HUB Callback Events
+ ******************************************************************************/
 typedef enum {
   SL_SENSOR_CREATION_FAILED,
   SL_SENSOR_STARTED,
@@ -113,7 +116,9 @@ typedef enum {
   SL_SENSOR_DELETE_FAILED,
 } sl_sensorhub_event_t;
 
+/*******************************************************************************
 ///@brief Enumeration for GPIO Interrupt Configurations.
+ ******************************************************************************/
 typedef enum {
   SL_SH_RISE_EDGE, ///< Interrupt at GPIO rise edge
   SL_SH_FALL_EDGE, ///< Interrupt at GPIO fall edge
@@ -121,28 +126,43 @@ typedef enum {
   SL_SH_HIGH_LEVEL ///< Interrupt at GPIO high level
 } sl_gpio_intr_type_t;
 
+/*******************************************************************************
 ///@brief Enumeration for Sensor HUB data delivery mode.
+ ******************************************************************************/
 typedef enum {
   SL_SH_THRESHOLD,      ///< Threshold value for sensor data delivery
   SL_SH_TIMEOUT,        ///< Timeout value for sensor data delivery
   SL_SH_NUM_OF_SAMPLES, ///< Number of samples for sensor data delivery
-  SL_SH_NO_DATA
+  SL_SH_NO_DATA_MODE    ///<
 } sl_data_deliver_mode_t;
 
+/*******************************************************************************
 ///@brief Enumeration for Sensors Status.
-typedef enum { SL_SENSOR_INVALID, SL_SENSOR_VALID, SL_SENSOR_START, SL_SENSOR_STOP } sl_sensor_status_t;
+ ******************************************************************************/
+typedef enum {
+  SL_SENSOR_INVALID, ///< Sensor is Invalid
+  SL_SENSOR_VALID,   ///< Sensor is Valid
+  SL_SENSOR_START,   ///< Sensor is Started
+  SL_SENSOR_STOP     ///< Sensor is Stoped
+} sl_sensor_status_t;
 
+/*******************************************************************************
 ///@brief Enumeration for Sensor HUB Power states.
+ ******************************************************************************/
 typedef enum { SL_SH_PS4TOPS2, SL_SH_PS2TOPS4, SL_SH_SLEEP_WAKEUP, SL_SH_DUMMY } sl_power_state_t;
 
 /*******************************************************************************
  *************************** Structures for sensor HUB  ************************
  ******************************************************************************/
+
+/*******************************************************************************
+///@brief Used to Monitor the bus errors in the Sensor HUB
+ ******************************************************************************/
 typedef struct {
-  bool i2c;
-  bool spi;
-  bool adc;
-  bool sensor_global_status;
+  bool i2c;                  ///< I2C bus error status
+  bool spi;                  ///< SPI bus error status
+  bool adc;                  ///< ADC bus error status
+  bool sensor_global_status; ///< All buses error status
 } sl_sensorhub_errors_t;
 
 /*******************************************************************************
@@ -158,43 +178,42 @@ typedef struct {
 } sl_data_deliver_type_t;
 
 /*******************************************************************************
-///@brief Sensor Configurations
+///@brief Storing the Sensor Configurations from the User
  ******************************************************************************/
 typedef struct {
-  char *sensor_name;        ///< Name of the sensor
-  sl_sensor_id_t sensor_id; ///< Sensor id
+  char *sensor_name;              ///< Name of the sensor
+  int16_t sensor_intr_type;       ///< GPIO Interrupt Configurations.
+  uint16_t sampling_intr_req_pin; ///< GPIO pin for sampling the sensor data
+  uint32_t sampling_interval;     ///< Sensor data sampling interval
   union {
     uint8_t address; ///< Address of sensor
     uint8_t channel; ///< Channel for adc
   };
+  sl_sensor_id_t sensor_id;                ///< Sensor id
   sl_sensor_bus_t sensor_bus;              ///< Protocol for the sensor(spi/i2c)
   sl_sensor_mode_t sensor_mode;            ///< Sensor Mode(Enumeration)
   sl_sensor_range_t sensor_range;          ///< Range of sensor
-  uint32_t sampling_interval;              ///< Sensor data sampling interval
-  uint16_t sampling_intr_req_pin;          ///< Gpio pin for sampling the sensor data
-  int16_t sensor_intr_type;                ///< Gpio Interrupt Configurations.
   sl_data_deliver_type_t data_deliver;     ///< Data delivery mode for the sensor
   sl_sensor_data_group_t *sensor_data_ptr; ///< Sensor data storage structure
 } sl_sensor_info_t;
 
 /*******************************************************************************
-///@brief Sensors Statuses
+///@brief Monitoring the Sensors Status.
  ******************************************************************************/
 typedef struct {
-  sl_sensor_id_t sensor_id;           ///< Sensor id
-  sl_sensor_status_t sensor_status;   ///< Sensor status
-  sl_sensor_info_t *config_st;        ///< Sensor configuration structure
-  TimerHandle_t timer_handle;         ///< RTOS timer handle
-  sl_sensor_impl_type_t *sensor_impl; ///< Sensor implementation structure
   void *sensor_handle;                ///< Sensor handle
   void *ctrl_handle;                  ///< Sensor control handle
   uint8_t sensor_event_bit;           ///< Sensor event bits
-  uint16_t max_samples;               ///< Maximum samples for the sensors
   uint8_t event_ack;                  ///< Sensor event acknowledge
+  uint16_t max_samples;               ///< Maximum samples for the sensors
+  sl_sensor_info_t *config_st;        ///< Sensor configuration structure
+  sl_sensor_impl_type_t *sensor_impl; ///< Sensor implementation structure
+  sl_sensor_status_t sensor_status;   ///< Sensor status
+  TimerHandle_t timer_handle;         ///< RTOS timer handle
 } sl_sensor_handle_t;
 
 /*******************************************************************************
-///@brief sensors list for Polling mode
+///@brief Maintaining Sensors list for Polling mode
  ******************************************************************************/
 typedef struct {
   uint8_t sensor_index;                                 ///< Sensor index
@@ -202,74 +221,87 @@ typedef struct {
 } sl_sensor_list_t;
 
 /*******************************************************************************
-///@brief sensors interrupt mode
+///@brief Used to keep track of the interrupt number and interrupt sensor index
  ******************************************************************************/
 typedef struct {
-  uint8_t sensor_list_index; ///< sensor index
-  uint16_t intr;             ///<
+  uint8_t sensor_list_index; ///< Interrupt mode sensor index
+  uint16_t intr;             ///< Interrupt GPIO Pin
 } sl_intr_list_t;
 
 /*******************************************************************************
-///@brief sensors interrupt mode MAP TABLE
+///@brief Sensors interrupt mode MAP TABLE
  ******************************************************************************/
 typedef struct {
-  uint8_t map_index;            ///< Sensor map index
-  sl_intr_list_t map_table[10]; ///<
+  uint8_t map_index;                        ///< Map Table Index
+  sl_intr_list_t map_table[MAP_TABLE_SIZE]; ///< Sensor list MAP Table
 } sl_intr_list_map_t;
 
 /*******************************************************************************
-///@brief sensor events
+///@brief Sensor events info structure
  ******************************************************************************/
 typedef struct {
-  sl_sensor_id_t sensor_id;   ///<
-  sl_sensorhub_event_t event; ///<
-  void *em_sensor_data;       ///<
+  void *em_sensor_data;       ///< String the sensor data address
+  sl_sensor_id_t sensor_id;   ///< Sensor id information
+  sl_sensorhub_event_t event; ///< Sensors HUB Callback Events
 } sl_em_event_t;
 
+/*******************************************************************************
 ///@brief Event callback configuration structure
+ ******************************************************************************/
 typedef struct {
   sl_sensor_signalEvent_t cb_event; ///< Event callback
   sl_sensor_id_t *cb_event_ack;     ///< Event callback acknowledge
 } sl_sensor_cb_info_t;
 
+/*******************************************************************************
 ///@brief I2C bus interface configuration structure
+ ******************************************************************************/
 typedef struct {
-  uint16_t i2c_bus_speed;   ///< I2C bus speed
-  uint32_t i2c_slave_addr;  ///< I2C slave address
   uint8_t i2c_id;           ///< I2C instances(I2C0/1/2)
   uint8_t i2c_power_state;  ///< I2C power state
   uint8_t i2c_control_mode; ///< I2C bus control configuration
+  uint16_t i2c_bus_speed;   ///< I2C bus speed
+  uint32_t i2c_slave_addr;  ///< I2C slave address
 } sl_i2c_config_t;
 
+/*******************************************************************************
 ///@brief SPI bus interface configuration structure
+ ******************************************************************************/
 typedef struct {
   uint8_t spi_bit_width;     ///< SPI bus width
-  uint32_t spi_baud;         ///< SPI bus data transmission speed(clock)
   uint8_t spi_mode;          ///< SPI Mode(Master/Slave)
-  uint64_t spi_control_mode; ///< SPI bus phase and polarity
-  uint64_t spi_cs_mode;      ///< SPI control slave select mode
   uint8_t spi_power_state;   ///< SPI bus power mode
   uint8_t spi_cs_number;     ///< Chip select number
   uint8_t spi_cs_misc_mode;  ///< SPI miscellaneous for chip select
   uint8_t spi_sec_sel_sig;   ///< SPI slave select signal definitions
+  uint32_t spi_baud;         ///< SPI bus data transmission speed(clock)
+  uint64_t spi_control_mode; ///< SPI bus phase and polarity
+  uint64_t spi_cs_mode;      ///< SPI control slave select mode
 } sl_spi_config_t;
 
+/*******************************************************************************
 ///@brief ADC bus interface configuration structure
+ ******************************************************************************/
 typedef struct sl_adc_config {
-  sl_adc_clock_config_t adc_clk_cfg;  ///< adc clock configuration
-  sl_adc_config_t adc_cfg;            ///< adc configuration
   float vref;                         ///< reference voltage
   void (*adc_cb)(uint8_t, uint8_t);   ///< adc user callback
   uint8_t channel_no;                 ///< adc channel number
   sl_adc_channel_config_t adc_ch_cfg; ///< adc channel configuration
+  sl_adc_clock_config_t adc_clk_cfg;  ///< adc clock configuration
+  sl_adc_config_t adc_cfg;            ///< adc configuration
 } sl_adc_cfg_t;
 
+/*******************************************************************************
+///@brief GPIO interface configuration structure
+ ******************************************************************************/
 typedef struct {
   uint8_t c;
   uint32_t d;
 } sl_gpio_config_t;
 
+/*******************************************************************************
 ///@brief Sensor HUB bus interface configuration structure
+ ******************************************************************************/
 typedef struct {
   sl_i2c_config_t i2c_config;   ///< I2C configuration structure
   sl_spi_config_t spi_config;   ///< SPI configuration structure
@@ -522,7 +554,7 @@ int32_t sli_si91x_i2c_sensors_scan(uint16_t address);
 * @param[in] sensor_id -   Id of sensor
 * @param[out] -   Return the Sensor ID from the implementation structure
 * @return if successful, returns the Sensor implementation structure
-*         else it will return error code.
+*         else it will return an error code.
 *
 ******************************************************************************/
 sl_sensor_impl_type_t *sli_si91x_get_sensor_implementation(int32_t sensor_id);
@@ -603,7 +635,7 @@ sl_sensor_info_t *sli_si91x_get_sensor_info(sl_sensor_id_t sensor_id);
 * @param[in] cb_event  -   Pointer to the callback event
 * @param[in] cb_ack    -   Pointer to callback acknowledge to the application
 * @param[out] -   None
-* @return     -   If succesfull returns SL_STATUS_OK,If fail returns error code
+* @return     -   If successful returns SL_STATUS_OK,If fail returns error code
 *
 ******************************************************************************/
 sl_status_t sl_si91x_sensorhub_notify_cb_register(sl_sensor_signalEvent_t cb_event, sl_sensor_id_t *cb_ack);
@@ -633,7 +665,7 @@ void sl_si91x_sensors_timer_cb(TimerHandle_t xTimer);
 * @param[in] gpio_pin   -   NPSS gpio pin number
 * @param[in]    -   NPSS gpio interrupt type
 * @param[out]   -   None
-* @return       -   If succesfull returns SL_STATUS_OK,If fail returns error code
+* @return       -   If successful returns SL_STATUS_OK,If fail returns error code
 *
 ******************************************************************************/
 sl_status_t sl_si91x_gpio_interrupt_config(uint16_t gpio_pin, sl_gpio_intr_type_t intr_type);
@@ -785,7 +817,7 @@ sl_status_t sli_si91x_adc_init(void);
 * Initialize and configure the systic timer for the RTOS.
 *
 * @details
-* Set up the systick timer to generate the tick interrupts at the required frequency.
+* Set up the systic timer to generate the tick interrupts at the required frequency.
 *
 * @param[in]    -   None
 * @param[out]   -   None

@@ -42,8 +42,6 @@ source:
 - path: core/config/src/rsi_nvic_priorities_config.c
 - path: core/chip/src/startup_si91x.c
   unless: ["siwx917_soc_custom_startup"]
-- path: boards/src/syscalls.c
-  unless: ["no_syscalls"]
 include:
 - path: platform_connectivity/inc
 - path: drivers/cmsis_driver
@@ -56,19 +54,19 @@ include:
 - path: drivers/unified_api/config
 - path: boards/inc
 - path: core/config
+- path: core/common/inc
 - path: core/chip/inc
 - path: platform_connectivity/wifi_inc
   condition: [wifi]
 define:
-- name: RSI_M4_INTERFACE
 - name: ENABLE_IPMU_APIS
-- name: SI917
-- name: FLASH_BASED_EXECUTION_ENABLE
 - name: TA_DEEP_SLEEP_COMMON_FLASH
+- name: RSI_M4_INTERFACE
+- name: SI917
 - name: RSI_WITH_OS
   condition: [freertos]
 requires:
-- name: wiseconnect_toolchain_gcc
+- name: wiseconnect_toolchain_plugin
 - condition: ["wifi"]
   name: si91x_core
 - name: component_catalog
@@ -82,6 +80,9 @@ template_contribution:
   name: event_handler
   priority: -9998
   value: {"event":"platform_init","handler":"sl_si91x_device_init_nvic","include":"rsi_nvic_priorities_config.h"}
+- name: device_ram_addr
+  priority: -1
+  value: 1024
 
 toolchain_settings:
 - option: device_opn

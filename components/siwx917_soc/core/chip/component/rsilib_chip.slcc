@@ -21,9 +21,11 @@ include:
     - path: "rsi_error.h"
     - path: "rsi_ps_ram_func.h"
     - path: "rsi_system_config.h"
+    - path: "em_device.h"
+    - path: "rsi_ps_config.h"
     - path: "system_si91x.h"
     - path: "si91x_device.h"
-    - path: "em_device.h"
+
 provides:
   - name: rsilib_chip
 requires:
@@ -36,11 +38,11 @@ requires:
   - name: systemlevel_temp_sensor
   - name: systemlevel_time_period
   - name: systemlevel_ulpss_clk
-  - name: rsilib_cmsiscore
   - name: systemlevel_power_save
   - name: systemlevel_rtc
   - name: systemlevel_wwdt
   - name: rsilib_timers
+  - name: rsilib_cmsiscore
 template_contribution:
   - name: event_handler
     value:

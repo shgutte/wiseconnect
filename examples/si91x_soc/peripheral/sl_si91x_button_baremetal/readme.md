@@ -26,7 +26,7 @@
 ## Loading Application on Simplicity Studio
 
 1. With the product BRD4338A selected, navigate to the example projects by clicking on Example Projects & Demos
-   in Simplicity Studio and create MEMLCD Baremetal example application as shown below.
+   in Simplicity Studio and create Button Baremetal example application as shown below.
 
 ![Figure: Selecting Example project](resources/readme/image600b.png)
 

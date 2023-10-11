@@ -95,8 +95,8 @@
 
 // <o SL_ULP_TIMER_TYP> Timer type
 //   <SL_ULP_TIMER_TYP_DOWN_COUNTER=> Down Counter (auto select)
-//   <SL_ULP_TIMER_TYP_1MS=> 1 Micro-Sec
-//   <SL_ULP_TIMER_TYP_256MS=> 256-Micro-Sec
+//   <SL_ULP_TIMER_TYP_1US=> 1 Micro-Sec
+//   <SL_ULP_TIMER_TYP_256US=> 256-Micro-Sec
 // <i> Selection of the Timer type
 #define SL_ULP_TIMER_TYP SL_ULP_TIMER_TYP_DOWN_COUNTER //default type is 1MS
 

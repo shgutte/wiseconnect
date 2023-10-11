@@ -17,7 +17,7 @@
 
 // Includes
 
-#include "rsi_board.h"
+#include "rsi_debug.h"
 #include "system_si91x.h"
 #include "rsi_hal.h"
 #include "rsi_rom_power_save.h"

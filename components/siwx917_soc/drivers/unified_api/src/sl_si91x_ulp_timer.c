@@ -29,7 +29,6 @@
  ******************************************************************************/
 #include "sl_si91x_ulp_timer.h"
 #include "rsi_timers.h"
-#include "rsi_board.h"
 #include "rsi_chip.h"
 #include "rsi_rom_timer.h"
 #include "rsi_rom_clks.h"

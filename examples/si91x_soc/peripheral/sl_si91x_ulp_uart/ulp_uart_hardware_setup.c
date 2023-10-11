@@ -21,7 +21,6 @@
 #define NVIC_RTC_ALARM MCU_CAL_ALARM_IRQn
 
 #include "rsi_chip.h"
-#include "rsi_board.h"
 #include "rsi_ps_ram_func.h"
 #include "rsi_ds_timer.h"
 

@@ -18,8 +18,8 @@
 #define __SL_SI91X_LED_H__
 
 #include "sl_si91x_led_config.h"
-#include "rsi_board.h"
 #include <stdbool.h>
+#include <stdint.h>
 
 typedef struct {
   uint8_t pin;

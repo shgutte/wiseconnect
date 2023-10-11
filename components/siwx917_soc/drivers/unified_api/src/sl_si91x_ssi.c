@@ -30,7 +30,6 @@
 
 #include "sl_si91x_ssi.h"
 #include "sl_si91x_ssi_config.h"
-#include "rsi_board.h"
 #include "rsi_rom_clks.h"
 #include "rsi_spi.h"
 

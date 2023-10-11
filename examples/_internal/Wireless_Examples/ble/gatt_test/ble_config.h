@@ -28,6 +28,10 @@
 #define ADD_DEVICE_TO_ACCEPTLIST      0x01
 #define DELETE_DEVICE_FROM_ACCEPTLIST 0x02
 
+#define DATA_LENGTH 0x18
+
+#define EXECUTE_WRITE 1
+
 #define ALL_PHYS 0x00
 
 #define RSI_BLE_DEV_ADDR_RESOLUTION_ENABLE 0
@@ -168,4 +172,7 @@
 
 #define RSI_SEL_INTERNAL_ANTENNA 0x00
 #define RSI_SEL_EXTERNAL_ANTENNA 0x01
+
+#include "rsi_ble_common_config.h"
+
 #endif

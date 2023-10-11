@@ -29,8 +29,6 @@ include:
 define:
   - name: RSI_DEBUG_PRINTS
   - name: SI91X_SOCKET_FEATURE
-component:
-- {from: wiseconnect3_sdk, id: si91x_debug}
 requires:
 - name: aws_sdk
 - name: sl_system

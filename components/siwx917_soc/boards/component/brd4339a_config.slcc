@@ -7,38 +7,52 @@
 - quality: production
 - ui_hints:
     visibility: never
-- root_path: "components/siwx917_soc/boards/config"
-- requires:
-  - name: brd4339a
+- root_path: "components/siwx917_soc/boards/config/brd4339a"
 - provides:
   - name: brd4339a_config
 - config_file: 
   - override:
       component: "%extension-wiseconnect3_sdk%psram_core"
       file_id: psram_pin_config
-    path: brd4339a/sl_si91x_psram_pin_config.h
+    path: sl_si91x_psram_pin_config.h
   - override:
       component: "%extension-wiseconnect3_sdk%pwm_instance"
       file_id: pwm_config
       instance: led0
-    path: brd4339a/sl_si91x_pwm_init_led0_config.h
+    path: sl_si91x_pwm_init_led0_config.h
   - override:
       component: "%extension-wiseconnect3_sdk%pwm_instance"
       file_id: pwm_config
       instance: channel_0
-    path: brd4339a/sl_si91x_pwm_init_channel_0_config.h
+    path: sl_si91x_pwm_init_channel_0_config.h
   - override:
       component: "%extension-wiseconnect3_sdk%pwm_instance"
       file_id: pwm_config
       instance: channel_1
-    path: brd4339a/sl_si91x_pwm_init_channel_1_config.h
+    path: sl_si91x_pwm_init_channel_1_config.h
   - override:
       component: "%extension-wiseconnect3_sdk%pwm_instance"
       file_id: pwm_config
       instance: channel_2
-    path: brd4339a/sl_si91x_pwm_init_channel_2_config.h
+    path: sl_si91x_pwm_init_channel_2_config.h
   - override:
       component: "%extension-wiseconnect3_sdk%pwm_instance"
       file_id: pwm_config
       instance: channel_3
-    path: brd4339a/sl_si91x_pwm_init_channel_3_config.h
+    path: sl_si91x_pwm_init_channel_3_config.h
+  - override:
+      component: "%extension-wiseconnect3_sdk%board_configuration_headers"
+      file_id: freertos_config
+    path: config/FreeRTOSConfig.h
+  - override:
+      component: "%extension-wiseconnect3_sdk%board_configuration_headers"
+      file_id: sl_board_configuration
+    path: config/sl_board_configuration.h
+  - override:
+      component: "%extension-wiseconnect3_sdk%board_configuration_headers"
+      file_id: sl_board_control
+    path: config/sl_board_control.h
+  - override:
+      component: "%extension-wiseconnect3_sdk%board_configuration_headers"
+      file_id: RTE_Device_917
+    path: config/RTE_Device_917.h

@@ -4,7 +4,6 @@ includes:
   global:
     - inc
     - config/brd4325c
-    - config/brd4325c/config
 
 defines:
   global:
@@ -42,10 +41,8 @@ slc:
     - name: hardware_board_rb
     - name: si91x_platform
     - name: multi_slave
-    - name: device_needs_ram_execution
-    - name: si91x_b0_chip
+    - name: si91x_b0_board
     - name: si91x_common_flash
-    - name: device_si91x
   define:
     - name: CHIP_917
       value: '1'
@@ -57,18 +54,8 @@ slc:
       value: '"A01"'
     - name: COMMON_FLASH_EN
       value: '1'
-    - name: DEBUG_UART
-      value: '1'
     - name: SI917_RADIO_BOARD
       value: '1'
-    - name: FLASH_BASED_EXECUTION_ENABLE
-      value: '1'
-    - name: ENABLE_DEBUG_MODULE
-      value: '1'
-    - name: IVT_OFFSET_ADDR
-      value: 0x81C2000
-    - name: WKP_RAM_USAGE_LOCATION
-      value: 0x24061EFC
   config_file:
     - path: RTE_Device_917.h
       file_id: A0_pin_config

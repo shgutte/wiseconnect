@@ -42,6 +42,7 @@
 
 #ifdef RSI_M4_INTERFACE
 #include "rsi_wisemcu_hardware_setup.h"
+#include "rsi_ps_config.h"
 #endif
 
 /******************************************************

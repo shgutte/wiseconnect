@@ -95,12 +95,13 @@ sl_sensor_info_t sensor_hub_info_t[SL_MAX_NUM_SENSORS] = {
   },
 
   {
-    .sensor_name           = "Button",
-    .sensor_bus            = SL_SH_GPIO,
-    .sensor_id             = SL_GPIO_SENSE_BUTTON_ID,
-    .sensor_mode           = SL_SH_INTERRUPT_MODE,
-    .sampling_intr_req_pin = BUTTON_0_GPIO_PIN,
-    .sensor_intr_type      = SL_SH_FALL_EDGE,
+    .sensor_name            = "Button",
+    .sensor_bus             = SL_SH_GPIO,
+    .sensor_id              = SL_GPIO_SENSE_BUTTON_ID,
+    .sensor_mode            = SL_SH_INTERRUPT_MODE,
+    .sampling_intr_req_pin  = BUTTON_0_GPIO_PIN,
+    .sensor_intr_type       = SL_SH_FALL_EDGE,
+    .data_deliver.data_mode = SL_SH_NO_DATA_MODE,
   }
 };
 
