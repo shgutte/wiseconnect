@@ -89,7 +89,7 @@ SL_SENSORHUB_POWERSAVE=1
 //Enabling this macro will move the application from PS4 state to PS2 state. In PS2 state the sensor data will be sampled and collected.
 ```
 
-- #### To configure the power states to PS4 sleep or PS2 Sleep, please update the defines in ***\gecko_sdk_4.3.1\util\third_party\freertos\kernel\include\FreeRTOS.h** file as below:
+- #### To configure the power states to PS4 sleep or PS2 Sleep, please update the defines in ***\gecko_sdk_4.3.2\util\third_party\freertos\kernel\include\FreeRTOS.h** file as below:
 ```C
 #ifndef configUSE_TICKLESS_IDLE
 #define configUSE_TICKLESS_IDLE 1           // 1 is to Enable the tickless Idle mode 
