@@ -1,0 +1,29 @@
+name: Embedded MQTT client
+
+includes:
+  global:
+    - .
+
+sources:
+  - main.c
+  - app.c
+
+clang-format: true
+
+defines:
+  global:
+    - RSI_DEBUG_PRINTS
+
+requires:
+  components:
+    - si91x_debug
+    - wifi
+    - network_manager
+    - mqtt
+    - freertos
+    - clang-format
+
+flags:
+  c:
+    global:
+      - -Werror

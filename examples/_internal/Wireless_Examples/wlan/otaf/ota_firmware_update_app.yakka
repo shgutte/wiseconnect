@@ -1,0 +1,30 @@
+name: OTA Firmware Upgradation App
+
+sources:
+  - main.c
+  - app.c
+
+clang-format: true
+
+defines:
+  global:
+    - RSI_DEBUG_PRINTS
+
+requires:
+  features:
+    - ipv6
+    - wifi_malloc_buffer
+    - sockets
+  components:
+    - si91x_debug
+    - wifi
+    - network_manager
+    - freertos
+    - clang-format
+    - resources
+
+flags:
+  c:
+    global:
+      - -Wall
+      - -Werror

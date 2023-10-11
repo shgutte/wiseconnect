@@ -1,0 +1,21 @@
+name: Master application
+
+sources:
+  - main.c
+  - app.c
+
+clang-format: true
+
+defines:
+  global:
+    - RSI_DEBUG_PRINTS
+
+requires:
+  components:
+    - wifi
+    - network_manager
+    - socket
+    - bsd_socket
+    - freertos
+    - http_client
+    - clang-format

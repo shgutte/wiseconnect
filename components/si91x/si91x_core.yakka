@@ -1,0 +1,23 @@
+name: Si91x Core
+
+includes:
+  global:
+    - inc
+
+defines:
+  global:
+    - CHIP_917
+
+requires:
+  components:
+    - platform_common
+
+flags:
+  c:
+    global:
+      - -Werror
+
+slc:
+  label: 'Si91x Core'
+  description: 'Si91x Core'
+  category: 'Devices|Si91x'

@@ -1,0 +1,18 @@
+objectType: docLeaf
+id: wiseconnect-api-reference-guide-sntp
+access: "public"
+status: "active"
+version: "3.1.0"
+authors:
+  - aji.gerdiman@silabs.com
+  - nik.vonhuben@silabs.com
+
+contentType: doxygen
+sourceDir: "doxygen-output/xml"
+title: "SNTP"
+description: "SNTP"
+
+menu:
+  items:
+    - index
+    - service-sntp

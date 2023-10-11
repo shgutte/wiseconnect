@@ -1,0 +1,18 @@
+objectType: docLeaf
+id: wiseconnect-api-reference-guide-si91x-driver
+access: "public"
+status: "active"
+version: "3.1.0"
+authors:
+  - aji.gerdiman@silabs.com
+  - nik.vonhuben@silabs.com
+
+contentType: doxygen
+sourceDir: "doxygen-output/xml"
+title: "Si91x Driver"
+description: "Si91x Driver"
+
+menu:
+  items:
+    - index
+    - sl-si91-x

@@ -1,0 +1,40 @@
+name: SL SNTP client
+
+includes:
+  global:
+    - inc
+
+api:
+  public:
+    - service/sntp/inc
+
+defines:
+  global:
+    - SNTP_CLIENT_FEATURE
+clang-format: true
+
+suds:
+  wiseconnect-api-reference-guide-sntp:
+    version: "3.0.0"
+    authors:
+      - aji.gerdiman@silabs.com
+      - nik.vonhuben@silabs.com
+    contentType: doxygen
+    title: "SNTP"
+    description: "SNTP"
+
+doxygen:
+  project_name: "SL SNTP"
+  inputs:
+    - inc
+    - docs/doxygen_template.h 
+    - docs/doxygen_indexfile.md 
+
+slc:
+  label: 'SNTP Client Library'
+  description: 'SNTP Client Library'
+  category: 'Networking|Protocol'
+  include:
+    - path: inc
+      file_list:
+        - sl_sntp.h

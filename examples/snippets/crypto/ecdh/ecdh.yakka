@@ -1,0 +1,21 @@
+name: ECDH Application
+
+sources:
+  - main.c
+  - app.c
+
+clang-format: true 
+
+requires:
+  components:
+    - sl_system
+    - wifi
+    - network_manager
+    - freertos
+    - clang-format
+    - sl_si91x_ecdh
+
+flags:
+  c:
+    global:
+      - -Werror

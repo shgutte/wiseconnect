@@ -1,0 +1,30 @@
+name: Si91x Async Select App
+
+sources:
+  - main.c
+  - app.c
+
+includes:
+  global:
+    - .
+
+clang-format: true
+
+defines:
+  global:
+    - RSI_DEBUG_PRINTS
+
+requires:
+  components:
+    - wifi
+    - socket
+    - bsd_socket
+    - network_manager
+    - freertos
+    - clang-format
+
+flags:
+  c:
+    global:
+      - -Wall 
+      - -Werror

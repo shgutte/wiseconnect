@@ -1,0 +1,25 @@
+name: Three SSL Client Sockets
+
+includes:
+  global:
+    - .
+
+sources:
+  - main.c
+  - app.c
+
+clang-format: true
+
+defines:
+  global:
+    - RSI_DEBUG_PRINTS
+
+requires:
+  components:
+    - si91x_debug
+    - wifi
+    - network_manager
+    - bsd_socket
+    - freertos
+    - clang-format
+    - resources

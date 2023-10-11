@@ -1,0 +1,36 @@
+name: Embedded MQTT client TWT
+
+includes:
+  global:
+    - .
+
+sources:
+  - main.c
+  - app.c
+
+defines:
+  global:
+    - HIGH_EFFICIENCY_PARAMS_SUPPORT
+    - TWT_SUPPORT
+
+
+clang-format: true
+
+defines:
+  global:
+    - RSI_DEBUG_PRINTS
+
+requires:
+  components:
+    - si91x_debug
+    - wifi
+    - network_manager
+    - mqtt
+    - freertos
+    - clang-format
+
+flags:
+  c:
+    global:
+      - -Wall
+      - -Werror

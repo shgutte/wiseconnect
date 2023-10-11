@@ -1,0 +1,32 @@
+name: Wi-Fi STATION BLE Throughput 
+
+sources:
+  - app.c
+  - ble_app.c
+  - main.c
+  - wifi_app.c
+  
+includes:
+  files:
+    - app.h
+    - ble_config.h
+  global:
+    - .
+    
+defines:
+  global:
+    - RSI_DEBUG_PRINTS
+
+requires:
+  components:
+    - si91x_debug
+    - si91x
+    - wifi
+    - network_manager
+    - freertos
+    - socket
+    - clang-format
+    - ble
+    - bsd_socket
+
+clang-format: true

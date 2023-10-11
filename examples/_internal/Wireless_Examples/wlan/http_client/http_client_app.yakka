@@ -1,0 +1,20 @@
+name: HTTP client application
+
+sources:
+  - main.c
+  - app.c
+
+clang-format: true
+
+defines:
+  global:
+    - RSI_DEBUG_PRINTS
+
+requires:
+  components:
+    - si91x_debug
+    - wifi
+    - network_manager
+    - freertos
+    - http_client
+    - clang-format

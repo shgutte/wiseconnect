@@ -1,0 +1,37 @@
+name: Wi-Fi Throughput BLE Dual Role
+
+sources:
+  - main.c
+  - app.c
+  - ble_device_info.c
+  - ble_main_task.c
+  - ble_subtasks.c
+  - wifi_app.c
+  - wifi_throughput.c
+  
+includes:
+  files:
+    - app.h
+    - app_common_config.h
+    - ble_config.h
+    - ble_device_info.h
+    - wifi_app_config.h
+  global:
+    - .
+    
+defines:
+  global:
+    - RSI_DEBUG_PRINTS
+
+requires:
+  components:
+    - si91x_debug
+    - si91x
+    - wifi
+    - network_manager
+    - freertos
+    - clang-format
+    - ble
+    - bsd_socket
+
+clang-format: true

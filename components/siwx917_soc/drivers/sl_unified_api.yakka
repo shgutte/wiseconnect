@@ -1,0 +1,52 @@
+name: SL API for SiWx917 SoC
+  
+includes:
+  global:
+    - inc
+
+provides:
+  - name: sl_unified_api
+
+clang-format: true
+
+suds:
+  wiseconnect-api-reference-guide-si91x-peripherals:
+    version: "3.0.0"
+    contentType: doxygen
+    authors:
+      - phanikumar.chimalapati@silabs.com
+    title: "Si91x Peripherals"
+    items:
+      - index
+      - si91-x-peripheral-apis      
+
+doxygen:
+  project_name: "Unified API Documentation"
+  inputs:
+    - unified_api/inc
+    - service/sensorhub/inc
+    - docs/doxygen_template.h
+    - docs/doxygen_indexfile.md
+    
+api:
+  public:
+    - unified_api/inc/sl_si91x_calendar.h
+    - unified_api/inc/sl_si91x_config_timer.h
+    - unified_api/inc/sl_si91x_dma.h
+    - unified_api/inc/sl_si91x_documentation.h
+    - unified_api/inc/sl_si91x_gpio.h
+    - unified_api/inc/sl_si91x_gpio_brd4325a.h
+    - unified_api/inc/sl_si91x_gspi.h
+    - unified_api/inc/sl_si91x_peripheral_gpio.h
+    - unified_api/inc/sl_si91x_peripheral_i2c.h
+    - unified_api/inc/sl_si91x_sio.h
+    - unified_api/inc/sl_si91x_ssi.h
+    - unified_api/inc/sl_si91x_ulp_timer.h
+    - unified_api/inc/sl_si91x_usart.h
+    - unified_api/inc/sl_si91x_watchdog_timer.h
+    - service/sensorhub/inc/sensor_hub.h
+    
+slc:
+  label: 'Si91x unified API'
+  description: 'Platform Unified API support for Si91x'
+  category: 'Devices|Si91x'

@@ -1,0 +1,15 @@
+name: SEGGER SYSVIEW
+
+clang-format: false
+
+includes:
+  global:
+    - config/inc
+    - segger/inc
+sources:
+  - config/src/SEGGER_SYSVIEW_Config_FreeRTOS.c
+  - config/src/SEGGER_SYSVIEW_FreeRTOS.c
+  - segger/src/SEGGER_RTT_ASM_ARMv7M.S
+  - segger/src/SEGGER_RTT_printf.c 
+  - segger/src/SEGGER_RTT.c
+  - segger/src/SEGGER_SYSVIEW.c

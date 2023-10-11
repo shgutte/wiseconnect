@@ -1,0 +1,28 @@
+name: AWS MQTT Example
+
+sources:
+  - main.c
+  - app.c 
+
+clang-format: true
+
+defines:
+  global:
+    - RSI_DEBUG_PRINTS
+
+requires:
+  components:
+    - si91x_debug
+    - wifi
+    - network_manager
+    - bsd_socket
+    - freertos
+    - socket
+    - clang-format
+    - aws_sdk 
+
+flags:
+  c:
+    global:
+      - -Wall 
+      - -Werror

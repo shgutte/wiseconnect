@@ -1,0 +1,28 @@
+name: Calibration App
+
+sources:
+  - main.c
+  - app.c
+
+clang-format: true
+
+defines:
+  global:
+    - RSI_DEBUG_PRINTS
+
+requires:
+  features:
+    - wifi_malloc_buffer
+    - sockets
+  components:
+    - wifi
+    - network_manager
+    - freertos
+    - clang-format
+    - resources
+
+flags:
+  c:
+    global:
+      - -Wall
+      - -Werror

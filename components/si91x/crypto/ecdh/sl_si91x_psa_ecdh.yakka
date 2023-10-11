@@ -1,0 +1,32 @@
+name: SL SI91X PSA ECDH
+
+clang-format: true
+
+includes:
+  global:
+    - inc
+
+sources:
+  - src/sl_si91x_psa_ecdh.c
+
+requires:
+  components:
+    - si91x
+    - si91x_support
+    - sl_si91x_psa_crypto
+    - sl_si91x_ecdh
+
+defines:
+  global:
+    - SLI_ECDH_DEVICE_SI91X    
+
+slc:
+  label: 'ECDH'
+  description: 'Implenetation of mbedTls PSA crypto ECDH API'
+  category: 'Crypto|ECDH'
+  include:
+    - path: inc
+      file_list:        
+        - sl_si91x_psa_ecdh.h
+  requires:
+    - name: 'sl_si91x_ecdh'

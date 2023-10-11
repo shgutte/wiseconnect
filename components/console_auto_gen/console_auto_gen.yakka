@@ -1,0 +1,20 @@
+name: console_auto_gen
+
+clang-format: false
+
+includes:
+  global:
+    - inc
+
+sources:
+  - src/console_argument_types.c 
+  - src/console_command_database.c
+  - src/console_variable_database.c
+  - src/sl_string.c
+
+slc: 
+  requires:
+    - name: 'socket_utility'
+    - name: 'iot_sockets'
+      condition: 
+        - si91x_internal_stack

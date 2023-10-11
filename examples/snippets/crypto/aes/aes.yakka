@@ -1,0 +1,28 @@
+name: AES application
+
+sources:
+  - main.c
+  - app.c
+
+clang-format: true
+
+defines:
+  global:
+    - RSI_DEBUG_PRINTS
+
+requires:
+  components:
+    - si91x_debug
+    - sl_system
+    - wifi
+    - network_manager
+    - freertos
+    - clang-format
+    - sl_si91x_wrap
+    - sl_si91x_aes
+    - sl_si91x_crypto_utility
+
+flags:
+  c:
+    global:
+      - -Werror

@@ -1,0 +1,39 @@
+name: Socket Utility
+
+includes:
+  global:
+    - inc
+
+sources:
+  - src/sl_si91x_socket_utility.c 
+
+defines:
+  global:
+    - SI91X_SOCKET_FEATURE
+
+clang-format: true
+
+console:
+  include_headers:
+    - 'socket.h'
+    - 'netinet_in.h'
+
+slc:
+  label: 'Socket Utility'
+  description: 'Socket Utility'
+  category: 'Networking|Sockets'
+  include: 
+    - path: inc
+      file_list:
+        - errno.h 
+        - netdb.h 
+        - netinet_in.h 
+        - netinet6_in6.h 
+        - select.h 
+        - sl_bsd_utility.h 
+        - sl_si91x_socket_callback_framework.h 
+        - sl_si91x_socket_constants.h 
+        - sl_si91x_socket_types.h 
+        - sl_si91x_socket_utility.h 
+        - socket.h 
+        - uio.h

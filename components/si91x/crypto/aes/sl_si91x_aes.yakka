@@ -1,0 +1,25 @@
+name: SL SI91X AES
+
+clang-format: true
+
+includes:
+  global:
+    - inc
+
+sources:
+  - src/sl_si91x_aes.c
+
+requires:
+  components:
+    - si91x
+    - si91x_support
+    - sl_si91x_crypto
+
+slc:
+  label: 'AES'
+  description: 'Implementation of the AES API'
+  category: 'Crypto|AES'
+  include:
+    - path: inc
+      file_list:        
+        - sl_si91x_aes.h

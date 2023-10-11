@@ -1,0 +1,100 @@
+name: Console
+
+sources:
+  - console.c
+  - console_minimal_uart_plugin.c
+ 
+clang-format: true
+
+supports:
+  features:
+    console_variables:
+      sources:
+        - variables/console_variables.c
+      generated:
+        sources:
+          - '{{project_output}}/generated/console_variable_database.c'
+      console:
+        commands:
+          list:
+            handler: console_variable_list
+            description: 'List variables'
+          get:
+            handler: console_variable_get
+            description: 'Get'
+            arguments:
+              - 'string'
+          set:
+            handler: console_variable_set
+            description: 'Set'
+            arguments:
+              - 'string'
+              - 'string'
+
+generated:
+  includes:
+    - '{{project_output}}/generated/console_argument_types.h'
+  sources:
+    - '{{project_output}}/generated/console_command_database.c'
+    - '{{project_output}}/generated/console_argument_types.c'
+
+includes:
+  global:
+    - .
+    - variables
+
+requires:
+  components:
+    - platform_common
+  features:
+    - sl_uart
+
+blueprints:
+  '{{project_output}}/generated/console_variable_database.c':
+    depends:
+      - data:
+          - '/*/console/variables'
+      - '{{curdir()}}/console_variable_table.c.template'
+      - '{{curdir()}}/console_variable_group_processing.template'
+    process:
+      - inja:
+          template_file: '{{curdir()}}/console_variable_table.c.template'
+      - save:
+
+
+  '{{project_output}}/generated/console_command_database.c':
+    depends:
+      - data:
+          - '/*/console/commands'
+      - '{{curdir()}}/console_command_database.c.template'
+      - '{{curdir()}}/console_command_processing.template'
+    process:
+      - inja:
+          template_file: '{{curdir()}}/console_command_database.c.template'
+      - save:
+      
+  '{{project_output}}/generated/console_argument_types.c':
+    depends:
+      - data:
+          - '/*/console/enums'
+          - '/*/console/include_headers'
+      - '{{curdir()}}/console_argument_types.c.template'
+    process:
+      - inja:
+          template_file: '{{curdir()}}/console_argument_types.c.template'
+      - save:
+      
+  '{{project_output}}/generated/console_argument_types.h':
+    depends:
+      - data:
+          - '/*/console/enums'
+          - '/*/console/include_headers'
+      - '{{curdir()}}/console_argument_types.h.template'
+    process:
+      - inja:
+          template_file: '{{curdir()}}/console_argument_types.h.template'
+      - save:
+
+make:
+  files:
+    - console.mk

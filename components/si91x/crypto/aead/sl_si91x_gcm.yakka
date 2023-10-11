@@ -1,0 +1,25 @@
+name: SL SI91X GCM
+
+clang-format: true
+
+includes:
+  global:
+    - inc
+
+sources:
+  - src/sl_si91x_gcm.c
+
+requires:
+  components:
+    - si91x
+    - si91x_support
+    - sl_si91x_crypto
+
+slc:
+  label: 'GCM'
+  description: 'Implementation of the GCM API'
+  category: 'Crypto|GCM'
+  include:
+    - path: inc
+      file_list:        
+        - sl_si91x_gcm.h

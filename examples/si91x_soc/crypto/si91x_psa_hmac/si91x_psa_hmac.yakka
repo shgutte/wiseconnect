@@ -1,0 +1,26 @@
+name: SoC PSA HMAC
+
+sources:
+  - main.c
+  - app.c
+  - si91x_psa_hmac.c
+
+clang-format: true
+
+defines:
+  global:
+    - RSI_DEBUG_PRINTS
+
+requires:
+  components:
+    - sl_system
+    - wifi
+    - network_manager
+    - freertos
+    - clang-format
+    - sl_si91x_psa_hmac
+
+flags:
+  c:
+    global:
+      - -Werror

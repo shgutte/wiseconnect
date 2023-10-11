@@ -1,0 +1,25 @@
+name: Firmware Upgradation App
+
+sources:
+  - main.c
+  - app.c
+
+clang-format: true
+
+defines:
+  global:
+    - RSI_DEBUG_PRINTS
+
+requires:
+  components:
+    - si91x_debug
+    - wifi
+    - bsd_socket
+    - network_manager
+    - freertos
+    - clang-format
+
+flags:
+  c:
+    global:
+      - -Werror

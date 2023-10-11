@@ -1,0 +1,32 @@
+name: SL SI91X PSA WRAP
+
+clang-format: true
+
+includes:
+  global:
+    - inc
+
+sources:
+  - src/sl_si91x_psa_wrap.c
+
+requires:
+  components:
+    - si91x
+    - si91x_support
+    - sl_si91x_crypto
+    - sl_si91x_wrap
+
+defines:
+  global:
+    - SLI_SECURE_KEY_STORAGE_DEVICE_SI91X
+
+slc:
+  label: 'WRAP'
+  description: 'Implementation of mbedTls psa crypto wrap API'
+  category: 'Crypto|WRAP'
+  include:
+    - path: inc
+      file_list:
+        - sl_si91x_psa_wrap.h
+  requires:
+    - name: 'sl_si91x_wrap'

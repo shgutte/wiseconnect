@@ -1,0 +1,86 @@
+project_name: sl_si91x_ml_model_profiler
+package: platform
+quality: production
+label: Machine Learning - Model Profiler
+description: >
+  This application profiles a ML model. The ML model is loaded as a byte array
+  which is generated from a Tensorflow tflite model file. Profiling is performed
+  by running one inference with the model.
+category: Example|Machine Learning
+filter:
+  - name: "Device Type"
+    value: ["SoC"]
+  - name: "MCU"
+    value: ["32-bit MCU"]
+  - name: "Project Difficulty"
+    value: ["Advanced"]
+  - name: "Capability"
+    value: ["Machine Learning"]
+include:
+  - path: .
+    file_list:
+      - path: app.h
+      - path: model_profiler.h
+source:
+  - path: app.c
+  - path: main.c
+  - path: model_profiler.cc
+config_file:
+  - path: tflite_models/tflite/model.tflite
+    directory: tflite
+sdk: {id: gecko_sdk, version: 4.3.2}
+component:
+  - id: cmsis_common
+  - id: component_catalog
+  - id: sl_memory
+  - id: sl_system
+  - id: stdio
+  - id: tensorflow_lite_micro_accelerated_kernels
+  - id: tensorflow_lite_micro
+  - id: iostream_retarget_stdio
+  - id: iostream_uart_si91x
+    instance: [vcom]
+  - {from: wiseconnect3_sdk, id: sl_usart_iostream}
+  - {from: wiseconnect3_sdk, id: iostream_si91x}
+  - {from: wiseconnect3_sdk, id: cmsis_usart}
+  - {from: wiseconnect3_sdk, id: rsilib_userconfig}
+  - {from: wiseconnect3_sdk, id: romdriver_egpio}
+  - {from: wiseconnect3_sdk, id: udma_linker_config}
+  - {from: wiseconnect3_sdk, id: cmsis_udma}
+  - {from: wiseconnect3_sdk, id: si917_memory_default_config}
+  - {from: wiseconnect3_sdk, id: driver_mvp_hal_si91x}
+define:
+  - name: RSI_M4_INTERFACE
+  - name: SL_SI91X_DMA
+  - name: ROM_BYPASS
+  - name: IOSTREAM_SI91X_USART
+  - name: SI917_RADIO_BOARD
+  - name: USART_CONFIG
+  - name: SUPPORT_CPLUSPLUS
+  - name: TF_LITE_STATIC_MEMORY
+  - name: NDEBUG
+configuration:
+  - name: SL_BOARD_ENABLE_VCOM
+    value: "1"
+  - name: SL_IOSTREAM_USART_VCOM_CONVERT_BY_DEFAULT_LF_TO_CRLF
+    value: "1"
+  - name: SL_TFLITE_MICRO_INTERPRETER_INIT_ENABLE
+    value: "0"
+toolchain_settings:
+  - option: gcc_compiler_option
+    value: "-Wno-unused-parameter"
+  - option: gcc_compiler_option
+    value: "-Wno-missing-field-initializers"
+  - option: gcc_linker_option
+    value: "-u _printf_float"
+  - option: optimize
+    #   "value": "none"
+    "value": "speed"
+readme:
+  - path: readme.md
+ui_hints:
+  highlight: readme.md
+sdk_extension:
+- {id: wiseconnect3_sdk, version: 3.1.1}
+post_build:
+  path: ../../../../utilities/postbuild_profile/wiseconnect_soc.slpb

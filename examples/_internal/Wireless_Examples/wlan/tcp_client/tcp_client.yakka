@@ -1,0 +1,22 @@
+name: TCP Client
+
+sources:
+  - main.c
+  - app.c
+
+clang-format: true
+
+defines:
+  global:
+    - RSI_DEBUG_PRINTS
+
+requires:
+  features:
+    - wifi
+  components:
+    - si91x_debug
+    - wifi
+    - bsd_socket
+    - network_manager
+    - freertos
+    - clang-format

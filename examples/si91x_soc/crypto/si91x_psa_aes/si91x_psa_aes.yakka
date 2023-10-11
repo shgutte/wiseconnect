@@ -1,0 +1,27 @@
+name: SoC PSA AES Cipher
+
+sources:
+  - main.c
+  - app_process.c
+  - si91x_psa_aes.c
+
+clang-format: true
+
+defines:
+  global:
+    - RSI_DEBUG_PRINTS
+
+requires:
+  components:
+    - si91x_debug
+    - sl_system
+    - wifi
+    - network_manager
+    - freertos
+    - clang-format
+    - sl_si91x_psa_aes
+
+flags:
+  c:
+    global:
+      - -Werror

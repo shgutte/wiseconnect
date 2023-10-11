@@ -1,0 +1,20 @@
+name: Enterprise Client
+
+sources:
+  - app.c
+  - main.c
+
+clang-format: true
+
+defines:
+  global:
+    - RSI_DEBUG_PRINTS
+
+requires:
+  components:
+    - si91x_debug
+    - wifi
+    - network_manager
+    - freertos
+    - clang-format
+

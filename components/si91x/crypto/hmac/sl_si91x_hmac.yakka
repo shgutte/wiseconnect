@@ -1,0 +1,25 @@
+name: SL SI91X HMAC
+
+clang-format: true
+
+includes:
+  global:
+    - inc
+
+sources:
+  - src/sl_si91x_hmac.c
+
+requires:
+  components:
+    - si91x
+    - si91x_support
+    - sl_si91x_crypto
+
+slc:
+  label: 'HMAC'
+  description: 'Implementation of the HMAC API'
+  category: 'Crypto|HMAC'
+  include:
+    - path: inc
+      file_list:
+        - sl_si91x_hmac.h

@@ -1,0 +1,27 @@
+id: driver_mvp_hal_si91x
+label: MVP HAL Driver for si91x parts
+package: platform
+description: >
+  This component provides the HAL part of the MVP driver. It is customized for
+  si91x parts with MVP.
+
+  The API of this component is marked as internal.
+category: Platform|Compute
+quality: production
+root_path: components/siwx917_soc/drivers/unified_api
+config_file:
+  - path: config/sl_si91x_mvp_config.h
+source:
+  - path: src/sl_mvp_hal_si91x.c
+include:
+  - path: inc
+    file_list:
+      - path: sl_mvp_hal.h
+provides:
+  - name: driver_mvp_hal
+  - name: driver_mvp_hal_si91x
+requires:
+  - name: device_has_mvp
+  - name: component_catalog
+  - name: status
+  - name: sl_dma

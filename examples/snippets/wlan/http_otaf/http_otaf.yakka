@@ -1,0 +1,28 @@
+name: HTTP OTAF
+
+sources:
+  - main.c
+  - app.c
+
+includes:
+  global:
+    - .
+
+clang-format: true
+
+defines:
+  global:
+    - RSI_DEBUG_PRINTS
+
+requires:
+  components:
+    - si91x_debug
+    - wifi
+    - network_manager
+    - freertos
+    - clang-format
+    
+flags:
+  c:
+    global:
+      - -Werror

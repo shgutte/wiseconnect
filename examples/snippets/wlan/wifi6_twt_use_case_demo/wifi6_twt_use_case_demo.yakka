@@ -1,0 +1,36 @@
+name: Twt use case remote app
+
+sources:
+  - main.c
+  - app.c
+
+includes:
+  global:
+    - .
+
+flags:
+  c:
+    global:
+      - -Werror
+
+clang-format: true
+
+defines:
+  global:
+    - HIGH_EFFICIENCY_PARAMS_SUPPORT
+    - TWT_SUPPORT
+    - RSI_DEBUG_PRINTS
+    - ROM_BYPASS
+
+requires:
+  features:
+    - wifi
+  components:
+    - si91x_debug
+    - wifi
+    - si91x
+    - network_manager
+    - freertos
+    - bsd_socket
+    - socket
+    - clang-format

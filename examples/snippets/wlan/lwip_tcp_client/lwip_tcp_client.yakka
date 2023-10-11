@@ -1,0 +1,26 @@
+name: Lwip TCP Client
+
+sources:
+  - main.c
+  - app.c
+
+clang-format: true
+
+
+defines:
+  global:
+    - RSI_DEBUG_PRINTS
+    - ROM_BYPASS
+
+requires:
+  features:
+    - si91x_lwip_stack
+  components:
+    - si91x_lwip_stack
+    - si91x_debug
+    - wifi
+    - network_manager
+    - freertos
+    - clang-format
+    - resources
+    - lwip

@@ -1,0 +1,27 @@
+name: SHA application   
+
+sources:
+  - main.c
+  - app.c
+
+clang-format: true
+
+defines:
+  global:
+    - SYSCALLS_WRITE
+    - RSI_DEBUG_PRINTS
+
+requires:
+  components:
+    - si91x_debug
+    - sl_system
+    - wifi
+    - network_manager
+    - freertos
+    - clang-format
+    - sl_si91x_sha
+
+flags:
+  c:
+    global:
+      - -Werror

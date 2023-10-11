@@ -1,0 +1,32 @@
+name: SL SI91X PSA HMAC
+
+clang-format: true
+
+includes:
+  global:
+    - inc
+
+sources:
+  - src/sl_si91x_psa_hmac.c
+
+requires:
+  components:
+    - si91x
+    - si91x_support
+    - sl_si91x_hmac
+    - sl_si91x_psa_crypto
+
+defines:
+  global:
+    - SLI_MAC_DEVICE_SI91X
+
+slc:
+  label: 'HMAC'
+  description: 'Implementation of mbedTls PSA crypto HMAC API'
+  category: 'Crypto|HMAC'
+  include:
+    - path: inc
+      file_list:        
+        - sl_si91x_psa_hmac.h
+  requires:
+    - name: 'sl_si91x_hmac'

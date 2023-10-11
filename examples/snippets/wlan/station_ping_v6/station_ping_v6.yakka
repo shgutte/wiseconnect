@@ -1,0 +1,22 @@
+name: Station Ping V6
+
+sources:
+  - main.c
+  - app.c
+
+clang-format: true
+
+defines:
+  global:
+
+    
+requires:
+  features:
+    - wifi
+    - ipv6
+  components:
+    - si91x_debug
+    - wifi
+    - network_manager
+    - freertos
+    - clang-format

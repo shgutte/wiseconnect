@@ -1,0 +1,88 @@
+name: BRD4325G
+
+includes:
+  global:
+    - inc
+    - config/brd4325g
+    - config/brd4325g/config
+
+defines:
+  global:
+    - SI917_RADIO_BOARD
+
+requires:
+  features:
+    - wifi_internal_bus
+  components:
+    - siwx917_soc
+
+flags:
+  ld:
+    global:
+      - -Wl,--defsym=SI91X_SOC_ROM_START_ADDRESS=0x8C12000
+      - -Wl,--defsym=SI91X_SOC_RAM_START_ADDRESS=0x400
+
+clang-format: true
+
+slc:
+  label: 'BRD4325G'
+  description: 'Board support for BRD4325G.'
+  category: 'Platform|Board|Radio Board'
+  root_path: "components/siwx917_soc/boards/config/brd4325g"
+  requires:
+    - name: siwg917m111mgtba
+    - name: brd4325g_config
+    - name: siwx917_soc
+      condition: ["wifi"]
+    - name: si91x
+      condition: ["wifi"]
+  provides:
+    - name: brd4325g
+    - name: hardware_board
+    - name: hardware_board_rb
+    - name: device_has_psram
+    - name: device_has_external_psram
+    - name: si91x_platform
+    - name: multi_slave
+    - name: device_needs_ram_execution
+    - name: si91x_b0_chip
+    - name: si91x_common_flash
+    - name: device_si91x
+  define:
+    - name: CHIP_917
+      value: '1'
+    - name: CHIP_917B0
+      value: '1'
+    - name: SL_BOARD_NAME
+      value: '"BRD4325G"'
+    - name: SL_BOARD_REV
+      value: '"A01"'
+    - name: DEBUG_UART
+      value: '1'
+    - name: SI917_RADIO_BOARD
+      value: '1'
+    - name: FLASH_BASED_EXECUTION_ENABLE
+      value: '1'
+    - name: ENABLE_DEBUG_MODULE
+      value: '1'
+    - name: COMMON_FLASH_EN
+      value: '1'
+    - name: IVT_OFFSET_ADDR
+      value: 0x81C2000
+    - name: WKP_RAM_USAGE_LOCATION
+      value: 0x24061EFC
+  config_file:
+    - path: RTE_Device_917.h
+      file_id: A0_pin_config
+  template_contribution:
+    - name: psram_present
+      value: 1
+    - name: device_psram_addr
+      value: 167772160 # 0x0A00_0000
+    - name: device_psram_size
+      value: 8388608 # 8MB
+  tag:
+    - board:pn:BRD4325
+    - board:variant:G
+  recommends:
+    - id: "%extension-wiseconnect3_sdk%psram_aps6404l_sqh"

@@ -1,0 +1,25 @@
+name: SL SI91X WRAP
+
+clang-format: true
+
+includes:
+  global:
+    - inc
+
+sources:
+  - src/sl_si91x_wrap.c
+
+requires:
+  components:
+    - si91x
+    - si91x_support
+    - sl_si91x_crypto
+
+slc:
+  label: 'WRAP'
+  description: 'Implementation of the WRAP API'
+  category: 'Crypto|WRAP'
+  include:
+    - path: inc
+      file_list:
+        - sl_si91x_wrap.h

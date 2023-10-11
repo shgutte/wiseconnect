@@ -1,0 +1,27 @@
+name: Wlan Throughput from PSRAM
+
+sources:
+  - main.c
+  - app.c
+
+clang-format: true
+
+defines:
+  global:
+    - RSI_DEBUG_PRINTS
+
+requires:
+  components:
+    - si91x_debug
+    - wifi
+    - network_manager
+    - freertos
+    - bsd_socket
+    - socket
+    - clang-format
+    - resources
+
+flags:
+  c:
+    global:
+      - -u _printf_float

@@ -1,0 +1,31 @@
+name: Si91x TCP Async Server
+
+sources:
+  - main.c
+  - app.c
+
+includes:
+  global:
+    - .
+
+clang-format: true
+
+defines:
+  global:
+    - RSI_DEBUG_PRINTS
+
+requires:
+  components:
+    - si91x_debug
+    - wifi
+    - socket
+    - network_manager
+    - freertos
+    - clang-format
+
+flags:
+  c:
+    global:
+      - -Wall 
+      - -Werror
+      - -u _printf_float
