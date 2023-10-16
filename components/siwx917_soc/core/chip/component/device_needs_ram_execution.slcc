@@ -6,3 +6,8 @@ label: Si91x Execution from RAM.
 quality: production
 provides:
   - name: device_needs_ram_execution
+define:
+  - name: EXECUTION_FROM_RAM
+template_contribution:
+  - name: RAM_EXECUTION
+    value: true

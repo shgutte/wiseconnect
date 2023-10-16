@@ -3,7 +3,7 @@
 - package: platform-internal-cmsis-headers
 - description: Silicon Labs CMSIS-Device part headers for SI917-SB00.
 - category: Platform|Device|SIWG917
-- quality: internal
+- quality: production
 - define:
   - name: SI917-SB00
     unless:
@@ -29,12 +29,11 @@
   - name: device_arm
   - name: cortexm4
   - name: armv7em
-# TODO: Add all the device_has and device_supports
 - requires:
   - name: rsilib_chip
   - name: trustzone_unaware
   - name: external_flash_implementation
-  - name: external_psram_implementation # This might be optional and not required?
+  - name: external_psram_implementation
   - name: siwx917_soc
     condition: [wifi]
   - name: si91x
@@ -82,7 +81,6 @@
   - name: device_ram_size
     value: 327680 # 0x0005 0000
     condition: si917_mem_config_3
-# TODO: Add the correct values for above template contributions
 - tag:
   - device:opn:si917-sb00
 - toolchain_settings:

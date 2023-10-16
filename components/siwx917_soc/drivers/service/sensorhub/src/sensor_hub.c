@@ -44,6 +44,7 @@
 #include "cmsis_os2.h"
 #include "timers.h"
 #include "sl_si91x_adc.h"
+#include "adc_sensor_driver.h"
 #include "sensorhub_error_codes.h"
 
 /*******************************************************************************
@@ -391,6 +392,12 @@ void sli_si91x_sleep_wakeup(uint16_t sh_sleep_time)
     while (1)
       ;
   }
+  sl_status_t ret = sl_si91x_adc_channel_init(&bus_intf_info.adc_config.adc_ch_cfg, &bus_intf_info.adc_config.adc_cfg);
+  if (ret != SL_STATUS_OK) {
+    DEBUGOUT("\r\n ADC sensor channel init failed after wakeup \r\n");
+    while (1)
+      ;
+  }
 }
 /**************************************************************************/ /**
  * @fn           void sli_si91x_sensorhub_ps4tops2_state(void)
@@ -653,6 +660,28 @@ void sl_si91x_gpio_interrupt_stop(uint16_t gpio_pin)
   NVIC_DisableIRQ(NPSS_TO_MCU_GPIO_INTR_IRQn);
 }
 
+/*******************************************************************************
+ * ADC user callback
+ * This function will be called from ADC interrupt handler
+ *
+ * @param[in] ADC channel number
+ * @param[in] ADC callback event (ADC_STATIC_MODE_CALLBACK, 
+ *            ADC_THRSHOLD_CALLBACK, INTERNAL_DMA, FIFO_MODE_EVENT)
+ *
+*******************************************************************************/
+void sl_si91x_adc_callback(uint8_t channel_no, uint8_t event)
+{
+  if (event == SL_INTERNAL_DMA) {
+    bus_intf_info.adc_config.adc_data_ready |= BIT(channel_no);
+    for (uint8_t idx = 0; idx < int_list_map.map_index; idx++) {
+      if (int_list_map.map_table[idx].adc_intr_channel
+          & BIT(channel_no)) { // in non-interrupt mode channel variable in map table will be always zero
+        osEventFlagsSet(sl_event_group, (0x01 << int_list_map.map_table[idx].sensor_list_index));
+      }
+    }
+  }
+}
+
 /**************************************************************************/ /**
  *  @fn          uint8_t sli_si91x_adc_init(void)
  *  @brief       Initialize the ADC Interface based on the configuration.
@@ -670,30 +699,54 @@ sl_status_t sli_si91x_adc_init(void)
   /* read battery voltage to configure reference voltage */
   battery_voltage = sl_si91x_adc_get_chip_voltage();
 
+  /* De-initialize the adc peripheral if already initialized */
+  if (bus_intf_info.adc_config.adc_init == 1) {
+    status = sl_si91x_adc_deinit(bus_intf_info.adc_config.adc_cfg);
+    if (status != SL_STATUS_OK) {
+      DEBUGOUT("\r\n ADC DeInit Failed, Error Code : %ld\r\n", status);
+      return SL_STATUS_FAIL;
+    }
+  }
+
   /* initialize adc peripheral */
-  status = sl_si91x_adc_init(bus_intf_info.adc_config.adc_ch_cfg,
-                             bus_intf_info.adc_config.adc_cfg); // handle return type sl_status_t
+  status = sl_si91x_adc_init(bus_intf_info.adc_config.adc_ch_cfg, bus_intf_info.adc_config.adc_cfg);
   if (status != SL_STATUS_OK) {
     DEBUGOUT("\r\n ADC Initialization Failed, Error Code : %ld\r\n", status);
-    return (uint8_t)SL_STATUS_FAIL;
+    return SL_STATUS_FAIL;
   } else {
-    //DEBUGOUT("\r\n ADC Initialization Success\r\n");
+    bus_intf_info.adc_config.adc_init = 1;
   }
 
   /* configure reference voltage for adc */
-  status = sl_si91x_adc_configure_reference_voltage(bus_intf_info.adc_config.vref, battery_voltage);
+  status = sl_si91x_adc_configure_reference_voltage(SL_SH_ADC_VREF_VALUE, battery_voltage);
   if (status != SL_STATUS_OK) {
     DEBUGOUT("\r\n ADC configure fail\r\n");
-    return (uint8_t)SL_STATUS_FAIL;
+    return SL_STATUS_FAIL;
   }
 
-  /* set callback function for ADC interrupt */
-  status = sl_si91x_adc_register_event_callback(bus_intf_info.adc_config.adc_cb);
-  if (status != SL_STATUS_OK) {
-    DEBUGOUT("\r\n ADC callback event fail:%lu\r\n", status);
-    //return (uint8_t)SL_STATUS_FAIL;
+  /* set callback function for ADC interrupt only in FIFO mode*/
+  if (bus_intf_info.adc_config.adc_cfg.operation_mode != SL_ADC_STATIC_MODE) {
+    status = sl_si91x_adc_register_event_callback(bus_intf_info.adc_config.adc_cb);
+    if (status != SL_STATUS_OK) {
+      DEBUGOUT("\r\n ADC callback event fail:%lu\r\n", status);
+      return SL_STATUS_FAIL;
+    }
   }
+
+  /* start the adc peripheral */
+  status = sl_si91x_adc_start(bus_intf_info.adc_config.adc_cfg);
+  if (status != SL_STATUS_OK) {
+    DEBUGOUT("\r\n ADC sensor start failed:%lu\r\n", status);
+    return SL_STATUS_FAIL;
+  }
+
+  /* If ADC works on static mode, sensor should work only on SL_SH_POLLING_MODE. So, disabling the interrupt here*/
+  if (bus_intf_info.adc_config.adc_cfg.operation_mode == SL_ADC_STATIC_MODE) {
+    NVIC_DisableIRQ(ADC_IRQn);
+  }
+
   DEBUGOUT("\r\n ADC Initialization Success\r\n");
+
   return SL_STATUS_OK;
 }
 
@@ -977,15 +1030,29 @@ sl_status_t sl_si91x_sensorhub_create_sensor(sl_sensor_id_t sensor_id)
       break;
 
     case SL_SH_INTERRUPT_MODE:
-      status = sl_si91x_gpio_interrupt_config(sensor_list.sl_sensors_st[sensor_index].config_st->sampling_intr_req_pin,
-                                              sensor_list.sl_sensors_st[sensor_index].config_st->sensor_intr_type);
-      if (status != SL_STATUS_OK) {
-        return status;
+      if (sensor_list.sl_sensors_st[sensor_index].config_st->sensor_bus == SL_SH_GPIO) {
+        status =
+          sl_si91x_gpio_interrupt_config(sensor_list.sl_sensors_st[sensor_index].config_st->sampling_intr_req_pin,
+                                         sensor_list.sl_sensors_st[sensor_index].config_st->sensor_intr_type);
+        if (status != SL_STATUS_OK) {
+          return status;
+        }
+        int_list_map.map_table[int_list_map.map_index].intr =
+          sensor_list.sl_sensors_st[sensor_index].config_st->sampling_intr_req_pin;
+        int_list_map.map_table[int_list_map.map_index].sensor_list_index = sensor_index;
+        int_list_map.map_index++;
+      } else if (sensor_list.sl_sensors_st[sensor_index].config_st->sensor_bus == SL_SH_ADC) {
+        int_list_map.map_table[int_list_map.map_index].adc_intr_channel =
+          BIT(sensor_list.sl_sensors_st[sensor_index].config_st->channel);
+        int_list_map.map_table[int_list_map.map_index].sensor_list_index = sensor_index;
+        int_list_map.map_index++;
+        uint32_t intr_status = RSI_ADC_ChnlIntrStatus(AUX_ADC_DAC_COMP);
+        if (intr_status != (int)NULL) {
+          if (intr_status & BIT(7 + sensor_list.sl_sensors_st[sensor_index].config_st->channel)) {
+            RSI_ADC_ChnlIntrClr(AUX_ADC_DAC_COMP, sensor_list.sl_sensors_st[sensor_index].config_st->channel);
+          }
+        }
       }
-      int_list_map.map_table[int_list_map.map_index].intr =
-        sensor_list.sl_sensors_st[sensor_index].config_st->sampling_intr_req_pin;
-      int_list_map.map_table[int_list_map.map_index].sensor_list_index = sensor_index;
-      int_list_map.map_index++;
       break;
 
     default:

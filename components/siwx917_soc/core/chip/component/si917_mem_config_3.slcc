@@ -3,7 +3,7 @@ label: RAM_LEVEL_NWP_BASIC_MCU_ADV
 package: platform
 description: EXT_FEAT_256K_MODE
 category: Platform|si91x|core
-quality: internal
+quality: production
 provides:
   - name: si917_mem_config
   - name: si917_mem_config_3

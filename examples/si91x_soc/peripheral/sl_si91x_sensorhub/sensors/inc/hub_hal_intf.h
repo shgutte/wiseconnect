@@ -38,7 +38,7 @@
 #include "tempSensor_hal.h"
 #include "apds9960Sensor_hal.h"
 #include "accelerometerSensor_hal.h"
-#include "adcsensor_hal.h"
+#include "adc_sensor_hal.h"
 
 /*******************************************************************************
  ******************** Sensor HUB Operations Structure  *************************

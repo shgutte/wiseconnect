@@ -33,7 +33,6 @@ requires:
 - name: si91x_support
 - name: wifi
 - name: si91x
-- name: sl_tls
 - name: si91x_internal_stack
 - name: si91x_basic_buffers
 - name: wifi_resources

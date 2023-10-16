@@ -4,7 +4,7 @@ quality: production
 label: TCP TX on periodic wakeup
 category: Example|Wi-Fi
 description: >
-  The application demonstrates TCP TX whith Periodic Wakeup
+  The application demonstrates TCP TX with Periodic Wakeup
 filter:
   - name: "Wireless Technology"
     value: ["Wi-Fi"]
@@ -23,13 +23,7 @@ include:
 define:
   - name: RSI_DEBUG_PRINTS
   - name: ROM_BYPASS
-  - name: EXECUTION_FROM_RAM
-    condition:
-      - device_needs_ram_execution
 template_contribution:
-- condition: [device_needs_ram_execution]
-  name: RAM_EXECUTION
-  value: true
 - name: event_handler
   condition: [rsi_m4_interface]
   value:
@@ -57,6 +51,7 @@ requires:
 - name: wifi_resources
 - name: freertos
 - name: slist
+- name: device_needs_ram_execution
 - name: iostream_retarget_stdio
   condition: [device_has_devinfo]
 - name: iostream_recommended_stream

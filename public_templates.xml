@@ -1305,10 +1305,25 @@
     <properties key="readmeFiles" value="examples/si91x_soc/wlan/tcp_tx_on_periodic_wakeup/readme.md"/>
 	<properties key="filters" value="Device\ Type|SoC Wireless\ Technology|Wi-Fi Project\ Difficulty|Advanced"/>
   </descriptors>
-<descriptors name="twt_use_case_remote_app" label="Wi-Fi - TWT Use Case Remote App" description="Demonstrates example application for TCP Client and UDP server Demo of TWT feature">
+<descriptors name="twt_use_case_remote_app_ncp" label="Wi-Fi - TWT Use case remote app(NCP)" description="Demonstrates TCP server and UDP server with periodic data transfer.">
     <properties key="namespace" value="template.uc"/>
     <properties key="keywords" value="universal\ configurator"/>
-    <properties key="projectFilePaths" value="examples/snippets/wlan/twt_use_case_remote_app/twt_use_case_remote_app.slcp"/>
+    <properties key="projectFilePaths" value="examples/snippets/wlan/twt_use_case_remote_app/twt_use_case_remote_app_ncp.slcp"/>
+    <properties key="boardCompatibility" value="com.silabs.board.none brd4180a brd4180b"/>
+    <properties key="partCompatibility" value="mcu.arm.efr32.mg21.* mcu.arm.efr32.mg21.* .*si917.* .*si917.* .*siwg917m111mgtba.* .*siwg917m111mgtba.* .*siwg917m141xgtba.* .*siwg917m111mgtba.* .*siwg917m111mgtba.* .*siwg917m111mgtba.*"/>
+    <properties key="ideCompatibility" value="makefile-ide simplicity-ide"/>
+    <properties key="toolchainCompatibility" value="gcc"/>
+    <properties key="quality" value="alpha"/>
+    <properties key="category" value="Example|Wi-Fi"/>
+    <properties key="stockConfigCompatibility" value="com.silabs.ss.framework.project.toolchain.core.default"/>
+    <properties key="sdkAndProtocolTags" value=""/>
+    <properties key="readmeFiles" value="examples/snippets/wlan/twt_use_case_remote_app/readme.md"/>
+	<properties key="filters" value="Device\ Type|NCP Wireless\ Technology|Wi-Fi Project\ Difficulty|Beginner"/>
+  </descriptors>
+<descriptors name="twt_use_case_remote_app_soc" label="Wi-Fi - TWT Use case remote app(SOC)" description="Demonstrates TCP server and UDP server with periodic data transfer.">
+    <properties key="namespace" value="template.uc"/>
+    <properties key="keywords" value="universal\ configurator"/>
+    <properties key="projectFilePaths" value="examples/snippets/wlan/twt_use_case_remote_app/twt_use_case_remote_app_soc.slcp"/>
     <properties key="boardCompatibility" value="com.silabs.board.none brd4325a brd4325b brd4325c brd4325g brd4338a"/>
     <properties key="partCompatibility" value="mcu.arm.efr32.mg21.* mcu.arm.efr32.mg21.* .*si917.* .*si917.* .*siwg917m111mgtba.* .*siwg917m111mgtba.* .*siwg917m141xgtba.* .*siwg917m111mgtba.* .*siwg917m111mgtba.* .*siwg917m111mgtba.*"/>
     <properties key="ideCompatibility" value="makefile-ide simplicity-ide"/>
@@ -1320,10 +1335,25 @@
     <properties key="readmeFiles" value="examples/snippets/wlan/twt_use_case_remote_app/readme.md"/>
 	<properties key="filters" value="Device\ Type|SoC Wireless\ Technology|Wi-Fi Project\ Difficulty|Beginner"/>
   </descriptors>
-<descriptors name="wifi6_twt_use_case_demo" label="Wi-Fi - TWT Use Case Demo App" description="Demonstrates example application for TCP Client and UDP server Demo of TWT feature">
+<descriptors name="wifi6_twt_use_case_demo_ncp" label="Wi-Fi - TWT Use case demo app(NCP)" description="Demonstrates TWT feature with TCP and UDP client data transfer">
     <properties key="namespace" value="template.uc"/>
     <properties key="keywords" value="universal\ configurator"/>
-    <properties key="projectFilePaths" value="examples/snippets/wlan/wifi6_twt_use_case_demo/wifi6_twt_use_case_demo.slcp"/>
+    <properties key="projectFilePaths" value="examples/snippets/wlan/wifi6_twt_use_case_demo/wifi6_twt_use_case_demo_ncp.slcp"/>
+    <properties key="boardCompatibility" value="com.silabs.board.none brd4180a brd4180b"/>
+    <properties key="partCompatibility" value="mcu.arm.efr32.mg21.* mcu.arm.efr32.mg21.* .*si917.* .*si917.* .*siwg917m111mgtba.* .*siwg917m111mgtba.* .*siwg917m141xgtba.* .*siwg917m111mgtba.* .*siwg917m111mgtba.* .*siwg917m111mgtba.*"/>
+    <properties key="ideCompatibility" value="makefile-ide simplicity-ide"/>
+    <properties key="toolchainCompatibility" value="gcc"/>
+    <properties key="quality" value="alpha"/>
+    <properties key="category" value="Example|Wi-Fi"/>
+    <properties key="stockConfigCompatibility" value="com.silabs.ss.framework.project.toolchain.core.default"/>
+    <properties key="sdkAndProtocolTags" value=""/>
+    <properties key="readmeFiles" value="examples/snippets/wlan/wifi6_twt_use_case_demo/readme.md"/>
+	<properties key="filters" value="Device\ Type|NCP Wireless\ Technology|Wi-Fi Project\ Difficulty|Beginner"/>
+  </descriptors>
+<descriptors name="wifi6_twt_use_case_demo_soc" label="Wi-Fi - TWT Use case demo app(SOC)" description="Demonstrates TWT feature with TCP and UDP client data transfer">
+    <properties key="namespace" value="template.uc"/>
+    <properties key="keywords" value="universal\ configurator"/>
+    <properties key="projectFilePaths" value="examples/snippets/wlan/wifi6_twt_use_case_demo/wifi6_twt_use_case_demo_soc.slcp"/>
     <properties key="boardCompatibility" value="com.silabs.board.none brd4325a brd4325b brd4325c brd4325g brd4338a"/>
     <properties key="partCompatibility" value="mcu.arm.efr32.mg21.* mcu.arm.efr32.mg21.* .*si917.* .*si917.* .*siwg917m111mgtba.* .*siwg917m111mgtba.* .*siwg917m141xgtba.* .*siwg917m111mgtba.* .*siwg917m111mgtba.* .*siwg917m111mgtba.*"/>
     <properties key="ideCompatibility" value="makefile-ide simplicity-ide"/>

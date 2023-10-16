@@ -54,8 +54,6 @@ component:
     from: wiseconnect3_sdk
   - id: wifi_resources
     from: wiseconnect3_sdk
-  - id: sl_tls
-    from: wiseconnect3_sdk
   - id: si917_memory_default_config
     from: wiseconnect3_sdk
   - id: rsilib_userconfig

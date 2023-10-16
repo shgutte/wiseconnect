@@ -23,12 +23,7 @@ include:
 define:
   - name: RSI_DEBUG_PRINTS
   - name: ROM_BYPASS
-  - name: EXECUTION_FROM_RAM
-    condition: [device_needs_ram_execution]
 template_contribution:
-- condition: [device_needs_ram_execution]
-  name: RAM_EXECUTION
-  value: true
 - name: event_handler
   condition: [rsi_m4_interface]
   value:
@@ -40,6 +35,7 @@ component:
 - {from: wiseconnect3_sdk, id: si917_memory_default_config}
 - {from: wiseconnect3_sdk, id: si91x_debug}
 - {from: wiseconnect3_sdk, id: syscalls}
+- {from: wiseconnect3_sdk, id: device_needs_ram_execution}
 requires:
 - name: sl_system
 - name: bsd_socket

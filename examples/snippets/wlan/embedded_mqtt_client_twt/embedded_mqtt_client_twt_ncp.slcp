@@ -57,16 +57,19 @@ readme:
   - path: readme.md
 other_file:
   - path: resources/readme/add_topic_name.png
-  - path: resources/readme/application_prints_ncp.png
   - path: resources/readme/application_prints_soc.png
   - path: resources/readme/connect_subscribe.png
   - path: resources/readme/connect.png
   - path: resources/readme/delete_connections.png
+  - path: resources/readme/embedded_mqtt_client_twt_setup_soc.png
+  - path: resources/readme/energy_profiler_step_6.png
+  - path: resources/readme/energy_profiler_step_7.png
   - path: resources/readme/mqtt_explorer_msg.png
   - path: resources/readme/mqtt_server.png
-  - path: resources/readme/mqtt_twt_example_ncp.png
   - path: resources/readme/mqtts_server.png
+  - path: resources/readme/outputs_2.png
   - path: resources/readme/publish_msg.png
+  - path: resources/sdk_edit_warning.png
 ui_hints:
   highlight:
     - path: readme.md

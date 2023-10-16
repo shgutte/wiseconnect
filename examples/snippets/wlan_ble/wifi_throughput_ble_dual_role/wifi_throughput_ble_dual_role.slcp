@@ -32,17 +32,11 @@ include:
       - path: wifi_app_config.h
 define:
   - name: RSI_DEBUG_PRINTS
-  - name: EXECUTION_FROM_RAM
-    condition:
-      - device_needs_ram_execution
-template_contribution:
-- condition: [device_needs_ram_execution]
-  name: RAM_EXECUTION
-  value: true
 component:
 - {from: wiseconnect3_sdk, id: si917_memory_default_config}
 - {from: wiseconnect3_sdk, id: si91x_debug}
 - {from: wiseconnect3_sdk, id: syscalls}
+- {from: wiseconnect3_sdk, id: device_needs_ram_execution}
 requires:
 - name: sl_system
 - name: network_manager

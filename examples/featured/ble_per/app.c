@@ -125,6 +125,7 @@
 #define DUTY_CYCLING_ENABLE  1
 
 #ifdef RSI_M4_INTERFACE
+#define ENABLE_POWER_SAVE          0 //! Set to 1 for powersave mode
 #define WIRELESS_WAKEUP_IRQ_PRI    8
 #define portNVIC_SHPR3_REG         (*((volatile uint32_t *)0xe000ed20))
 #define portNVIC_PENDSV_PRI        (((uint32_t)(0x3f << 4)) << 16UL)
@@ -524,7 +525,7 @@ void ble_per(void *unused)
                 per_stats.rssi,
                 per_stats.id_pkts_rcvd);
     }
-#if (defined RSI_M4_INTERFACE)
+#if (RSI_M4_INTERFACE && ENABLE_POWER_SAVE)
     if (!(P2P_STATUS_REG & TA_wakeup_M4)) {
       P2P_STATUS_REG &= ~M4_wakeup_TA;
       LOG_PRINT("\r\n triggering M4 sleep\r\n");

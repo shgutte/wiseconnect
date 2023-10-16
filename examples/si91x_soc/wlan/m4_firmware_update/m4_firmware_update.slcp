@@ -23,8 +23,7 @@ include:
 define:
   - name: RSI_DEBUG_PRINTS
   - name: M4_OTAF_DF
-  - name: EXECUTION_FROM_RAM
-    condition: [device_needs_ram_execution]
+
 component:
 - {from: wiseconnect3_sdk, id: si917_memory_default_config}
 - {from: wiseconnect3_sdk, id: si91x_debug}
@@ -42,6 +41,7 @@ requires:
 - name: wifi_resources
 - name: freertos
 - name: slist
+- name: device_needs_ram_execution
 - name: sl_si91x_soc_soft_reset
 - name: iostream_retarget_stdio
   condition: [device_has_devinfo]
@@ -55,10 +55,7 @@ requires:
   condition: [device_has_devinfo]
 - name: emlib_ldma
   condition: [device_has_devinfo]
-template_contribution:
-- condition: [device_needs_ram_execution]
-  name: RAM_EXECUTION
-  value: true
+
 toolchain_settings: []
 configuration:
 - {name: SL_BOARD_ENABLE_VCOM, value: '1'}

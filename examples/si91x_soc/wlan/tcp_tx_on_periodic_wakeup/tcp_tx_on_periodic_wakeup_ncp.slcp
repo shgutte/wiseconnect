@@ -4,7 +4,7 @@ quality: production
 label: TCP TX on periodic wakeup
 category: Example|Wi-Fi
 description: >
-  The application demonstrates TCP TX whith Periodic Wakeup
+  The application demonstrates TCP TX with Periodic Wakeup
 filter:
   - name: "Wireless Technology"
     value: ["Wi-Fi"]
@@ -23,8 +23,6 @@ include:
 define:
   - name: RSI_DEBUG_PRINTS
   - name: ROM_BYPASS
-
-
 requires:
 - name: sl_system
 - name: bsd_socket

@@ -160,15 +160,13 @@ The application can be configured to suit your requirements and development envi
   
   - Other STA instance configurations can be modified if required in `default_wifi_client_profile` configuration structure.
 
-2. Configure the following parameters in **app.c** to test throughput app as per requirements
+2. Configure the following parameters in **app.c** to test the app as per requirements
     - `SERVER_PORT` is the remote TCP server port number on the PC running Iperf.
     - `SERVER_IP` is the remote TCP server IP address on the PC running Iperf. 
-    - `NUMBER_OF_PACKETS` controls the number of packets sent to the remote TCP server.
 
     ```c
     #define SERVER_IP   "192.168.0.247"
     #define SERVER_PORT         5001
-    #define NUMBER_OF_PACKETS   1000
     ```
 
 3. In the Project explorer pane, expand as follows **wiseconnect3_sdk_xxx** > **components** > **si91x** > **socket_utility** > **inc** folder and open **sl_si91x_socket_constants.h** file. Configure TCP Keep Alive timeout, in seconds, in sl_si91x_socket_constants.h 
@@ -180,10 +178,9 @@ The application can be configured to suit your requirements and development envi
 #### 4.1.1 **iTWT Configuration**
 
 There are three TWT configuration APIs. 
->
-> - sl_wifi_target_wake_time_auto_selection - This API calculates and automatically configures TWT parameters based on the given inputs. Enables or disables a TWT session.
-> - sl_wifi_enable_target_wake_time - Configures user given TWT parameters. Enables a TWT session.
-> - sl_wifi_disable_target_wake_time - Disables a TWT session.
+> * sl_wifi_target_wake_time_auto_selection - This API calculates and automatically configures TWT session parameters based on the given inputs. Enables or disables a TWT session.
+> * sl_wifi_enable_target_wake_time - This API allows users to manually configure iTWT session parameters and enables the iTWT session.
+> * sl_wifi_disable_target_wake_time - Disables a TWT session.
 
 **sl_wifi_target_wake_time_auto_selection API**
 
@@ -194,9 +191,9 @@ sl_status_t sl_wifi_target_wake_time_auto_selection(sl_wifi_twt_selection_t *twt
 Parameters of this API can be configured in *sl_wifi_twt_selection_t* structure. Below given are the parameter descriptions:
 
 - twt_enable  :  1- Setup ; 0 - teardown
-- tx_latency  :  The period, in milliseconds, within which the given Tx operation needs to be completed. Valid values is either 0 or in the range of [200ms - 6hrs]
-- rx_latency  :  The maximum allowed receive latency, in milliseconds, when an Rx packet is buffered at the AP. If rx_latency is less than <= 1sec (except 0), session creation is not possible. For default configuration, input 0.
-- avg_tx_throughput  :  The expected average throughput, in Kilo Bytes per seconds, to be achieved within the Tx latency. Valid value is 0 to half of Device Throughput ( = 20MBPS / 2).
+- tx_latency  :  The allowed latency, in milliseconds, within which the given Tx operation is expected to be completed. If 0 is configured, maximum allowed Tx latency is same as rx_latency. Otherwise, valid values are in the range of [200ms - 6hrs].
+- rx_latency  :  The maximum allowed receive latency, in milliseconds, when an Rx packet is buffered at the AP. If rx_latency is less than <= 2 sec, session creation is not possible. If configured as 0, then by default 2sec is considered.
+- avg_tx_throughput  :  The expected average Tx throughput in Kbps should be between 0 and half of device average throughput.
 
 Enable TWT_AUTO_CONFIG MACRO in the app.c file.
 
@@ -316,18 +313,14 @@ status                          = sl_wifi_enable_target_wake_time(&twt_request);
 
 **iTWT Teardown Configuration**
 
-To teardown TWT session use the matching TWT API:
-
-1. For TWT Auto Selection API :
-
+To teardown TWT session use the matching TWT teardown API corresponding to the TWT setup configuration API:
+1. For TWT parameters Auto Selection API, call the following API to teardown :
 ```c
 status = sl_wifi_target_wake_time_auto_selection(twt_selection);
 ```
+- Set twt_enable parameter to '0' in the **twt_selection** structure. The other parameters in the structure are ignored. 
 
-Set twt_enable parameter to 0 in the twt_selection structure. The other parameters are ignored. 
-
-2. For user given TWT parameters API call the API as follows:
-
+2. For manually configurable TWT parameters API, call the following API to teardown:
 ```c
 status = sl_wifi_disable_target_wake_time(&twt_req);
 ```
@@ -381,13 +374,13 @@ User can get asynchronous TWT session updates if *twt_response_handler* is defin
 
 #### 4.1.2 Recommendations
 
-1. Use sl_wifi_target_wake_time_auto_selection with appropriate Rx Latency input according to the user scenario as it has improved  design over sl_wifi_enable_target_wake_time, handles Embedded MQTT level disconnections and has better user interface. 
+1. Use sl_wifi_target_wake_time_auto_selection with appropriate Rx Latency input according to the user scenario as it has improved  design over sl_wifi_enable_target_wake_time, handles TCP level disconnections and has better user interface. 
 2. iTWT setup is recommended after IP assignment/TCP connection/application connection.
-3. When using sl_wifi_target_wake_time_auto_selection API, increase TCP / ARP Timeouts at remote side depending upon the configured Rx Latency.
-4. When using sl_wifi_enable_target_wake_time, increase TCP / ARP Timeouts at remote side depending upon the configured TWT interval configured.
+3. When using sl_wifi_target_wake_time_auto_selection API, Rx Latency  should be less than TCP / ARP Timeouts at the remote side.
+4. When using sl_wifi_enable_target_wake_time, TWT interval configured should be less than TCP / ARP Timeouts at the remote side.
 5. For iTWT, GTK Interval Should be kept maximum possible value or zero. If GTK interval is not configurable, recommended TWT interval (in case of sl_wifi_enable_target_wake_time) / RX Latency (in case of sl_wifi_target_wake_time_auto_selection API) is less than 4sec.
 6. When sl_wifi_enable_target_wake_time API is used, configuring TWT Wake interval beyond 1 min might lead to disconnections from the AP. Recommended to use TWT wakeup interval less than or equal to 1 min.
-7. WLAN Keep Alive timeout should not be disabled when sl_wifi_target_wake_time_auto_selection API is used or when unannounced TWT session is set up using sl_wifi_enable_target_wake_time API. It is recommended to use WLAN Keep Alive timeout of 30 sec.
+7. WLAN Keep Alive timeout should **not** be disabled when sl_wifi_target_wake_time_auto_selection API is used or when unannounced TWT session is set up using sl_wifi_enable_target_wake_time API. It is recommended to use WLAN Keep Alive timeout of 30 sec which is the default timeout even if not configured specifically by the user.
 
 ### 4.2 Build the application
 
@@ -433,26 +426,6 @@ User can get asynchronous TWT session updates if *twt_response_handler* is defin
   
   After flashing the application code to the module. Energy profiler can be used for current consumption measurements.
 
-- Go to launcher → Debug Adapters pane and click on the board name.
-  
-  ![Figure: Energy Profiler Step 1](resources/readme/energy_profiler_step_1.png)
-
-- Click on Device configuration symbol
-  
-  ![Figure: Energy Profiler Step 2](resources/readme/energy_profiler_step_2.png)
-
-- Open the device configuration tab
-  
-  ![Figure: Energy Profiler Step 3](resources/readme/energy_profiler_step_3.png)
-
-- Change the Target part name to "EFR32MG21A020F1024IM32"
-
-  ![Figure: Energy Profiler Step 4](resources/readme/energy_profiler_step_4.png)
-
-- Change board name to "BRD4180B", click "OK"
-
-  ![Figure: Energy Profiler Step 5](resources/readme/energy_profiler_step_5.png)
-
 - From tools, choose Energy Profiler and click "OK"
 
   ![Figure: Energy Profiler Step 6](resources/readme/energy_profiler_step_6.png)
@@ -461,11 +434,7 @@ User can get asynchronous TWT session updates if *twt_response_handler* is defin
 
   ![Figure: Energy Profiler Step 7](resources/readme/energy_profiler_step_7.png)
 
-**NOTE** : The target part and board name have to be reverted to default to flash application binary.
-
-  ![Figure: Energy Profiler Step 8](resources/readme/energy_profiler_step_8.png)
-
-# Expected output in Energy Profiler
+- Expected output in Energy Profiler
 
   ![Figure: Energy Profiler Output](resources/readme/outputs_2.png)
 

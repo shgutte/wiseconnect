@@ -87,7 +87,7 @@ typedef enum {
 
 // ADC sensor ids
 typedef enum {
-  SL_ADC_JOYSTICK_ID = 0x00, /*!< adc joystick sensor id*/
+  SL_ADC_JOYSTICK_ID = 0x00, /*!< adc joystick id*/
   SL_ADC_MAX_ID,             /*!< max adc sensor id*/
 } adc_sensor_id_t;
 

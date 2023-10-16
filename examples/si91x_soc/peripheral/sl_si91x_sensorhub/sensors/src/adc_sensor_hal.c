@@ -1,6 +1,6 @@
 /***************************************************************************/ /**
- * @file adcsensor_hal.c
- * @brief adc sensor hal driver
+ * @file adc_sensor_hal.c
+ * @brief adc sensor hal handles ADC based sensors
  *******************************************************************************
  * # License
  * <b>Copyright 2023 Silicon Laboratories Inc. www.silabs.com</b>
@@ -29,76 +29,59 @@
  ******************************************************************************/
 
 #include <stdio.h>
+#include <stdlib.h>
 #include "rsi_debug.h"
 #include "sensor_hub.h"
 #include "sensor_type.h"
 #include "sl_si91x_adc.h"
-#include "adc_joystick.h"
+#include "adc_sensor_driver.h"
 
 // For unused parameter
 #define UNUSED_PARAM __attribute__((unused))
 
+/* Rx buffer to store ADC data in ram*/
+#ifdef SL_SH_ADC_CHANNEL0
+uint16_t adc_data_ram_ch0[SL_SH_ADC_CH0_NUM_SAMPLES] __attribute__((aligned(2)));
+#endif
+#ifdef SL_SH_ADC_CHANNEL1
+uint16_t adc_data_ram_ch1[SL_SH_ADC_CH1_NUM_SAMPLES] __attribute__((aligned(2)));
+#endif
+
+#ifdef SL_SH_ADC_CHANNEL0
+uint16_t *adc_data_ptrs[] = {
+  adc_data_ram_ch0,
+#ifdef SL_SH_ADC_CHANNEL1
+  adc_data_ram_ch1,
+#endif
+};
+#endif
+
 /*******************************************************************************
  *************************** LOCAL VARIABLES   *******************************
  ******************************************************************************/
-static volatile bool adc_data_ready = false;
 
 static sl_adc_cfg_t *adc_config;
 
-static const adc_sensor_impl_t adc_sensor_implementations[] = {
-#ifdef SL_CONFIG_SENSOR_ADC_INCLUDED_JOYSTICK
-  {
-    .channel           = SL_ADC_JOYSTICK_ID,
-    .init              = sl_si91x_adc_joystick_init,
-    .enable            = sl_si91x_adc_joystick_enable,
-    .disable           = sl_si91x_adc_joystick_disable,
-    .deinit            = sl_si91x_adc_joystick_deinit,
-    .sample_adc_static = sl_si91x_adc_joystick_read_static_data,
-    .sleep             = NULL,
-    .wakeup            = NULL,
-  },
-#endif
+static const adc_sensor_impl_t adc_sensor_implementation = {
+  .channel_init      = sl_si91x_adc_channel_init,
+  .channel_enable    = sl_si91x_adc_chnl_enable,
+  .channel_disable   = sl_si91x_adc_chnl_disable,
+  .deinit            = sl_si91x_adc_de_init,
+  .sample_adc_static = sl_si91x_adc_read_static_sample,
+  .channel_sample    = sl_si91x_adc_channel_read_sample,
+  .sleep             = NULL,
+  .wakeup            = NULL,
 };
 
 /*******************************************************************************
- * @fn        static const adc_sensor_impl_t *find_implementation(int channel)
- * @brief     ADC find sensor implementation
- *            This function goes through the available sensor implementations and load the
- *            required implementation based on channel. One one channel is one sensor but
- *            one sensor can have multiple channels
+ * @fn        static const adc_sensor_impl_t *get_implementation(int channel)
+ * @brief     ADC get sensor implementation
  *
- * @param[in] ADC channel no 
- *
- * @return    respective sl error code (SL_STATUS_OK, SL_STATUS_FAIL, ETC)
+ * @return    pointer to adc sensor implementation
 *******************************************************************************/
-static const adc_sensor_impl_t *find_implementation(int channel)
+static const adc_sensor_impl_t *get_implementation()
 {
-  const adc_sensor_impl_t *active_driver = NULL;
-  int count                              = sizeof(adc_sensor_implementations) / sizeof(adc_sensor_impl_t);
-  for (int i = 0; i < count; i++) {
-    if (adc_sensor_implementations[i].channel == channel) {
-      active_driver = &adc_sensor_implementations[i];
-      break;
-    }
-  }
-  return active_driver;
-}
-
-/*******************************************************************************
- * @fn        static sl_status_t adc_start(sl_adc_config_t *adc_cfg)
- * @brief     ADC start
- *            This function starts ADC peripheral
- *
- * @param[in] ADC configuration
- *
- * @return    respective sl error code (SL_STATUS_OK, SL_STATUS_FAIL, ETC)
-*******************************************************************************/
-static sl_status_t adc_start(sl_adc_config_t *adc_cfg)
-{
-  sl_status_t sl_status;
-  sl_status = sl_si91x_adc_start(*adc_cfg);
-
-  return sl_status;
+  return &adc_sensor_implementation;
 }
 
 /*******************************************************************************
@@ -106,7 +89,7 @@ static sl_status_t adc_start(sl_adc_config_t *adc_cfg)
  * @brief     ADC stop
  *            This function stops ADC peripheral
  *
- * @param[in] ADC configuration
+ * @param[in] adc_cfg: ADC configuration
  *
  * @return    respective sl error code (SL_STATUS_OK, SL_STATUS_FAIL, ETC)
 *******************************************************************************/
@@ -119,43 +102,25 @@ static sl_status_t adc_stop(sl_adc_config_t *adc_cfg)
 }
 
 /*******************************************************************************
- * @fn        void sl_si91x_adc_callback(UNUSED_PARAM uint8_t channel_no, UNUSED_PARAM uint8_t event)
- * @brief     ADC user callback
- *            This function will be called from ADC interrupt handler
- *
- * @param[in] ADC channel number
- * @param[in] ADC event (SL_ADC_STATIC_MODE_EVENT, SL_INTERNAL_DMA)
- *
-*******************************************************************************/
-void sl_si91x_adc_callback(UNUSED_PARAM uint8_t channel_no, UNUSED_PARAM uint8_t event)
-{
-  if (event == SL_ADC_STATIC_MODE_EVENT) {
-    adc_data_ready = true;
-  }
-}
-
-/*******************************************************************************
  * @fn        sl_sensor_adc_handle_t sl_si91x_adc_sensor_create(sl_adc_bus_handle_t bus, int channel)
  * @brief     ADC sensor create
  *            This function will create ADC sensor by initializing respective sensor and
  *            then starts the ADC peripheral if not started already. We will keep is_init
  *            flag to know if particular sensor is initialized.
  *
- * @param[in] ADC bus value
- * @param[in] ADC channel (used to find respective sensor implementations)
+ * @param[in] bus: ADC bus value
+ * @param[in] channel: ADC channel (used to find respective sensor implementations)
  *
  * @return    respective sl error code (SL_STATUS_OK, SL_STATUS_FAIL, ETC)
 *******************************************************************************/
-sl_sensor_adc_handle_t sl_si91x_adc_sensor_create(sl_sensor_bus_t bus, int channel)
+sl_sensor_adc_handle_t sl_si91x_adc_sensor_create(sl_adc_bus_handle_t bus, int channel)
 {
-  const adc_sensor_impl_t *sensor_impl = find_implementation(channel);
+  const adc_sensor_impl_t *sensor_impl = get_implementation();
 
   if (sensor_impl == NULL) {
     DEBUGOUT("\r\n No driver founded, ADC INPUT channel = %d \r\n", channel);
     return NULL;
   }
-
-  /* Store sensor information in the internal structure only when it is being created with run time memory allocation */
   sensor_adc_t *p_sensor = (sensor_adc_t *)pvPortMalloc(sizeof(sensor_adc_t));
   if (p_sensor == NULL) {
     DEBUGOUT("\r\n ADC sensor create failed while memory allocation:%u \r\n", sizeof(sensor_adc_t));
@@ -168,22 +133,18 @@ sl_sensor_adc_handle_t sl_si91x_adc_sensor_create(sl_sensor_bus_t bus, int chann
   /* All other adc sensor handles will be called only after sensor_create, so we are storing the pointer to adc bus interface info here */
   adc_config = sl_si91x_fetch_adc_bus_intf_info();
 
-  sl_status_t ret = p_sensor->impl->init(&adc_config->adc_ch_cfg, &adc_config->adc_cfg);
+  if (adc_config->adc_ch_cfg.rx_buf[p_sensor->channel] == NULL) {
+    // TODO: update when multi channel support is available
+    adc_config->adc_ch_cfg.rx_buf[p_sensor->channel] = (int16_t *)adc_data_ptrs[channel];
+  }
+  sl_status_t ret = p_sensor->impl->channel_init(&adc_config->adc_ch_cfg, &adc_config->adc_cfg);
   if (ret != SL_STATUS_OK) {
     free(p_sensor);
-    DEBUGOUT("\r\n ADC sensor init failed, channel:%d \r\n", p_sensor->channel);
+    DEBUGOUT("\r\n ADC sensor channel init failed, channel:%d \r\n", p_sensor->channel);
     return NULL;
-  } else {
-    DEBUGOUT("\r\n ADC - sensor created, channel:%d \r\n", p_sensor->channel);
   }
+  DEBUGOUT("\r\n ADC - sensor created, channels %d\r\n", channel);
   p_sensor->is_init = true;
-
-  ret = adc_start(&adc_config->adc_cfg);
-  if (ret != SL_STATUS_OK) {
-    free(p_sensor);
-    DEBUGOUT("\r\n ADC sensor start failed while initialization \r\n");
-    return NULL;
-  }
 
   return (sl_sensor_adc_handle_t)p_sensor;
 }
@@ -195,8 +156,8 @@ sl_sensor_adc_handle_t sl_si91x_adc_sensor_create(sl_sensor_bus_t bus, int chann
  *            that ADC peripheral is started as part of sensor init. And this should be 
  *            used only if you are using multiple channels
  *
- * @param[in] ADC sensor pointer which contains implementations, bus, etc.
- * @param[in] ADC channel number
+ * @param[in] p_sensor: ADC sensor pointer which contains implementations, bus, etc.
+ * @param[in] channel: ADC channel number
  *
  * @return    respective sl error code (SL_STATUS_OK, SL_STATUS_FAIL, ETC)
 *******************************************************************************/
@@ -205,13 +166,16 @@ inline sl_status_t sl_si91x_adc_sensor_enable(sensor_adc_t *p_sensor, UNUSED_PAR
   if (p_sensor == NULL) {
     return SL_STATUS_NULL_POINTER;
   }
-  sl_status_t ret = p_sensor->impl->enable(p_sensor->channel);
-  if (ret != SL_STATUS_OK) {
-    DEBUGOUT("\r\n ADC sensor enable failed \r\n");
-    return ret;
+  for (uint8_t ch_no = 0; ch_no < MAX_CHNL_NO; ch_no++) {
+    if (p_sensor->channel & BIT(ch_no)) {
+      sl_status_t ret = p_sensor->impl->channel_enable(ch_no);
+      if (ret != SL_STATUS_OK) {
+        DEBUGOUT("\r\n ADC sensor enable failed \r\n");
+        return ret;
+      }
+    }
   }
-
-  return ret;
+  return SL_STATUS_OK;
 }
 
 /*******************************************************************************
@@ -221,8 +185,8 @@ inline sl_status_t sl_si91x_adc_sensor_enable(sensor_adc_t *p_sensor, UNUSED_PAR
  *            Note that ADC peripheral will not be deinitialized here. And this should be 
  *            used only if you are using multiple channels
  *
- * @param[in] ADC sensor pointer which contains implementations, bus, etc.
- * @param[in] ADC channel number
+ * @param[in] sensor: ADC sensor pointer which contains implementations, bus, etc.
+ * @param[in] channel: ADC channel number
  *
  * @return    respective sl error code (SL_STATUS_OK, SL_STATUS_FAIL, ETC)
 *******************************************************************************/
@@ -231,13 +195,16 @@ inline sl_status_t sl_si91x_adc_sensor_disable(sensor_adc_t *p_sensor, UNUSED_PA
   if (p_sensor == NULL) {
     return SL_STATUS_NULL_POINTER;
   }
-  sl_status_t ret = p_sensor->impl->disable(p_sensor->channel);
-  if (ret != SL_STATUS_OK) {
-    DEBUGOUT("\r\n ADC sensor disable failed \r\n");
-    return ret;
+  for (uint8_t ch_no = 0; ch_no < MAX_CHNL_NO; ch_no++) {
+    if (p_sensor->channel & BIT(ch_no)) {
+      sl_status_t ret = p_sensor->impl->channel_disable(ch_no);
+      if (ret != SL_STATUS_OK) {
+        DEBUGOUT("\r\n ADC sensor disable failed \r\n");
+        return ret;
+      }
+    }
   }
-
-  return ret;
+  return SL_STATUS_OK;
 }
 
 /******************************************************************************
@@ -246,11 +213,11 @@ inline sl_status_t sl_si91x_adc_sensor_disable(sensor_adc_t *p_sensor, UNUSED_PA
  *            This function will delete the sensor by freeing the adc sensor configurations
  *            and ADC peripheral will be stopped if no sensor is running.
  *
- * @param[in] ADC sensor pointer which contains implementations, bus, etc.
+ * @param[in] sensor: ADC sensor pointer which contains implementations, bus, etc.
  *
  * @return    respective sl error code (SL_STATUS_OK, SL_STATUS_FAIL, ETC)
 *******************************************************************************/
-sl_adc_bus__error_t sl_si91x_adc_sensor_delete(sl_sensor_adc_handle_t *sensor)
+sl_status_t sl_si91x_adc_sensor_delete(sl_sensor_adc_handle_t *sensor)
 {
   if (sensor == NULL) {
     return SL_STATUS_NULL_POINTER;
@@ -269,6 +236,8 @@ sl_adc_bus__error_t sl_si91x_adc_sensor_delete(sl_sensor_adc_handle_t *sensor)
     return ret;
   }
 
+  // TODO: Create a variable to know how many ADC sensors are created
+  // Stop ADC only when no ADC sensors are present
   ret = adc_stop(&adc_config->adc_cfg);
   if (ret != SL_STATUS_OK) {
     DEBUGOUT("\r\n ADC sensor stop failed while deinitialization \r\n");
@@ -285,23 +254,22 @@ sl_adc_bus__error_t sl_si91x_adc_sensor_delete(sl_sensor_adc_handle_t *sensor)
  * @brief     ADC sensor read static data
  *            This function will sample static ADC data from the ADC_DATA register.
  *
- * @param[in] ADC sensor pointer which contains implementations, bus, etc.
- * @param[in] data pointer to store the ADC static value
+ * @param[in] sensor: ADC sensor pointer which contains implementations, bus, etc.
+ * @param[in] adc_value: data pointer to store the ADC static value
  * 
  * @return    respective sl error code (SL_STATUS_OK, SL_STATUS_FAIL, ETC)
 *******************************************************************************/
 sl_status_t sl_si91x_adc_sensor_sample_static(sl_sensor_adc_handle_t *sensor, uint16_t *adc_value)
 {
-  if (sensor == NULL) {
+  sensor_adc_t *p_sensor = (sensor_adc_t *)(sensor);
+  if (p_sensor == NULL) {
     return SL_STATUS_NULL_POINTER;
+  } else if (p_sensor->is_init == false) {
+    return SL_STATUS_NOT_INITIALIZED;
   } else if (adc_value == NULL) {
     return SL_STATUS_INVALID_PARAMETER;
-  } else if (adc_data_ready == false) {
-    return SL_STATUS_NOT_READY;
   }
-  adc_data_ready         = false;
-  sensor_adc_t *p_sensor = (sensor_adc_t *)(sensor);
-  sl_status_t ret        = p_sensor->impl->sample_adc_static(&adc_config->adc_ch_cfg, &adc_config->adc_cfg, adc_value);
+  sl_status_t ret = p_sensor->impl->sample_adc_static(&adc_config->adc_ch_cfg, &adc_config->adc_cfg, adc_value);
   return ret;
 }
 
@@ -310,7 +278,7 @@ sl_status_t sl_si91x_adc_sensor_sample_static(sl_sensor_adc_handle_t *sensor, ui
  * @brief     ADC sensor sleep
  *            This function will put ADC sensor into sleep
  *
- * @param[in] ADC sensor pointer which contains implementations, bus, etc.
+ * @param[in] sensor: ADC sensor pointer which contains implementations, bus, etc.
  * 
  * @return    respective sl error code (SL_STATUS_OK, SL_STATUS_FAIL, ETC)
 *******************************************************************************/
@@ -329,7 +297,7 @@ sl_status_t sl_si91x_adc_sensor_sleep(sl_sensor_adc_handle_t sensor)
  * @brief     ADC sensor wakeup
  *            This function will wakeup ADC sensor from sleep
  *
- * @param[in] ADC sensor pointer which contains implementations, bus, etc.
+ * @param[in] sensor: ADC sensor pointer which contains implementations, bus, etc.
  * 
  * @return    respective sl error code (SL_STATUS_OK, SL_STATUS_FAIL, ETC)
 *******************************************************************************/
@@ -348,8 +316,8 @@ sl_status_t sl_si91x_adc_sensor_wakeup(sl_sensor_adc_handle_t sensor)
  * @brief     ADC sensor set power mode
  *            This function will put sensor into requested power mode
  * 
- * @param[in] ADC sensor pointer which contains implementations, bus, etc.
- * @param[in] power mode for sensor
+ * @param[in] sensor: ADC sensor pointer which contains implementations, bus, etc.
+ * @param[in] power_mode: power mode for sensor
  * 
  * @return    respective sl error code (SL_STATUS_OK, SL_STATUS_FAIL, ETC)
 *******************************************************************************/
@@ -383,35 +351,60 @@ sl_status_t sl_si91x_adc_sensor_set_power(sl_sensor_adc_handle_t sensor, sl_sens
  * @brief     ADC sensor sample
  *            This function will sample the respective channel ADC data.
  *
- * @param[in] ADC sensor pointer which contains implementations, bus, etc.
- * @param[in] data group which contains memory to store ADC data and handle
+ * @param[in] sensor: ADC sensor pointer which contains implementations, bus, etc.
+ * @param[in] data_group: contains memory to store ADC data and handle
  *            number of samples
  * 
  * @return    respective sl error code (SL_STATUS_OK, SL_STATUS_FAIL, ETC)
 *******************************************************************************/
-sl_adc_bus__error_t sl_si91x_adc_sensor_sample(sl_sensor_adc_handle_t sensor, sl_sensor_data_group_t *data_group)
+sl_status_t sl_si91x_adc_sensor_sample(sl_sensor_adc_handle_t *sensor, sl_sensor_data_group_t *data_group)
 {
   sensor_adc_t *p_sensor = (sensor_adc_t *)(sensor);
   sl_status_t ret        = 0;
+  uint8_t ch_no          = p_sensor->channel;
 
-  if (sensor == NULL) {
+  if (p_sensor == NULL) {
     return SL_STATUS_NULL_POINTER;
-  } else if (adc_data_ready == false) {
-    return SL_STATUS_NOT_READY;
-  }
-
-  adc_data_ready = false;
-  if ((p_sensor->impl->sample_adc_static) != NULL) {
-    ret = p_sensor->impl->sample_adc_static(&adc_config->adc_ch_cfg,
-                                            &adc_config->adc_cfg,
-                                            &data_group->sensor_data[data_group->number].adc);
-    if (SL_STATUS_OK != ret) {
-      return ret;
+  } else if (p_sensor->is_init == false) {
+    return SL_STATUS_NOT_INITIALIZED;
+  } else if (adc_config->adc_cfg.operation_mode == SL_ADC_FIFO_MODE) {
+    if ((adc_config->adc_data_ready & BIT(ch_no)) != 1) {
+      return SL_STATUS_NOT_READY;
     }
   }
-  data_group->number++;
 
-  return RSI_OK;
+  if (adc_config->adc_cfg.operation_mode == SL_ADC_STATIC_MODE) {
+    if ((p_sensor->impl->sample_adc_static) != NULL) {
+      ret                                             = p_sensor->impl->sample_adc_static(&adc_config->adc_ch_cfg,
+                                              &adc_config->adc_cfg,
+                                              (uint16_t *)&adc_data_ram_ch0[0]);
+      data_group->sensor_data[data_group->number].adc = (uint16_t *)&adc_data_ram_ch0[0];
+      if (SL_STATUS_OK != ret) {
+        return ret;
+      }
+    }
+    data_group->number++;
+  } else {
+    if (adc_config->adc_data_ready & BIT(ch_no)) {
+      adc_config->adc_data_ready &= ~(BIT(ch_no));
+      if (p_sensor->impl->channel_sample != NULL) {
+        p_sensor->impl->channel_sample(&adc_config->adc_ch_cfg, ch_no);
+        for (uint8_t sample_length = 0; sample_length < adc_config->adc_ch_cfg.num_of_samples[ch_no]; sample_length++) {
+          if (adc_config->adc_ch_cfg.rx_buf[ch_no][sample_length] & BIT(11)) {
+            adc_config->adc_ch_cfg.rx_buf[ch_no][sample_length] =
+              (adc_config->adc_ch_cfg.rx_buf[ch_no][sample_length] & (ADC_MASK_VALUE));
+          } else {
+            adc_config->adc_ch_cfg.rx_buf[ch_no][sample_length] = adc_config->adc_ch_cfg.rx_buf[ch_no][sample_length]
+                                                                  | BIT(11);
+          }
+        }
+        data_group->sensor_data[data_group->number].adc = (uint16_t *)adc_config->adc_ch_cfg.rx_buf[ch_no];
+        data_group->number                              = adc_config->adc_ch_cfg.num_of_samples[ch_no];
+      }
+    }
+  }
+
+  return SL_STATUS_OK;
 }
 
 /*******************************************************************************
@@ -419,14 +412,12 @@ sl_adc_bus__error_t sl_si91x_adc_sensor_sample(sl_sensor_adc_handle_t sensor, sl
  * @brief     ADC sensor control
  *            This function will control the different sensor modes
  *
- * @param[in] ADC sensor pointer which contains implementations, bus, etc.
- * @param[in] cmd to put the sensor into respective mode
+ * @param[in] sensor: ADC sensor pointer which contains implementations, bus, etc.
+ * @param[in] cmd: put the sensor into respective mode
  * 
  * @return    respective sl error code (SL_STATUS_OK, SL_STATUS_FAIL, ETC)
 *******************************************************************************/
-sl_adc_bus__error_t sl_si91x_adc_sensor_control(sl_sensor_adc_handle_t sensor,
-                                                sl_sensor_command_t cmd,
-                                                UNUSED_PARAM void *args)
+sl_status_t sl_si91x_adc_sensor_control(sl_sensor_adc_handle_t sensor, sl_sensor_command_t cmd, UNUSED_PARAM void *args)
 {
   sl_status_t ret = SL_STATUS_OK;
 

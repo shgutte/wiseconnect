@@ -1,7 +1,7 @@
-project_name: twt_use_case_remote_app
+project_name: wifi6_twt_use_case_demo_ncp
 package: wifi
 quality: production
-label: twt_tcp_client
+label: Wi-Fi - TWT Use case demo app(NCP)
 category: Example|Wi-Fi
 description: >
   Update To keep device in TWT mode 
@@ -22,12 +22,9 @@ include:
       - path: app.h
 define:
   - name: RSI_DEBUG_PRINTS
+  - name: ROM_BYPASS
   - name: HIGH_EFFICIENCY_PARAMS_SUPPORT
   - name: TWT_SUPPORT
-component:
-- {from: wiseconnect3_sdk, id: si917_memory_default_config}
-- {from: wiseconnect3_sdk, id: si91x_debug}
-- {from: wiseconnect3_sdk, id: syscalls}
 requires:
 - name: sl_system
 - name: bsd_socket
@@ -60,13 +57,15 @@ configuration:
 readme:
   - path: readme.md
 other_file:
-  - path: resources/readme/remoteapplicationprintssoc.png
+  - path: resources/readme/energy_profiler_step_6.png
+  - path: resources/readme/energy_profiler_step_7.png
+  - path: resources/readme/image218.png
+  - path: resources/readme/output_soc.png
+  - path: resources/readme/outputs_2.png
+  - path: resources/readme/sample_output_twt_use_case.png
+  - path: resources/readme/sdk_edit_warning.png
   - path: resources/readme/twt_tcp_client_udp_client_soc_ncp.png
-  - path: resources/readme/twtremoteapplicationconfiguration.png
 ui_hints:
   highlight:
     - path: readme.md
       focus: true
-post_build:
-  path: ../../../../utilities/postbuild_profile/wiseconnect_soc.slpb
-

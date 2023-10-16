@@ -1,5 +1,5 @@
 /***************************************************************************/ /**
- * @file adcsensor_hal.h
+ * @file adc_sensor_hal.h
  * @brief adc sensor hal driver
  *******************************************************************************
  * # License
@@ -28,62 +28,59 @@
  *
  ******************************************************************************/
 
-#ifndef ADCSENSOR_HAL_H_
-#define ADCSENSOR_HAL_H_
+#ifndef ADC_SENSOR_HAL_H_
+#define ADC_SENSOR_HAL_H_
 #include "sensor_type.h"
 #include "sl_si91x_adc.h"
 
 /***************************************************************************/ /**
  * Typedef for different pointer handles
  ******************************************************************************/
-typedef void *sl_error_t;
-
-typedef int32_t sl_adc_bus__error_t;
+typedef void *sl_adc_bus_handle_t;
 
 typedef void *sl_sensor_adc_handle_t;
 
 /* Macros for sensor hub */
-#define SL_CONFIG_SENSOR_ADC_INCLUDED_JOYSTICK 1
+#define SL_SH_ADC_CHANNEL0
 
-#ifdef SL_CONFIG_SENSOR_ADC_INCLUDED_JOYSTICK
-#include "adc_joystick.h"
+#ifdef SL_SH_ADC_CHANNEL0
+#include "adc_sensor_hal.h"
 #endif
 
+#define SL_SH_FIFO_MODE
 /* ADC peripheral configurations */
-#define SL_ADC_PS4_SOC_FREQ          180000000 ///< PLL out clock 180MHz
-#define SL_ADC_SOC_PLL_REF_FREQUENCY 32000000  ///< PLL input REFERENCE clock 32MHZ
-#define SL_ADC_DVISION_FACTOR        0         ///< Division factor
-#define SL_ADC_STATIC_INPUT          0         ///< ADC static input selection
-#define SL_ADC_SAMPLING_RATE         10000     ///< ADC sampling rate, 1Ksps
-#define SL_ADC_NUM_CHANNELS_ENABLE   1         ///< ADC number of channels enabled
+#define SL_SH_ADC_SAMPLING_RATE       100 ///< ADC sampling rate, 10sps, 20 milliseconds per sample */
+#define SL_SH_ADC_NUM_CHANNELS_ENABLE 1   ///< ADC number of channels enabled */
 
 /* ADC sensor 0 configurations */
-#define SL_ADC_SENSOR0_P_INPUT     5 ///< ADC sensor 0 positive input selection
-#define SL_ADC_SENSOR0_CHANNEL     0 ///< ADC sensor 0 channel number
-#define SL_ADC_SENSOR0_OPAMP_GAIN  0 ///< ADC sensor 0 opamp gain
-#define SL_ADC_SENSOR0_NUM_SAMPLES 1 ///< ADC sensor 0 number of samples
+#ifdef SL_SH_ADC_CHANNEL0
+#define SL_SH_ADC_CH0_P_INPUT     5 ///< ADC sensor 0 positive input selection */
+#define SL_SH_ADC_CH0_CHANNEL     0 ///< ADC sensor 0 channel number */
+#define SL_SH_ADC_CH0_OPAMP_GAIN  2 ///< ADC sensor 0 opamp gain */
+#define SL_SH_ADC_CH0_NUM_SAMPLES 1 ///< ADC sensor 0 number of samples */
+#endif
 
-#define SL_ADC_MAX_OP_VALUE 4096 ///< Maximum voltage output value from adc, this is used to calculate input volatge
-#define SL_ADC_VREF_VALUE   3.3f ///< Reference voltage
+#define SL_SH_ADC_MAX_OP_VALUE 4096 ///< Maximum voltage output value from adc */
+#define SL_SH_ADC_VREF_VALUE   3.3f ///< Reference voltage */
 
-/* ADC sensor implementations per sensor */
+/* ADC sensor implementations for sensors */
 typedef struct {
-  adc_sensor_id_t channel;
-  sl_status_t (*init)(sl_adc_channel_config_t *, sl_adc_config_t *);
-  sl_status_t (*enable)(uint8_t);
-  sl_status_t (*disable)(uint8_t);
+  sl_status_t (*channel_init)(sl_adc_channel_config_t *, sl_adc_config_t *);
+  sl_status_t (*channel_enable)(uint8_t);
+  sl_status_t (*channel_disable)(uint8_t);
   sl_status_t (*deinit)(sl_adc_config_t *);
   sl_status_t (*sample_adc_static)(sl_adc_channel_config_t *, sl_adc_config_t *, uint16_t *);
+  sl_status_t (*channel_sample)(sl_adc_channel_config_t *, uint8_t);
   sl_status_t (*sleep)(void);
   sl_status_t (*wakeup)(void);
 } adc_sensor_impl_t;
 
 /* ADC sensor hal configurations */
 typedef struct {
-  uint8_t channel;               ///< ADC channel number
-  sl_sensor_bus_t bus;           ///< ADC bus handle configuration
-  bool is_init;                  ///< Initialization check flag
-  const adc_sensor_impl_t *impl; ///< Pointer to adc sensor implementation
+  uint8_t channel;
+  sl_adc_bus_handle_t bus;
+  bool is_init;
+  const adc_sensor_impl_t *impl;
 } sensor_adc_t;
 
 #ifdef __cplusplus
@@ -94,15 +91,6 @@ extern "C" {
 // Prototypes
 
 /***************************************************************************/ /**
- * @fn        void sl_si91x_adc_callback(UNUSED_PARAM uint8_t channel_no, UNUSED_PARAM uint8_t event)
- * @brief     ADC user callback
- *
- * @param[in] channel_no : respective channel number 
- * @param[in] channel_no : callback event (ADC_STATIC_MODE_CALLBACK, etc)
- ******************************************************************************/
-void sl_si91x_adc_callback(uint8_t channel_no, uint8_t event);
-
-/***************************************************************************/ /**
  * @fn        sl_sensor_adc_handle_t sl_si91x_adc_sensor_create(sl_adc_bus_handle_t bus, int channel)
  * @brief     ADC sensor create
  *
@@ -110,7 +98,7 @@ void sl_si91x_adc_callback(uint8_t channel_no, uint8_t event);
  * @param[in] id : respective channel number
  * @return adc sensor handle
  ******************************************************************************/
-sl_sensor_adc_handle_t sl_si91x_adc_sensor_create(sl_sensor_bus_t bus, int id);
+sl_sensor_adc_handle_t sl_si91x_adc_sensor_create(sl_adc_bus_handle_t bus, int id);
 
 /***************************************************************************/ /**
  * @fn        sl_status_t sl_si91x_adc_sensor_delete(sl_sensor_adc_handle_t *sensor)
@@ -124,7 +112,7 @@ sl_sensor_adc_handle_t sl_si91x_adc_sensor_create(sl_sensor_bus_t bus, int id);
  *         \ref SL_STATUS_FAIL (0x0001) - The function is failed
  *         \ref SL_STATUS_NOT_INITIALIZED (0x0011) - Clock is not initialized
  ******************************************************************************/
-sl_adc_bus__error_t sl_si91x_adc_sensor_delete(sl_sensor_adc_handle_t *sensor);
+sl_status_t sl_si91x_adc_sensor_delete(sl_sensor_adc_handle_t *sensor);
 
 /***************************************************************************/ /**
  * @fn        sl_status_t sl_si91x_adc_sensor_sample_static(sl_sensor_adc_handle_t *sensor, uint16_t *adc_value)
@@ -198,7 +186,7 @@ sl_status_t sl_si91x_adc_sensor_set_power(sl_sensor_adc_handle_t sensor, sl_sens
  *         \ref SL_STATUS_FAIL (0x0001) - The function is failed
  *         \ref SL_STATUS_NOT_INITIALIZED (0x0011) - Clock is not initialized
  ******************************************************************************/
-sl_adc_bus__error_t sl_si91x_adc_sensor_sample(sl_sensor_adc_handle_t sensor, sl_sensor_data_group_t *data_group);
+sl_status_t sl_si91x_adc_sensor_sample(sl_sensor_adc_handle_t *sensor, sl_sensor_data_group_t *data_group);
 
 /***************************************************************************/ /**
  * @fn        sl_status_t sl_si91x_adc_sensor_control(sl_sensor_adc_handle_t sensor, sl_sensor_command_t cmd, UNUSED_PARAM void *args)
@@ -213,11 +201,11 @@ sl_adc_bus__error_t sl_si91x_adc_sensor_sample(sl_sensor_adc_handle_t sensor, sl
  *         \ref SL_STATUS_FAIL (0x0001) - The function is failed
  *         \ref SL_STATUS_NOT_INITIALIZED (0x0011) - Clock is not initialized
  ******************************************************************************/
-sl_adc_bus__error_t sl_si91x_adc_sensor_control(sl_sensor_adc_handle_t sensor, sl_sensor_command_t cmd, void *args);
+sl_status_t sl_si91x_adc_sensor_control(sl_sensor_adc_handle_t sensor, sl_sensor_command_t cmd, void *args);
 
 #ifdef __cplusplus
 extern "C"
 }
 #endif
 
-#endif /* ADCSENSOR_HAL_H_ */
+#endif /* ADC_SENSOR_HAL_H_ */

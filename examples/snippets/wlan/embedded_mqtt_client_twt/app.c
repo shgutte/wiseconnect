@@ -43,6 +43,7 @@
 #ifdef RSI_M4_INTERFACE
 #include "rsi_power_save.h"
 #include "rsi_wisemcu_hardware_setup.h"
+#include "rsi_ps_config.h"
 #endif
 
 /******************************************************
@@ -93,26 +94,6 @@
 #define MAX_TX_AND_RX_LATENCY_LIMIT          22118400 // 6hrs in milli seconds
 #define MAX_BEACON_WAKE_UP_AFTER_SP \
   2 // The number of beacons after the service period completion for which the module wakes up and listens for any pending RX.
-
-#ifdef RSI_M4_INTERFACE
-#ifdef COMMON_FLASH_EN
-#ifdef CHIP_917B0
-#define IVT_OFFSET_ADDR 0x81C2000 /*<!Application IVT location VTOR offset>          B0 common flash Board*/
-#else
-#define IVT_OFFSET_ADDR 0x8212000 /*<!Application IVT location VTOR offset>          A0 Common flash Board*/
-#endif
-#else
-#define IVT_OFFSET_ADDR \
-  0x8012000 /*<!Application IVT location VTOR offset>          Dual Flash  (both A0 and B0) Board*/
-#endif
-#ifdef CHIP_917B0
-#define WKP_RAM_USAGE_LOCATION \
-  0x24061EFC /*<!Bootloader RAM usage location upon wake up  */ // B0 Boards (common flash & Dual flash)
-#else
-#define WKP_RAM_USAGE_LOCATION \
-  0x24061000 /*<!Bootloader RAM usage location upon wake up  */ // A0 Boards (common flash & Dual flash)
-#endif
-#endif
 
 /******************************************************
  *               Variable Definitions
@@ -198,7 +179,6 @@ sl_wifi_twt_selection_t default_twt_selection_configuration = {
   .beacon_wake_up_count_after_sp         = MAX_BEACON_WAKE_UP_AFTER_SP
 };
 
-bool twt_results_complete   = false;
 sl_status_t callback_status = SL_STATUS_OK;
 
 sl_mqtt_client_t client              = { 0 };
@@ -321,7 +301,6 @@ sl_status_t twt_callback_handler(sl_wifi_event_t event,
   UNUSED_PARAMETER(arg);
 
   if (CHECK_IF_EVENT_FAILED(event)) {
-    twt_results_complete = true;
     return SL_STATUS_FAIL;
   }
 
@@ -387,7 +366,6 @@ sl_status_t twt_callback_handler(sl_wifi_event_t event,
     printf("\r\n twt_flow_id : 0x%X", result->twt_flow_id);
     printf("\r\n negotiation_type : 0x%X\r\n", result->negotiation_type);
   }
-  twt_results_complete = true;
   return SL_STATUS_OK;
 }
 
@@ -606,18 +584,9 @@ sl_status_t mqtt_example()
     performance_profile.twt_request = default_twt_setup_configuration;
     status                          = sl_wifi_enable_target_wake_time(&performance_profile.twt_request);
   }
-  if (SL_STATUS_IN_PROGRESS == status) {
-    const uint32_t start = osKernelGetTickCount();
-
-    while (!twt_results_complete && (osKernelGetTickCount() - start) <= TWT_SCAN_TIMEOUT) {
-      osThreadYield();
-    }
-
-    status = twt_results_complete ? callback_status : SL_STATUS_TIMEOUT;
-  }
-
   VERIFY_STATUS_AND_RETURN(status);
-  twt_results_complete = false;
+  // A small delay is added so that the asynchronous response from TWT is printed in correct format.
+  osDelay(100);
 
   //! Apply power save profile
   performance_profile.profile = ASSOCIATED_POWER_SAVE;

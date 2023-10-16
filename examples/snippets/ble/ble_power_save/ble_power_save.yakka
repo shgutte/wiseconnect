@@ -14,9 +14,11 @@ includes:
 defines:
   global:
     - RSI_DEBUG_PRINTS
+    - WIRELESS_BASED_WAKEUP_TO_USE
 
 requires:
   components:
+    - sllib_m4_power_save
     - si91x_debug
     - si91x_support
     - sl_device

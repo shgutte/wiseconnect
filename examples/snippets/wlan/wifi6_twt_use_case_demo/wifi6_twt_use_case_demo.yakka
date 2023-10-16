@@ -1,4 +1,4 @@
-name: Twt use case remote app
+name: Twt use case demo app
 
 sources:
   - main.c

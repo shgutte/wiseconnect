@@ -23,6 +23,7 @@ include:
       - path: ble_config.h
 define:
   - name: RSI_DEBUG_PRINTS
+  - name: WIRELESS_BASED_WAKEUP_TO_USE
 template_contribution:
 - name: event_handler
   condition: [rsi_m4_interface]
@@ -33,6 +34,7 @@ template_contribution:
   priority: -9995
 component:
 - {from: wiseconnect3_sdk, id: si917_memory_default_config}
+- {from: wiseconnect3_sdk, id: sllib_m4_power_save}
 - {from: wiseconnect3_sdk, id: si91x_debug}
 - {from: wiseconnect3_sdk, id: syscalls}
 - {from: wiseconnect3_sdk, id: rsilib_userconfig}

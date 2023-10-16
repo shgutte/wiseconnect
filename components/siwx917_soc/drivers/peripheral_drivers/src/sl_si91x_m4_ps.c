@@ -46,7 +46,7 @@
 #define NVIC_RTC_ALARM       MCU_CAL_ALARM_IRQn
 #ifdef COMMON_FLASH_EN
 #ifdef CHIP_917B0
-#define IVT_OFFSET_ADDR 0x81C2000 /*<!Application IVT location VTOR offset for B0>  */
+#define IVT_OFFSET_ADDR 0x8202000 /*<!Application IVT location VTOR offset for B0>  */
 #else
 #define IVT_OFFSET_ADDR 0x8212000 /*<!Application IVT location VTOR offset for A0>  */
 #endif
@@ -110,6 +110,7 @@ void IRQ021_Handler(void)
   //LOG_PRINT("BUTTON_PRESSED");
 }
 #endif /* BUTTON_BASED_WAKEUP */
+#ifdef WIRELESS_BASED_WAKEUP_TO_USE
 void IRQ026_Handler()
 {
   //volatile uint32_t wakeUpSrc = 0;
@@ -123,7 +124,7 @@ void IRQ026_Handler()
   //LOG_PRINT("\r\n received packet from sleep \r\n");
   return;
 }
-
+#endif /* WIRELESS_BASED_WAKEUP_TO_USE */
 #if ALARM_TIMER_BASED_WAKEUP
 void set_alarm_interrupt_timer(uint16_t interval)
 {
@@ -256,7 +257,7 @@ void RTC_ALARM_IRQHandler(void)
 #endif /* ALARM_TIMER_BASED_WAKEUP */
 
 /**
- * @fn         sl_m4_sleep_wakeup
+ * @fn         sl_si91x_m4_sleep_wakeup
  * @brief      Keeps the M4 In the Sleep
  * @param[in]  none
  * @return    none.
@@ -264,7 +265,7 @@ void RTC_ALARM_IRQHandler(void)
  * This function is used to trigger sleep in the M4 and in the case of the retention submitting the buffer valid
  * to the TA for the rx packets.
  */
-void sl_m4_sleep_wakeup(void)
+void sl_si91x_m4_sleep_wakeup(void)
 {
 
 #if ALARM_TIMER_BASED_WAKEUP
@@ -272,6 +273,7 @@ void sl_m4_sleep_wakeup(void)
   set_alarm_interrupt_timer(ALARM_PERIODIC_TIME);
 
 #endif
+#ifdef WIRELESS_BASED_WAKEUP_TO_USE
   /* Configure Wakeup-Source */
   RSI_PS_SetWkpSources(WIRELESS_BASED_WAKEUP);
 
@@ -279,7 +281,7 @@ void sl_m4_sleep_wakeup(void)
   NVIC_SetPriority(WIRELESS_WAKEUP_IRQHandler, WIRELESS_WAKEUP_IRQ_PRI);
 
   NVIC_EnableIRQ(WIRELESS_WAKEUP_IRQHandler);
-
+#endif
 #if BUTTON_BASED_WAKEUP
   /*Configure the UULP GPIO 2 as wakeup source */
   wakeup_source_config();

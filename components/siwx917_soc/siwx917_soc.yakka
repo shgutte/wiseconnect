@@ -108,12 +108,12 @@ supports:
     brd4325g:
       silicon_labs:
         device:
-          flash_addr: 136060928
+          flash_addr: 136323072
           ram_size: 196608
     brd4338a:
       silicon_labs:
         device:
-          flash_addr: 136060928
+          flash_addr: 136323072
           ram_size: 196608
     brd4325b:
       silicon_labs:
@@ -123,17 +123,17 @@ supports:
     brd4325c:
       silicon_labs:
         device:
-          flash_addr: 136060928
+          flash_addr: 136323072
           ram_size: 194560
     brd4340a:
       silicon_labs:
         device:
-          flash_addr: 136060928
+          flash_addr: 136323072
           ram_size: 194560
 
 silicon_labs:
   device:
-    flash_size: 450560
+    flash_size: 2093056
     flash_page_size: 256
     ram_addr: 1024
     fpu: true

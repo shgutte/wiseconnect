@@ -958,8 +958,8 @@ sl_status_t sl_wifi_disconnect(sl_wifi_interface_t interface)
 
 sl_status_t sl_wifi_stop_ap(sl_wifi_interface_t interface)
 {
-  sl_si91x_disassociation_request_t disconnect_request;
-  sl_status_t status = SL_STATUS_OK;
+  sl_status_t status                                   = SL_STATUS_OK;
+  sl_si91x_disassociation_request_t disconnect_request = { 0 };
 
   if (!device_initialized) {
     return SL_STATUS_NOT_INITIALIZED;
@@ -1612,9 +1612,10 @@ sl_status_t sl_wifi_enable_target_wake_time(sl_wifi_twt_request_t *twt_req)
                                                     SI91X_WLAN_CMD_QUEUE,
                                                     twt_req,
                                                     sizeof(sl_wifi_twt_request_t),
-                                                    SL_SI91X_RETURN_IMMEDIATELY,
+                                                    SL_SI91X_WAIT_FOR(35000),
                                                     NULL,
                                                     NULL);
+  VERIFY_STATUS_AND_RETURN(status);
   return status;
 }
 
@@ -1640,9 +1641,10 @@ sl_status_t sl_wifi_target_wake_time_auto_selection(sl_wifi_twt_selection_t *twt
                                                     SI91X_WLAN_CMD_QUEUE,
                                                     twt_auto_request,
                                                     sizeof(sl_wifi_twt_selection_t),
-                                                    SL_SI91X_RETURN_IMMEDIATELY,
+                                                    SL_SI91X_WAIT_FOR(35000),
                                                     NULL,
                                                     NULL);
+  VERIFY_STATUS_AND_RETURN(status);
   return status;
 }
 
@@ -1653,9 +1655,10 @@ sl_status_t sl_wifi_disable_target_wake_time(sl_wifi_twt_request_t *twt_req)
                                                       SI91X_WLAN_CMD_QUEUE,
                                                       twt_req,
                                                       sizeof(sl_wifi_twt_request_t),
-                                                      SL_SI91X_RETURN_IMMEDIATELY,
+                                                      SL_SI91X_WAIT_FOR(35000),
                                                       NULL,
                                                       NULL);
+    VERIFY_STATUS_AND_RETURN(status);
     return status;
   }
 

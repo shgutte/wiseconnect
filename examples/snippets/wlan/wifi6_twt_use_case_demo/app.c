@@ -45,11 +45,11 @@
 #include "sl_net_wifi_types.h"
 #include "sl_si91x_socket_utility.h"
 #include "sl_si91x_socket_constants.h"
-#include "rsi_debug.h"
 #include "sl_si91x_driver.h"
 #include "sl_si91x_socket.h"
 
 #ifdef RSI_M4_INTERFACE
+#include "rsi_debug.h"
 #include "rsi_power_save.h"
 #include "rsi_wisemcu_hardware_setup.h"
 #include "rsi_m4.h"
@@ -66,8 +66,8 @@
 #define BACK_LOG                   1
 #define TCP_SERVER_PORT            5001
 #define UDP_SERVER_PORT            5002
-#define SERVER_IP_UDP              "192.168.50.32"
-#define SERVER_IP_TCP              "192.168.1.5"
+#define SERVER_IP_UDP              "192.168.1.10"
+#define SERVER_IP_TCP              "192.168.1.10"
 #define NUMBER_OF_PACKETS          1
 #define SL_HIGH_PERFORMANCE_SOCKET BIT(7)
 #define TWT_AUTO_CONFIG            1
@@ -150,10 +150,12 @@ int tcp_client_socket = -1, udp_client_socket = -1;
 uint32_t start_rx = 0, start_rtt = 0, end_rtt = 0;
 volatile uint32_t num_pkts  = 0;
 int32_t packet_count        = 0;
-volatile uint8_t data_sent  = 0;
-volatile uint8_t data_recvd = 0;
 volatile uint64_t num_bytes = 0;
 int8_t send_buf[BUF_SIZE];
+
+osSemaphoreId_t data_semaphore;
+volatile bool data_received_flag = false;
+#define SEMAPHORE_TIMEOUT 100
 
 sl_wifi_twt_request_t default_twt_setup_configuration = {
   .twt_enable              = 1,
@@ -190,7 +192,6 @@ sl_wifi_twt_selection_t default_twt_selection_configuration = {
   .beacon_wake_up_count_after_sp         = MAX_BEACON_WAKE_UP_AFTER_SP
 };
 
-volatile bool twt_results_complete   = false;
 volatile sl_status_t callback_status = SL_STATUS_OK;
 
 /******************************************************
@@ -214,16 +215,15 @@ void data_callback(uint32_t sock_no, uint8_t *buffer, uint32_t length)
   UNUSED_PARAMETER(sock_no);
   int i;
 
-  printf("RX Packet Received\r\n ");
-  printf("RX: LEN %ld\r\n ", length);
-  printf("Data:\r\n ");
-
+  printf("Command length : %ld\r\n", length);
+  printf("Command Received from remote app is:\r\n");
+  printf("\"");
   for (i = 0; i < length; i++) {
     printf("%c", buffer[i]);
   }
-  printf("\r\n");
-  data_sent  = 0;
-  data_recvd = 1;
+  printf("\"\r\n");
+  data_received_flag = true;
+  osSemaphoreRelease(data_semaphore);
 }
 
 void app_init(const void *unused)
@@ -238,6 +238,7 @@ void application_start()
   sl_wifi_performance_profile_t performance_profile = { 0 };
   sl_wifi_version_string_t version                  = { 0 };
   sl_mac_address_t mac_addr                         = { 0 };
+  data_semaphore                                    = osSemaphoreNew(1, 0, NULL);
 
   status = sl_net_init(SL_NET_WIFI_CLIENT_INTERFACE, &sl_wifi_twt_client_configuration, NULL, NULL);
   if (status != SL_STATUS_OK) {
@@ -261,7 +262,7 @@ void application_start()
     printf("Failed to bring m4_ta_secure_handshake: 0x%lx\r\n", status);
     return;
   }
-  printf("\r\nFirmware version before update: %s\r\n", version.version);
+  printf("Firmware version before update: %s\r\n", version.version);
 
   status = sl_net_up(SL_NET_WIFI_CLIENT_INTERFACE, 0);
   if (status != SL_STATUS_OK) {
@@ -275,7 +276,7 @@ void application_start()
     printf("Failed to get MAC address: 0x%lx\r\n", status);
     return;
   }
-  printf("\r\nMAC Address: %x:%x:%x:%x:%x:%x\r\n",
+  printf("MAC Address: %x:%x:%x:%x:%x:%x\r\n",
          mac_addr.octet[0],
          mac_addr.octet[1],
          mac_addr.octet[2],
@@ -308,7 +309,7 @@ void application_start()
     printf("\r\nError while creating TCP Socket: 0x%lx \r\n", status);
     return;
   }
-  printf("\r\nTCP Socket Creation done\r\n");
+  printf("TCP Socket Creation done\r\n");
 
   sl_wifi_set_twt_config_callback(twt_callback_handler, NULL);
   if (TWT_AUTO_CONFIG == 1) {
@@ -318,26 +319,19 @@ void application_start()
     performance_profile.twt_request = default_twt_setup_configuration;
     status                          = sl_wifi_enable_target_wake_time(&performance_profile.twt_request);
   }
-  if (SL_STATUS_IN_PROGRESS == status) {
-    const uint32_t start = osKernelGetTickCount();
-
-    while (!twt_results_complete && (osKernelGetTickCount() - start) <= TWT_SCAN_TIMEOUT) {
-      osThreadYield();
-    }
-
-    status = twt_results_complete ? callback_status : SL_STATUS_TIMEOUT;
-  }
   if (status != SL_STATUS_OK) {
     printf("\r\nError while configuring TWT: 0x%lx \r\n", status);
     return;
   }
+  // A small delay is added so that the asynchronous response from TWT is printed in correct format.
+  osDelay(100);
 
   status = sl_wifi_filter_broadcast(5000, 1, 1);
   if (status != SL_STATUS_OK) {
     printf("\r\nBroadcast Data Filter Failed: 0x%lx \r\n", status);
     return;
   }
-  printf("\r\nEnabled Broadcast Data Filter\n");
+  printf("Enabled Broadcast Data Filter\r\n");
 
 #if ENABLE_POWER_SAVE
   performance_profile.profile = ASSOCIATED_POWER_SAVE;
@@ -346,12 +340,12 @@ void application_start()
     printf("\r\nPowersave Configuration Failed, Error Code : 0x%lX\r\n", status);
     return;
   }
-  printf("\r\nAssociated Power Save Enabled\n");
+  printf("Associated Power Save Enabled\r\n");
 #endif
 
   status = receive_and_send_data();
   if (status != SL_STATUS_OK) {
-    printf("\r\nSend and Receive Data fail: 0x%lx \r\n", status);
+    printf("Send and Receive Data fail: 0x%lx \r\n", status);
     return;
   }
 }
@@ -372,9 +366,9 @@ sl_status_t send_udp_data(void)
     printf("\r\nSocket creation failed with BSD error: %d\r\n", errno);
     return SL_STATUS_FAIL;
   }
-  printf("\r\nSocket ID : %d\r\n", udp_client_socket);
+  printf("Socket ID : %d\r\n", udp_client_socket);
 
-  printf("\r\nUDP TX start\r\n");
+  printf("Sending a UDP packet\r\n");
   while (packet_count < NUMBER_OF_PACKETS) {
     status = sendto(udp_client_socket,
                     (int8_t *)"Hello from UDP client!!!",
@@ -416,7 +410,7 @@ sl_status_t create_tcp_socket(void)
     close(tcp_client_socket);
     return SL_STATUS_FAIL;
   }
-  printf("\r\nSet Socket Option Success\r\n");
+  printf("Set Socket Option Success\r\n");
 
   server_address.sin_family = AF_INET;
   server_address.sin_port   = TCP_SERVER_PORT;
@@ -428,7 +422,7 @@ sl_status_t create_tcp_socket(void)
     close(tcp_client_socket);
     return SL_STATUS_FAIL;
   }
-  printf("\r\nSocket connected to TCP server\r\n");
+  printf("Socket connected to TCP server\r\n");
 
   return SL_STATUS_OK;
 }
@@ -442,7 +436,6 @@ static sl_status_t twt_callback_handler(sl_wifi_event_t event,
   UNUSED_PARAMETER(arg);
 
   if (CHECK_IF_EVENT_FAILED(event)) {
-    twt_results_complete = true;
     return SL_STATUS_FAIL;
   }
 
@@ -508,74 +501,59 @@ static sl_status_t twt_callback_handler(sl_wifi_event_t event,
     printf("\r\n twt_flow_id : 0x%X", result->twt_flow_id);
     printf("\r\n negotiation_type : 0x%X\r\n", result->negotiation_type);
   }
-  twt_results_complete = true;
   return SL_STATUS_OK;
 }
 
 sl_status_t receive_and_send_data(void)
 {
   sl_status_t status = SL_STATUS_OK;
-  printf("\r\nTCP RX started \r\n");
+  printf("\r\nListening for command\r\n");
   while (1) {
-
-    while (!data_recvd) {
-      osThreadYield();
-#ifdef RSI_M4_INTERFACE
-      if (!(P2P_STATUS_REG & TA_wakeup_M4)) {
-        if (!data_recvd) {
-          //! Keep M4 in sleep
-          M4_sleep_wakeup();
-        }
-      }
-#endif
-    }
-    printf("\r\nTCP RX completed \r\n");
-
+    if (osSemaphoreAcquire(data_semaphore, SEMAPHORE_TIMEOUT) == osOK) {
+      if (data_received_flag) {
 #if !SEND_TCP_DATA
-    struct sockaddr_in server_address = { 0 };
-    server_address.sin_family         = AF_INET;
-    server_address.sin_port           = UDP_SERVER_PORT;
-    sl_net_inet_addr(SERVER_IP_UDP, &server_address.sin_addr.s_addr);
-    if (data_recvd) {
-      data_sent    = 1;
-      packet_count = 0;
-      printf("\r\nUDP TX start\r\n");
+        struct sockaddr_in server_address = { 0 };
+        server_address.sin_family         = AF_INET;
+        server_address.sin_port           = UDP_SERVER_PORT;
+        sl_net_inet_addr(SERVER_IP_UDP, &server_address.sin_addr.s_addr);
+        packet_count = 0;
+        printf("Sending UDP Data\r\n");
 
-      while (packet_count < NUMBER_OF_PACKETS) {
         for (uint16_t i = 0; i < BUF_SIZE; i++) {
           send_buf[i] = i;
         }
-        status = sendto(udp_client_socket,
-                        send_buf,
-                        BUF_SIZE,
-                        0,
-                        (struct sockaddr *)&server_address,
-                        sizeof(struct sockaddr_in));
-        if (status < 0) {
-          data_sent = 0;
-          printf("\r\nFailed to send data to UDP Server, Error Code : 0x%lX\r\n", status);
-          close(udp_client_socket);
+        while (packet_count < NUMBER_OF_PACKETS) {
+          status = sendto(udp_client_socket,
+                          send_buf,
+                          BUF_SIZE,
+                          0,
+                          (struct sockaddr *)&server_address,
+                          sizeof(struct sockaddr_in));
+          if (status < 0) {
+            printf("\r\nFailed to send data to UDP Server, Error Code : 0x%lX\r\n", status);
+            close(udp_client_socket);
+          }
+          packet_count++;
         }
-        packet_count++;
-      }
-    }
 #else
-    packet_count = 0;
-    if (!data_sent) {
-      data_sent = 1;
-      while (packet_count < NUMBER_OF_PACKETS) {
-        status =
-          send(tcp_client_socket, (int8_t *)"Hello from TCP client!!!!", (sizeof("Hello from TCP client!!!!") - 1), 0);
-        if (status < 0) {
-          data_sent = 0;
-          printf("\r\nFailed to send data to TCP Server, Error Code : 0x%lX\r\n", status);
-          close(udp_client_socket);
+        packet_count = 0;
+        while (packet_count < NUMBER_OF_PACKETS) {
+          status = send(tcp_client_socket, (int8_t *)"Door lock opened", (sizeof("Door lock opened") - 1), 0);
+          if (status < 0) {
+            printf("\r\nFailed to send data to TCP Server, Error Code : 0x%lX\r\n", status);
+            close(tcp_client_socket);
+          }
+          packet_count++;
         }
-        packet_count++;
-      }
-    }
+        printf("\r\nTCP TX completed \r\n");
 #endif
-    data_recvd = 0;
+        data_received_flag = false;
+      }
+    } else {
+#ifdef RSI_M4_INTERFACE
+      M4_sleep_wakeup();
+#endif
+    }
   }
   return SL_STATUS_OK;
 }
@@ -612,7 +590,7 @@ void M4_sleep_wakeup(void)
   /* Configure RAM Usage and Retention Size */
   sl_si91x_configure_ram_retention(WISEMCU_192KB_RAM_IN_USE, WISEMCU_RETAIN_DEFAULT_RAM_DURING_SLEEP);
 
-  printf("\r\nM4 in sleep\r\n");
+  printf("M4 in sleep\r\n");
 
   /* Trigger M4 Sleep*/
   sl_si91x_trigger_sleep(SLEEP_WITH_RETENTION,
@@ -625,7 +603,7 @@ void M4_sleep_wakeup(void)
   sli_m4_ta_interrupt_init();
 
   //  /*Start of M4 init after wake up  */
-  printf("\r\nM4 Wake Up\r\n");
+  printf("M4 Wake Up\r\n");
 #endif
 }
 #endif

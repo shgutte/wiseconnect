@@ -468,8 +468,9 @@ void receive_data_from_tcp_client(void)
   printf("\r\nTCP_RX Throughput test finished\r\n");
   printf("\r\nTotal bytes received : %ld\r\n", bytes_read);
 
-  close(client_socket);
   close(server_socket);
+  close(client_socket);
+
   measure_and_print_throughput(bytes_read, (now - start));
 #else
   int read_bytes = 1;
@@ -540,8 +541,9 @@ void receive_data_from_tcp_client(void)
 
   measure_and_print_throughput(total_bytes_received, (now - start));
 
-  close(client_socket);
   close(server_socket);
+  close(client_socket);
+
 #endif
 }
 

@@ -121,7 +121,7 @@ typedef struct {
     float current;     /*!< Current sensor       unit: mA           */
     float voltage;     /*!< Voltage sensor       unit: mV           */
     float data[4];     /*!< for general use */
-    uint16_t adc;      /*!< ADC output           unit: mV           */
+    uint16_t *adc;     /*!< ADC output           unit: mV           */
   };
 } sl_sensor_data_t;
 

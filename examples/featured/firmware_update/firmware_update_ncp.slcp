@@ -22,8 +22,7 @@ include:
       - path: app.h
 define:
   - name: RSI_DEBUG_PRINTS
-  - name: EXECUTION_FROM_RAM
-    condition: [device_needs_ram_execution]
+
 
 requires:
 - name: sl_system
@@ -50,10 +49,7 @@ requires:
   condition: [device_has_devinfo]
 - name: emlib_ldma
   condition: [device_has_devinfo]
-template_contribution:
-- condition: [device_needs_ram_execution]
-  name: RAM_EXECUTION
-  value: true
+
 toolchain_settings: []
 configuration:
 - {name: SL_BOARD_ENABLE_VCOM, value: '1'}

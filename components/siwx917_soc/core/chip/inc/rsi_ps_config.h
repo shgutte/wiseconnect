@@ -26,7 +26,7 @@
 #else
 #ifdef COMMON_FLASH_EN
 #ifdef CHIP_917B0
-#define IVT_OFFSET_ADDR 0x81C2000 /*<!Application IVT location VTOR offset>        */
+#define IVT_OFFSET_ADDR 0x8202000 /*<!Application IVT location VTOR offset>        */
 #else
 #define IVT_OFFSET_ADDR 0x8212000 /*<!Application IVT location VTOR offset>        */
 #endif

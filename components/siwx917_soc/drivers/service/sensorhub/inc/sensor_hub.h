@@ -186,8 +186,8 @@ typedef struct {
   uint16_t sampling_intr_req_pin; ///< GPIO pin for sampling the sensor data
   uint32_t sampling_interval;     ///< Sensor data sampling interval
   union {
-    uint8_t address; ///< Address of sensor
-    uint8_t channel; ///< Channel for adc
+    uint8_t address;  ///< Address of sensor
+    uint16_t channel; ///< Channel for adc
   };
   sl_sensor_id_t sensor_id;                ///< Sensor id
   sl_sensor_bus_t sensor_bus;              ///< Protocol for the sensor(spi/i2c)
@@ -226,6 +226,7 @@ typedef struct {
 typedef struct {
   uint8_t sensor_list_index; ///< Interrupt mode sensor index
   uint16_t intr;             ///< Interrupt GPIO Pin
+  uint16_t adc_intr_channel; ///< Channel number for ADC interrupt
 } sl_intr_list_t;
 
 /*******************************************************************************
@@ -283,12 +284,11 @@ typedef struct {
 ///@brief ADC bus interface configuration structure
  ******************************************************************************/
 typedef struct sl_adc_config {
-  float vref;                         ///< reference voltage
+  uint8_t adc_init;                   ///< flag to know if adc is initialized, this is necessary to deinit
+  uint16_t adc_data_ready;            ///< flag to indicate data availability for all 16 channels
   void (*adc_cb)(uint8_t, uint8_t);   ///< adc user callback
-  uint8_t channel_no;                 ///< adc channel number
-  sl_adc_channel_config_t adc_ch_cfg; ///< adc channel configuration
-  sl_adc_clock_config_t adc_clk_cfg;  ///< adc clock configuration
   sl_adc_config_t adc_cfg;            ///< adc configuration
+  sl_adc_channel_config_t adc_ch_cfg; ///< adc channel configuration
 } sl_adc_cfg_t;
 
 /*******************************************************************************
@@ -846,6 +846,19 @@ void ARM_I2C_SignalEvent(uint32_t event);
  */
 /*=============================================================================*/
 sl_adc_cfg_t *sl_si91x_fetch_adc_bus_intf_info(void);
+
+/*=============================================================================*/
+/**
+ * @fn    void sl_si91x_adc_callback(uint8_t channel_no, uint8_t event)
+ * @brief ADC callback from RSI_ADC_InterruptHandler
+ *
+ * @param[in] channel_no - respective channel number
+ * @param[in] event      - callback event (ADC_STATIC_MODE_CALLBACK, 
+ *                         ADC_THRSHOLD_CALLBACK, INTERNAL_DMA, FIFO_MODE_EVENT)
+ */
+/*=============================================================================*/
+void sl_si91x_adc_callback(uint8_t channel_no, uint8_t event);
+
 #endif
 
 /** @} (end addtogroup SENSOR-HUB) */

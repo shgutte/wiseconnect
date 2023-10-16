@@ -23,12 +23,8 @@ include:
 define:
   - name: RSI_DEBUG_PRINTS
   - name: USART_CONFIG
-  - name: EXECUTION_FROM_RAM
-    condition: [device_needs_ram_execution]
-template_contribution:
-- condition: [device_needs_ram_execution]
-  name: RAM_EXECUTION
-  value: true
+
+
 component:
 - {from: wiseconnect3_sdk, id: si917_memory_default_config}
 - {id: stdio}
@@ -46,6 +42,7 @@ component:
 - {id: brd4002a}
 - {from: wiseconnect3_sdk, id: udma_linker_config}
 - {from: wiseconnect3_sdk, id: cmsis_udma}
+- {from: wiseconnect3_sdk, id: device_needs_ram_execution}
 requires:
 - name: sl_system
 - name: bsd_socket

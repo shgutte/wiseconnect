@@ -3,7 +3,7 @@ label: RAM_LEVEL_NWP_MEDIUM_MCU_MEDIUM
 package: platform
 description: EXT_FEAT_448K_M4SS_256K
 category: Platform|si91x|core
-quality: internal
+quality: production
 provides:
   - name: si917_mem_config
   - name: si917_mem_config_2

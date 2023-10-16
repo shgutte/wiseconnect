@@ -21,9 +21,8 @@
 
 ## Purpose/Scope
 
-This application demonstrates the procedure to setup TWT session and configure the SiWx91x in TCP client role.
-
-In this application, the SiWx91x connects to a Wi-Fi access point, obtains an IP address, connects to Iperf server running on a remote PC and maintains  TCP socket connection and periodically wakes up as per the configured TWT wakeup interval in powersave.
+The **TWT Use Case Demo App** demonstrates TCP and UDP client sockets as well as TWT session configuration. When the app receives a trigger packet over the TCP socket, it will send TCP Data for the Door lock scenario and UDP Data for the camera scenario.
+This application is designed to be used in combination with **TWT Use Case Remote App**.
 
 ## Prerequisites/Setup Requirements
 
@@ -92,9 +91,9 @@ In general, it is advisable to start the server before the client since the clie
 - The application can be configured to suit your requirements and development environment.
 Read through the following sections and make any changes needed. 
 
-- This application can be used in combination with **TWT Use Case Remote App** Application. These two applications simulate Door lock and Camera like scenarios.
+This application is designed to be used in combination with **TWT Use Case Remote App** Application. These two applications simulate Door lock and Camera like data transfer scenarios.
 
-- In Camera scenario, remote application (Device A) sends a command to the DUT (where TWT Use Case Application is running. Say Device B). Upon receiving the command (from Device A), DUT sends UDP data(equivalent to camera streaming) in response to the remote application's trigger.
+- In Camera scenario, remote application (say Device A) sends a command to the DUT (device where TWT Use Case Demo Application is running. Say Device B). Upon receiving the command (from Device A), DUT sends UDP data(equivalent to camera streaming) in response to the remote application's trigger.
 
 - In Door Lock scenario, upon receiving the command (from Device A), DUT (Device B) sends a TCP response (equivalent to door lock status response) to the remote application (Device B).
 
@@ -160,11 +159,11 @@ Read through the following sections and make any changes needed.
 
 ### iTWT Configuration APIs
 
-There are 3 TWT configuration APIs. 
-
-> - sl_wifi_target_wake_time_auto_selection - This API calculates and automatically configures TWT parameters based on the given inputs. Enables or disables a TWT session.
-> - sl_wifi_enable_target_wake_time - Configures user given TWT parameters. Enables a TWT session.
-> - sl_wifi_disable_target_wake_time - Disables a TWT session.
+To configure iTWT parameters open **app.c**.
+There are three TWT configuration APIs. 
+> * sl_wifi_target_wake_time_auto_selection - This API calculates and automatically configures TWT parameters based on the given inputs. Enables or disables a TWT session.
+> * sl_wifi_enable_target_wake_time - This API allows users to manually configure iTWT session parameters and enables the iTWT session.
+> * sl_wifi_disable_target_wake_time - Disables a TWT session.
 
 #### sl_wifi_target_wake_time_auto_selection API
 
@@ -172,7 +171,7 @@ There are 3 TWT configuration APIs.
 int32_t sl_wifi_target_wake_time_auto_selection(sl_wifi_twt_selection_t *twt_auto_request)
 ```
 
-  Given below are sample configurations.
+Given below are sample configurations.
 
 - Enable TWT_AUTO_CONFIG MACRO in the app.c file.
 
@@ -208,10 +207,12 @@ int32_t sl_wifi_target_wake_time_auto_selection(sl_wifi_twt_selection_t *twt_aut
   };
   ```
 
-  > Note :  WLAN Keep Alive should not be disabled while using this API.
+>**Note**
+> WLAN Keep Alive should not be disabled while using this API.
 
 #### sl_wifi_enable_target_wake_time API
 
+Usage of this API requires knowledge of individual TWT setup negotiation.
   ```c
   sl_status_t sl_wifi_enable_target_wake_time(sl_wifi_twt_request_t *twt_req);
   ```
@@ -258,44 +259,24 @@ int32_t sl_wifi_target_wake_time_auto_selection(sl_wifi_twt_selection_t *twt_aut
 
 ### iTWT Teardown Configuration
 
-To teardown TWT session use the matching TWT API:
+To teardown TWT session use the matching TWT teardown API corresponding to the TWT setup configuration API:
+1. For TWT parameters Auto Selection API, call the following API to teardown :
+```c
+status = sl_wifi_target_wake_time_auto_selection(twt_selection);
+```
+- Set twt_enable parameter to '0' in the **twt_selection** structure. The other parameters in the structure are ignored. 
 
-1. For TWT Auto Selection API :
+2. For manually configurable TWT parameters API, call the following API to teardown:
+```c
+status = sl_wifi_disable_target_wake_time(&twt_req);
+```
+* twt_req->twt_enable should be set to '0' for teardown operation.
+* twt_req->twt_flow_id should be configured as described below: 
+> * This paramater value range is 0-7. It should be same as setup flow ID, other wise error will be triggered.
+> * 0xFF - To teardown all active sessions. This value is valid only in case of teardown command.
+* Rest of the parameters in the structure are ignored for a Teardown operation. 
 
-- Set twt_enable parameter to 0 in the twt_selection structure. The other parameters are ignored. 
-
-  ```c
-  status = sl_wifi_target_wake_time_auto_selection(twt_selection);
-  ```
-
-2. For user given TWT parameters, call the API as follows:
-
-    ```c
-    status = sl_wifi_disable_target_wake_time(&twt_req);
-    ```
-
-- twt_req->twt_enable should be set to '0' for teardown operation.
-
-- twt_req->twt_flow_id should be configured as described below: 
-
-  > - This parameter range is from 0-7. It should be same as setup flow ID, otherwise error will be triggered.
-  > - 0xFF - To teardown all active sessions. This value is valid only in case of teardown command.
-
-- Rest of the parameters in the structure are ignored for a Teardown operation. 
-
-  > Note : For setting a new TWT session, the existing TWT session must be teared down.
-
-### iTWT Command Status Codes
-
-- The following are the possible TWT command status codes.
-
-  |S.No |MACRO  |Error code |Description| SAPI/WLAN error code|
-  |:------:|:--------|:--------|:-----------------------------|:--------|
-  |1.|TWT_SUPPORT_NOT_ENABLED_ERR|0x70|When HE_PARAMS_SUPPORT and TWT_SUPPORT macros are not enabled|FW|
-  |2.|TWT_SETUP_ERR_SESSION_ACTIVE|0x71|Occurs when user tries to give TWT config command when there is an already active TWT session.|FW|
-  |3.|TWT_TEARDOWN_ERR_FLOWID_NOT_MATCHED|0x72|Occurs when TWT teardown command is given with a flow ID that does not match existing session flow ID.|FW|
-  |4.|TWT_TEARDOWN_ERR_NOACTIVE_SESS|0x73|Occurs when teardown command is given while there is no active session.|FW|
-  |5.|TWT_SESSION_NOT_FEASIBLE|0x74|This error code indicates that TWT session is not feasible. It is thrown only when TWT Auto Selection API is used.|FW|
+> Note : For setting a new TWT session, the existing TWT session must be teared down.
 
 ### iTWT Session Status Codes
 
@@ -316,11 +297,11 @@ To teardown TWT session use the matching TWT API:
   |11.| TWT_INACTIVE_DUETO_DISCONNECT|  17| TWT session inactive due to disconnect|
   |12.| TWT_INACTIVE_NO_AP_SUPPORT| 18| TWT session inactive as connected AP does not support TWT.|
 
-  > **Note:** The **twt_session_active** variable is provided in the example application and is updated according to the asynchronous TWT session notifications. User can utilize this variable to teardown or configure new session parameters depending upon existing session status. 
+  > **Note:** The **twt_session_active** variable is provided in the example application and it is updated according to the asynchronous TWT session notifications. User can utilize this variable to know the existing session status. 
 
 ### Recommendations
 
-1. Use sl_wifi_target_wake_time_auto_selection with appropriate Rx Latency input according to the user scenario as it has improved  design over sl_wifi_enable_target_wake_time, handles Embedded MQTT level disconnections and has better user interface.
+1. Use sl_wifi_target_wake_time_auto_selection with appropriate Rx Latency input according to the user scenario as it has improved design over sl_wifi_enable_target_wake_time, handles Embedded MQTT level disconnections and has better user interface.
 
 2. iTWT setup is recommended after IP assignment/TCP connection/application connection.
 
@@ -358,9 +339,8 @@ Refer to the instructions [here](https://docs.silabs.com/wiseconnect/latest/wise
   netsh interface ipv4 set neighbors interface="Wi-Fi" "192.168.0.101" "80-c9-55-XX-XX-XX"
   ```
 
-- For sl_wifi_target_wake_time_auto_selection API
-
-  ![Figure: Serial prints](resources/readme/output_soc.png)
+- Sample application output:
+![Figure: Serial prints](resources/readme/sample_output_twt_use_case.png)
 
 ### Using Simplicity Studio Energy Profiler for current measurement
   

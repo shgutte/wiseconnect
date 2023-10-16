@@ -447,10 +447,11 @@ int sli_si91x_shutdown(int socket, int how)
   sl_wifi_buffer_t *buffer                                = NULL;
 
   si91x_socket_t *si91x_socket = get_si91x_socket(socket);
-  int close_request_type       = (si91x_socket->state == LISTEN) ? SHUTDOWN_BY_PORT : how;
 
   // Verify the socket's existence
   SET_ERRNO_AND_RETURN_IF_TRUE(si91x_socket == NULL, EBADF);
+
+  int close_request_type = (si91x_socket->state == LISTEN) ? SHUTDOWN_BY_PORT : how;
 
   // If the socket is in an initial state or marked for auto-close, reset it and return
   if (si91x_socket->state == BOUND || si91x_socket->state == INITIALIZED

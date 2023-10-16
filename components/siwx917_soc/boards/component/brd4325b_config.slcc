@@ -118,7 +118,7 @@
   - override:
       component: "%extension-wiseconnect3_sdk%board_configuration_headers"
       file_id: RTE_Device_917
-    path: RTE_Device_917.h
+    path: config/RTE_Device_917.h
   - override:
       component: "%extension-wiseconnect3_sdk%board_configuration_headers"
       file_id: freertos_config

@@ -516,8 +516,8 @@ sl_status_t sl_si91x_adc_read_data(sl_adc_channel_config_t adc_channel_config, u
 {
   sl_status_t status;
   rsi_error_t error_status;
-  uint8_t data_process          = 0;
-  uint8_t ping_pong_memory_read = 0;
+  uint8_t data_process                 = 0;
+  static uint8_t ping_pong_memory_read = 1;
   do {
     // Validate channel number.
     if (channel_num >= MAXIMUM_CHANNEL_ID) {
@@ -536,7 +536,12 @@ sl_status_t sl_si91x_adc_read_data(sl_adc_channel_config_t adc_channel_config, u
                                     channel_num,
                                     data_process,
                                     adc_channel_config.input_type[channel_num]);
-    status       = convert_rsi_to_sl_error_code(error_status);
+    if (ping_pong_memory_read == 1) {
+      ping_pong_memory_read = 0;
+    } else {
+      ping_pong_memory_read = 1;
+    }
+    status = convert_rsi_to_sl_error_code(error_status);
   } while (false);
   return status;
 }

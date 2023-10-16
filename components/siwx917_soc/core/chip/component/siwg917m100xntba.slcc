@@ -3,7 +3,7 @@
 - package: platform-internal-cmsis-headers
 - description: Silicon Labs CMSIS-Device part headers for SIWG917M100XNTBA.
 - category: Platform|Device|SIWG917
-- quality: internal
+- quality: production
 - define:
   - name: SIWG917M100XNTBA
     unless:
@@ -34,7 +34,6 @@
   - name: device_has_mvp
   - name: device_compute_mvp
   - name: armv7em
-# TODO: Add all the device_has and device_supports
 - requires:
   - name: rsilib_chip
   - name: si917_mem_config
@@ -81,7 +80,6 @@
   - name: device_ram_size
     value: 327680 # 0x0005 0000
     condition: si917_mem_config_3
-# TODO: Add the correct values for above template contributions
 - tag:
   - device:opn:siwg917m100xntba
 - toolchain_settings:

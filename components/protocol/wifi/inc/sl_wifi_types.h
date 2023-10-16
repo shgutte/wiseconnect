@@ -214,18 +214,20 @@ typedef struct {
 
 /// TWT request structure to auto select a session
 typedef struct {
-  uint8_t twt_enable;             ///< TWT enable. 0 - TWT session teardown; 1 - TWT session setup.
-  uint16_t average_tx_throughput; ///< Average Throughput: 0 to half of Device Throughput
-  uint32_t
-    tx_latency; ///< Time period in milliseconds, within which the given Tx operation needs to be completed. Valid values are either 0 or in the range of [200ms - 6hrs]
-  uint32_t
-    rx_latency; ///< The maximum allowed receive latency in milliseconds, when an Rx packet is buffered at the AP. If rx_latency is less than <= 1sec (except 0), session creation is not possible. '0' can be given for default configuration.
+  uint8_t twt_enable; ///< TWT enable. 0 - TWT session teardown; 1 - TWT session setup.
   uint16_t
-    device_average_throughput; ///< The expected average throughput in Kilo Bytes per second, to be achieved within the Tx latency. Valid value is 0 to half of device throughput.
-  uint8_t estimated_extra_wake_duration_percent; ///< The percentage by which wake duration is to overestimated. 0 - 50
-  uint8_t twt_tolerable_deviation;               ///< The allowed deviation of wake duration TWT response. 0 - 50
-  uint32_t default_wake_interval_ms;             ///< Default minimum wake interval. Recommended Range: 512 to 1024ms
-  uint32_t default_minimum_wake_duration_ms;     ///< Default minimum wake interval. Recommended Range: 10 - 15ms
+    average_tx_throughput; ///< The expected average Tx throughput in Kbps. The value configured should be between 0 and half of device average throughput.
+  uint32_t
+    tx_latency; ///< The allowed latency, in milliseconds, within which the given Tx operation is expected to be completed. If 0 is configured, maximum allowed Tx latency is same as rx_latency. Otherwise, valid values are in the range of [200ms - 6hrs].
+  uint32_t
+    rx_latency; ///< The maximum latency for receiving buffered packets from the AP. The device wakes up at least once for a TWT service period within the configured rx_latency if there are any pending packets from the AP. If set to 0, the default latency of 2 seconds is used. Valid range is between 2 seconds to 6 hours.
+  uint16_t device_average_throughput; ///< Refers to the average Tx throughput that the device is capable of achieving.
+  uint8_t
+    estimated_extra_wake_duration_percent; ///< The percentage by which wake duration is supposed to be overestimated to compensate for bss congestion. Valid input range is 0 - 50%.
+  uint8_t
+    twt_tolerable_deviation; ///< The allowed deviation percentage of wake duration TWT response. Valid input range is 0 - 50%.
+  uint32_t default_wake_interval_ms;         ///< Default minimum wake interval. Recommended Range: 512 to 1024ms
+  uint32_t default_minimum_wake_duration_ms; ///< Default minimum wake interval. Recommended Range: 8 - 16ms
   uint8_t
     beacon_wake_up_count_after_sp; ///< The number of beacons after the service period completion for which the module wakes up and listens for any pending RX.
 } sl_wifi_twt_selection_t;

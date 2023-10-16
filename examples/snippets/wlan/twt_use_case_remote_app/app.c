@@ -64,12 +64,12 @@
 #define UDP_LISTENING_PORT 5002
 
 #if TCP_RECEIVE
-#define EXPECTED_DATA_SIZE (sizeof("Hello from TCP server!!!!") - 1)
+#define EXPECTED_DATA_SIZE (sizeof("Door lock opened") - 1)
 #else
 #define EXPECTED_DATA_SIZE 1470
 #endif
 #define RSI_MAX_TCP_RETRIES  10
-#define RECEIVE_DATA_TIMEOUT 5000
+#define RECEIVE_DATA_TIMEOUT 20000 // command interval in milli seconds
 
 static const sl_wifi_device_configuration_t sl_wifi_twt_client_configuration = {
   .boot_option = LOAD_NWP_FW,
@@ -149,10 +149,12 @@ void data_callback(uint32_t sock_no, uint8_t *buffer, uint32_t length)
   num_bytes += length;
   num_pkts++;
   memcpy((void *)rxBuff, buffer, length);
-  printf("\r\nReceived %ld bytes\r\n", length);
+  printf("Received %ld bytes\r\n", length);
+  printf("\"");
   for (i = 0; i < length; i++) {
     printf("%c", buffer[i]);
   }
+  printf("\"");
   if (data_recvd == 0) {
     end_rtt = osKernelGetTickCount();
     printf("\r\nOverall RTT : 0x%lX\r\n", (end_rtt - start_rtt));
@@ -189,7 +191,7 @@ void application_start()
     printf("Failed to get client profile: 0x%lx\r\n", status);
     return;
   }
-  printf("\r\nSuccess to get client profile\r\n");
+  printf("Success to get client profile\r\n");
 
   ip_address.type = SL_IPV4;
   memcpy(&ip_address.ip.v4.bytes, &profile.ip.ip.v4.ip_address.bytes, sizeof(sl_ipv4_address_t));
@@ -197,23 +199,23 @@ void application_start()
 
   status = create_tcp_server();
   if (status != SL_STATUS_OK) {
-    printf("\r\nError while creating TCP server: 0x%lx \r\n", status);
+    printf("Error while creating TCP server: 0x%lx \r\n", status);
     return;
   }
-  printf("\r\nTCP Server is running\r\n");
+  printf("TCP Server is running\r\n");
 
 #if !TCP_RECEIVE
   status = create_udp_server();
   if (status != SL_STATUS_OK) {
-    printf("\r\nError while creating UDP server: 0x%lx \r\n", status);
+    printf("Error while creating UDP server: 0x%lx \r\n", status);
     return;
   }
-  printf("\r\nUDP Server is running\r\n");
+  printf("UDP Server is running\r\n");
 #endif
 
   status = send_and_receive_data();
   if (status != SL_STATUS_OK) {
-    printf("\r\nSend and Receive Data fail: 0x%lx \r\n", status);
+    printf("Send and Receive Data fail: 0x%lx \r\n", status);
     return;
   }
 }
@@ -227,7 +229,7 @@ sl_status_t create_tcp_server(void)
 
   tcp_server_socket = sl_si91x_socket_async(AF_INET, SOCK_STREAM, IPPROTO_TCP, &data_callback);
   if (tcp_server_socket < 0) {
-    printf("\r\nTCP Socket creation failed with BSD error: %d\r\n", errno);
+    printf("TCP Socket creation failed with BSD error: %d\r\n", errno);
     return SL_STATUS_FAIL;
   }
   printf("\r\nTCP Server Socket ID : %d\r\n", tcp_server_socket);
@@ -238,11 +240,11 @@ sl_status_t create_tcp_server(void)
                                                   &max_tcp_retry,
                                                   sizeof(max_tcp_retry));
   if (socket_return_value < 0) {
-    printf("\r\nTCP Set Socket option failed with BSD error: %d\r\n", errno);
+    printf("TCP Set Socket option failed with BSD error: %d\r\n", errno);
     close(tcp_server_socket);
     return SL_STATUS_FAIL;
   }
-  printf("\r\nTCP Set Sock Option: Max retry set : %d\r\n", max_tcp_retry);
+  printf("TCP Set Sock Option: Max retry set : %d\r\n", max_tcp_retry);
 
   server_address.sin_family = AF_INET;
   server_address.sin_port   = TCP_LISTENING_PORT;
@@ -250,28 +252,28 @@ sl_status_t create_tcp_server(void)
   socket_return_value =
     sl_si91x_bind(tcp_server_socket, (struct sockaddr *)&server_address, sizeof(struct sockaddr_in));
   if (socket_return_value < 0) {
-    printf("\r\nTCP Socket bind failed with BSD error: %d\r\n", errno);
+    printf("TCP Socket bind failed with BSD error: %d\r\n", errno);
     close(tcp_server_socket);
     return SL_STATUS_FAIL;
   }
-  printf("\r\nTCP Bind Success\r\n");
+  printf("TCP Bind Success\r\n");
 
   socket_return_value = sl_si91x_listen(tcp_server_socket, BACK_LOG);
   if (socket_return_value < 0) {
-    printf("\r\nTCP Socket listen failed with BSD error: %d\r\n", errno);
+    printf("TCP Socket listen failed with BSD error: %d\r\n", errno);
     close(tcp_server_socket);
     return SL_STATUS_FAIL;
   }
-  printf("\r\nTCP Listening on Local Port : %d\r\n", TCP_LISTENING_PORT);
+  printf("TCP Listening on Local Port : %d\r\n", TCP_LISTENING_PORT);
 
   tcp_client_socket = sl_si91x_accept(tcp_server_socket, NULL, 0);
   if (tcp_client_socket < 0) {
-    printf("\r\nSocket accept failed with BSD error: %d\r\n", errno);
+    printf("Socket accept failed with BSD error: %d\r\n", errno);
     close(tcp_server_socket);
     return SL_STATUS_FAIL;
   }
-  printf("\r\nTCP Socket Accept Success\r\n");
-  printf("\r\nTCP Client Socket ID : %d\r\n", tcp_client_socket);
+  printf("TCP Socket Accept Success\r\n");
+  printf("TCP Client Socket ID : %d\r\n", tcp_client_socket);
   return SL_STATUS_OK;
 }
 
@@ -282,10 +284,10 @@ sl_status_t create_udp_server(void)
 
   udp_server_socket = sl_si91x_socket_async(AF_INET, SOCK_DGRAM, IPPROTO_UDP, &data_callback);
   if (udp_server_socket < 0) {
-    printf("\r\nUDP Socket creation failed with BSD error: %d\r\n", errno);
+    printf("UDP Socket creation failed with BSD error: %d\r\n", errno);
     return SL_STATUS_FAIL;
   }
-  printf("\r\nUDP Server Socket ID : %d\r\n", udp_server_socket);
+  printf("UDP Server Socket ID : %d\r\n", udp_server_socket);
 
   server_address.sin_family = AF_INET;
   server_address.sin_port   = UDP_LISTENING_PORT;
@@ -293,11 +295,11 @@ sl_status_t create_udp_server(void)
   socket_return_value =
     sl_si91x_bind(udp_server_socket, (struct sockaddr *)&server_address, sizeof(struct sockaddr_in));
   if (socket_return_value < 0) {
-    printf("\r\nUDP Socket bind failed with BSD error: %d\r\n", errno);
+    printf("UDP Socket bind failed with BSD error: %d\r\n", errno);
     close(udp_server_socket);
     return SL_STATUS_FAIL;
   }
-  printf("\r\nUDP Bind Success\r\n");
+  printf("UDP Bind Success\r\n");
 
   return SL_STATUS_OK;
 }
@@ -310,11 +312,8 @@ sl_status_t send_and_receive_data(void)
       start_rtt  = osKernelGetTickCount();
       data_sent  = 1;
       data_recvd = 0;
-      status     = sl_si91x_send(tcp_client_socket,
-                             (uint8_t *)"Hello from TCP server!!!",
-                             (sizeof("Hello from TCP server!!!") - 1),
-                             0);
-      printf("\r\nTCP TX start\r\n");
+      status     = sl_si91x_send(tcp_client_socket, (uint8_t *)"Stream Data", (sizeof("Stream Data") - 1), 0);
+      printf("\r\nSending Command\r\n");
       if (status < 0) {
         data_sent = 0;
         sl_si91x_shutdown(tcp_client_socket, SHUTDOWN_BY_ID);
@@ -322,11 +321,10 @@ sl_status_t send_and_receive_data(void)
         return status;
       }
     }
-    printf("\r\nTCP TX complete\r\n");
 
-    printf("\r\nRX started \r\n");
+    printf("Command Sent. Listening for data\r\n");
     start_rx = osKernelGetTickCount();
-    printf("Start time TX: 0x%lX\n", start_rx);
+    printf("Start time TX: 0x%lX\r\n", start_rx);
 
     do {
       osThreadYield();
@@ -337,7 +335,7 @@ sl_status_t send_and_receive_data(void)
     printf("Number of bytes received : 0x%lx\n", (long)num_bytes);
     num_bytes = 0;
     num_pkts  = 0;
-    printf("\r\nRX completed \r\n");
+    printf("Data Reception Completed\r\n");
     data_sent = 0;
   }
   return SL_STATUS_OK;

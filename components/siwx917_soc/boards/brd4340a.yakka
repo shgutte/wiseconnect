@@ -22,7 +22,7 @@ requires:
 flags:
   ld:
     global:
-      - -Wl,--defsym=SI91X_SOC_ROM_START_ADDRESS=0x81C2000
+      - -Wl,--defsym=SI91X_SOC_ROM_START_ADDRESS=0x8202000
       - -Wl,--defsym=SI91X_SOC_RAM_START_ADDRESS=0x400
 
 clang-format: true
@@ -72,7 +72,7 @@ slc:
     - name: SI917_RADIO_BOARD_V2
       value: '1'
     - name: IVT_OFFSET_ADDR
-      value: 0x81C2000
+      value: 0x8202000
     - name: WKP_RAM_USAGE_LOCATION
       value: 0x24061EFC
   config_file:

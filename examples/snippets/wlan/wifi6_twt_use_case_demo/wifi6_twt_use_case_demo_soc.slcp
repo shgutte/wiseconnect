@@ -1,10 +1,10 @@
-project_name: tcp_tx_on_periodic_wakeup
+project_name: wifi6_twt_use_case_demo_soc
 package: wifi
 quality: production
-label: TCP TX on periodic wakeup
+label: Wi-Fi - TWT Use case demo app(SOC)
 category: Example|Wi-Fi
 description: >
-  The application demonstrates TCP TX whith Periodic Wakeup
+  Update To keep device in TWT mode 
 filter:
   - name: "Wireless Technology"
     value: ["Wi-Fi"]
@@ -23,17 +23,21 @@ include:
 define:
   - name: RSI_DEBUG_PRINTS
   - name: ROM_BYPASS
-  - name: EXECUTION_FROM_RAM
-    condition:
-      - device_needs_ram_execution
+  - name: HIGH_EFFICIENCY_PARAMS_SUPPORT
+  - name: TWT_SUPPORT
 template_contribution:
-- condition: [device_needs_ram_execution]
-  name: RAM_EXECUTION
-  value: true
+- name: event_handler
+  condition: [rsi_m4_interface]
+  value:
+    event: platform_init
+    include: rsi_wisemcu_hardware_setup.h
+    handler: sl_si91x_hardware_setup
+  priority: -9995
 component:
 - {from: wiseconnect3_sdk, id: si917_memory_default_config}
 - {from: wiseconnect3_sdk, id: si91x_debug}
 - {from: wiseconnect3_sdk, id: syscalls}
+- {from: wiseconnect3_sdk, id: device_needs_ram_execution}
 requires:
 - name: sl_system
 - name: bsd_socket
@@ -43,6 +47,7 @@ requires:
 - name: wifi
 - name: si91x
 - name: si91x_internal_stack
+- name: socket
 - name: si91x_basic_buffers
 - name: wifi_resources
 - name: freertos
@@ -59,37 +64,23 @@ requires:
   condition: [device_has_devinfo]
 - name: emlib_ldma
   condition: [device_has_devinfo]
-toolchain_settings:
-  - option: gcc_linker_option
-    value: "-u _printf_float"
+toolchain_settings: []
 configuration:
 - {name: SL_BOARD_ENABLE_VCOM, value: '1'}
 readme:
   - path: readme.md
 other_file:
-  - path: resources/readme/build_project_ncp.png
-  - path: resources/readme/build_project_soc.png
-  - path: resources/readme/create_project_ncp.png
-  - path: resources/readme/create_project_soc.png
-  - path: resources/readme/efr32.png
-  - path: resources/readme/load_image1.png
-  - path: resources/readme/load_image2.png
-  - path: resources/readme/output1.png
-  - path: resources/readme/port_selection.png
-  - path: resources/readme/port_selection_soc.png
-  - path: resources/readme/select_project_ncp.png
-  - path: resources/readme/select_project-soc.png
-  - path: resources/readme/serial_port.png
-  - path: resources/readme/serial_port_setup.png
-  - path: resources/readme/setup_ncp.png
-  - path: resources/readme/setup_soc.png
-  - path: resources/readme/soc_board_detection.png
-  - path: resources/readme/usb_to_uart_1.png
-  - path: resources/readme/usb_to_uart_2.png 
+  - path: resources/readme/energy_profiler_step_6.png
+  - path: resources/readme/energy_profiler_step_7.png
+  - path: resources/readme/image218.png
+  - path: resources/readme/output_soc.png
+  - path: resources/readme/outputs_2.png
+  - path: resources/readme/sample_output_twt_use_case.png
+  - path: resources/readme/sdk_edit_warning.png
+  - path: resources/readme/twt_tcp_client_udp_client_soc_ncp.png
 ui_hints:
   highlight:
     - path: readme.md
       focus: true
 post_build:
   path: ../../../../utilities/postbuild_profile/wiseconnect_soc.slpb
-

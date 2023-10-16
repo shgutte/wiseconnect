@@ -22,8 +22,8 @@ source:
   - path: sensors/src/apds9960Sensor_hal.c
   - path: sensors/src/accelerometerSensor_hal.c
   - path: sensors/src/adxl345.c
-  - path: sensors/src/adcsensor_hal.c
-  - path: sensors/src/adc_joystick.c
+  - path: sensors/src/adc_sensor_driver.c
+  - path: sensors/src/adc_sensor_hal.c
   - path: sensors/inc/bh1750fvi.h
   - path: sensors/inc/sensor_type.h
   - path: sensors/inc/lightsensor_hal.h
@@ -34,8 +34,8 @@ source:
   - path: sensors/inc/apds9960Sensor_hal.h
   - path: sensors/inc/accelerometerSensor_hal.h
   - path: sensors/inc/adxl345.h
-  - path: sensors/inc/adcsensor_hal.h
-  - path: sensors/inc/adc_joystick.h
+  - path: sensors/inc/adc_sensor_driver.h
+  - path: sensors/inc/adc_sensor_hal.h
   - path: app.c
   - path: main.c
   - path: app.h

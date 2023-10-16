@@ -468,8 +468,8 @@ static sl_status_t send_multicast_request(sl_wifi_interface_t interface,
                                           uint8_t command_type)
 {
   UNUSED_PARAMETER(interface);
-  si91x_req_multicast_t multicast;
-  sl_status_t status;
+  si91x_req_multicast_t multicast = { 0 };
+  sl_status_t status              = SL_STATUS_OK;
 
   if (!device_initialized) {
     return SL_STATUS_NOT_INITIALIZED;

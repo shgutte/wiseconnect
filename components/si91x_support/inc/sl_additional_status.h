@@ -240,8 +240,16 @@
   ((sl_status_t)0x10069) ///< SAE failure due to multiple confirm frames from AP.
 #define SL_STATUS_SI91X_EC_GROUP_STATION_UNSUPPORTED_BY_AP \
   ((sl_status_t)0x1006A) ///< AP does not support the EC-group set by station.
-#define SL_STATUS_SI91X_SECURITY_ASSOCIATION_QUERY_TIMEOUT \
-  ((sl_status_t)0x10072) ///< Disconnected due to Security Association Query Timeout.
+#define SL_STATUS_TWT_SUPPORT_NOT_ENABLED_ERR \
+  ((sl_status_t)0x10070) ///< Occurs when HE_PARAMS_SUPPORT and TWT_SUPPORT macros are not enabled.
+#define SL_STATUS_TWT_SETUP_ERR_SESSION_ACTIVE \
+  ((sl_status_t)0x10071) ///< Occurs when user tries to give TWT config command when there is an already active TWT session.
+#define SL_STATUS_TWT_TEARDOWN_ERR_FLOWID_NOT_MATCHED \
+  ((sl_status_t)0x10072) ///< Occurs when TWT teardown command is given with a flow ID that does not match existing session flow ID.
+#define SL_STATUS_TWT_TEARDOWN_ERR_NOACTIVE_SESS \
+  ((sl_status_t)0x10073) ///< Occurs when teardown command is given while there is no active session.
+#define SL_STATUS_TWT_SESSION_NOT_FEASIBLE \
+  ((sl_status_t)0x10074) ///< This error code indicates that TWT session is not feasible. It is thrown only when TWT Auto Selection API is used.
 #define SL_STATUS_SI91X_RESCHEDULE_TWT_NOT_SUPPORTED \
   ((sl_status_t)0x10075) ///< AP does not support TWT information frame reception.
 #define SL_STATUS_SI91X_RESCHEDULE_TWT_ERR_NOACTIVE_SESS \
@@ -250,7 +258,8 @@
   ((sl_status_t)0x10077) ///< Suspend or resume TWT action is in progress.
 #define SL_STATUS_SI91X_RESCHEDULE_TWT_PACKET_CREATION_FAILED \
   ((sl_status_t)0x10078) ///< TWT information frame packet creation failed in firmware.
-#define SL_STATUS_SI91X_EAPOL_TIMEOUT ((sl_status_t)0x10073) ///< EAPOL Timeout.
+#define SL_STATUS_SI91X_SECURITY_ASSOCIATION_QUERY_TIMEOUT \
+  ((sl_status_t)0x10081) ///< Disconnected due to Security Association Query Timeout.
 #define SL_STATUS_SI91X_DUPLICATE_ENTRY_EXISTS_IN_DNS_SERVER_TABLE \
   ((sl_status_t)0x100AF) ///< Duplicate entry exists in DNS server table.
 #define SL_STATUS_SI91X_NO_MEM_AVAILABLE                  ((sl_status_t)0x100B1) ///< Memory error: No memory available.

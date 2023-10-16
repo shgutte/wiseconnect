@@ -100,7 +100,6 @@ static sl_status_t twt_callback_handler(sl_wifi_event_t event,
 
 static uint8_t stats_count           = 0;
 volatile bool scan_results_complete  = false;
-volatile bool twt_results_complete   = false;
 volatile sl_status_t callback_status = SL_STATUS_OK;
 
 /******************************************************
@@ -1362,16 +1361,8 @@ sl_status_t sl_wifi_enable_twt(console_args_t *arguments)
   sl_wifi_performance_profile_t performance_profile = { .twt_request = default_twt_setup_configuration };
   sl_status_t status                                = SL_STATUS_OK;
   status                                            = sl_wifi_enable_target_wake_time(&performance_profile.twt_request);
-  if (SL_STATUS_IN_PROGRESS == status) {
-    const uint32_t start = osKernelGetTickCount();
-
-    while (!twt_results_complete && (osKernelGetTickCount() - start) <= TWT_SCAN_TIMEOUT) {
-      osThreadYield();
-    }
-
-    status = twt_results_complete ? callback_status : SL_STATUS_TIMEOUT;
-  }
-  twt_results_complete = false;
+  // A small delay is added so that the asynchronous response from TWT is printed in correct format.
+  osDelay(100);
   return status;
 }
 
@@ -1382,16 +1373,8 @@ sl_status_t sl_wifi_disable_twt(console_args_t *arguments)
   sl_wifi_performance_profile_t performance_profile = { .twt_request = default_twt_teardown_configuration };
   sl_status_t status                                = SL_STATUS_OK;
   status = sl_wifi_disable_target_wake_time(&performance_profile.twt_request);
-  if (SL_STATUS_IN_PROGRESS == status) {
-    const uint32_t start = osKernelGetTickCount();
-
-    while (!twt_results_complete && (osKernelGetTickCount() - start) <= TWT_SCAN_TIMEOUT) {
-      osThreadYield();
-    }
-
-    status = twt_results_complete ? callback_status : SL_STATUS_TIMEOUT;
-  }
-  twt_results_complete = false;
+  // A small delay is added so that the asynchronous response from TWT is printed in correct format.
+  osDelay(100);
   return status;
 }
 
@@ -1404,7 +1387,6 @@ static sl_status_t twt_callback_handler(sl_wifi_event_t event,
   UNUSED_PARAMETER(arg);
 
   if (CHECK_IF_EVENT_FAILED(event)) {
-    twt_results_complete = true;
     return SL_STATUS_FAIL;
   }
 
@@ -1464,7 +1446,6 @@ static sl_status_t twt_callback_handler(sl_wifi_event_t event,
     printf("\r\n twt_flow_id : 0x%X", result->twt_flow_id);
     printf("\r\n negotiation_type : 0x%X\r\n", result->negotiation_type);
   }
-  twt_results_complete = true;
   return SL_STATUS_OK;
 }
 

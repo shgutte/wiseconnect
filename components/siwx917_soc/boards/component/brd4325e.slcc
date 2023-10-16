@@ -45,7 +45,7 @@
     condition:
       - si917_mem_config_1
   - name: device_flash_size
-    value: 450560 # 0x0006 E000
+    value: 4059136 # 0x003D F000
     priority: -1
     condition:
       - si917_mem_config_1
@@ -56,7 +56,7 @@
     condition:
       - si917_mem_config_2
   - name: device_flash_size
-    value: 450560 # 0x0006 E000
+    value: 4059136 # 0x003D F000
     priority: -1
     condition:
       - si917_mem_config_2
@@ -67,7 +67,7 @@
     condition:
       - si917_mem_config_3
   - name: device_flash_size
-    value: 450560 # 0x0006 E000
+    value: 4059136 # 0x003D F000
     priority: -1
     condition:
       - si917_mem_config_3

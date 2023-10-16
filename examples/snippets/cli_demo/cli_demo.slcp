@@ -4,7 +4,7 @@ quality: production
 label: cli_demo
 category: Example|Wi-Fi
 description: >
-  Demonstrates to run all commands indivisullay 
+  Demonstrates to run all commands individually 
 filter:
   - name: "Wireless Technology"
     value: ["Wi-Fi"]
@@ -37,22 +37,15 @@ define:
     value: 1
   - name: wifi_FEATURE_REQUIRED
     value: 1
-
   - name: RSI_DEBUG_PRINTS
   - name: DEBUG_MIDDLEWARE_EN
   - name: INTERRUPT_BASED_DATA_RX
-  - name: EXECUTION_FROM_RAM
-    condition:
-      - device_needs_ram_execution
-template_contribution:
-- condition: [device_needs_ram_execution]
-  name: RAM_EXECUTION
-  value: true
 component:
 - {from: wiseconnect3_sdk, id: si917_memory_default_config}
 - {from: wiseconnect3_sdk, id: si91x_debug}
 - {from: wiseconnect3_sdk, id: syscalls}
 - {from: wiseconnect3_sdk, id: syscalls}
+- {from: wiseconnect3_sdk, id: device_needs_ram_execution}
 requires:
 - name: console
 - name: console_variables

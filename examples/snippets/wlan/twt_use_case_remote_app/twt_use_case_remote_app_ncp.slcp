@@ -1,7 +1,7 @@
-project_name: wifi6_twt_use_case_demo
+project_name: twt_use_case_remote_app_ncp
 package: wifi
 quality: production
-label: WiFi 6 TWT Use Case Demo
+label: twt_use_case_remote_app_ncp
 category: Example|Wi-Fi
 description: >
   Update To keep device in TWT mode 
@@ -22,27 +22,6 @@ include:
       - path: app.h
 define:
   - name: RSI_DEBUG_PRINTS
-  - name: ROM_BYPASS
-  - name: HIGH_EFFICIENCY_PARAMS_SUPPORT
-  - name: TWT_SUPPORT
-  - name: EXECUTION_FROM_RAM
-    condition:
-      - device_needs_ram_execution
-template_contribution:
-- condition: [device_needs_ram_execution]
-  name: RAM_EXECUTION
-  value: true
-- name: event_handler
-  condition: [rsi_m4_interface]
-  value:
-    event: platform_init
-    include: rsi_wisemcu_hardware_setup.h
-    handler: sl_si91x_hardware_setup
-  priority: -9995
-component:
-- {from: wiseconnect3_sdk, id: si917_memory_default_config}
-- {from: wiseconnect3_sdk, id: si91x_debug}
-- {from: wiseconnect3_sdk, id: syscalls}
 requires:
 - name: sl_system
 - name: bsd_socket
@@ -75,16 +54,10 @@ configuration:
 readme:
   - path: readme.md
 other_file:
-  - path: resources/readme/energy_profiler_step_6.png
-  - path: resources/readme/energy_profiler_step_7.png
-  - path: resources/readme/image218.png
-  - path: resources/readme/output_soc.png
-  - path: resources/readme/outputs_2.png
-  - path: resources/readme/sdk_edit_warning.png
+  - path: resources/readme/remoteapplicationprintssoc.png
   - path: resources/readme/twt_tcp_client_udp_client_soc_ncp.png
 ui_hints:
   highlight:
     - path: readme.md
       focus: true
-post_build:
-  path: ../../../../utilities/postbuild_profile/wiseconnect_soc.slpb
+

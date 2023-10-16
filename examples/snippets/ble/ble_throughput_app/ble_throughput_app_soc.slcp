@@ -24,13 +24,6 @@ include:
       - path: ble_config.h
 define:
   - name: RSI_DEBUG_PRINTS
-  - name: EXECUTION_FROM_RAM
-    condition:
-      - device_needs_ram_execution
-template_contribution:
-- condition: [device_needs_ram_execution]
-  name: RAM_EXECUTION
-  value: true
 component:
 - {from: wiseconnect3_sdk, id: si917_memory_default_config}
 - {from: wiseconnect3_sdk, id: si91x_debug}
@@ -38,6 +31,7 @@ component:
 - {from: wiseconnect3_sdk, id: rsilib_userconfig}
 - {from: wiseconnect3_sdk, id: rsilib_chip}
 - {from: wiseconnect3_sdk, id: siwx917_soc}
+- {from: wiseconnect3_sdk, id: device_needs_ram_execution}
 requires:
 - name: sl_system
 - name: network_manager
@@ -51,6 +45,7 @@ requires:
 - name: wifi_resources
 - name: freertos
 - name: slist
+
 - name: iostream_retarget_stdio
   condition: [device_has_devinfo]
 - name: iostream_recommended_stream

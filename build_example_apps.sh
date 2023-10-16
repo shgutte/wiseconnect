@@ -529,19 +529,25 @@ make -C output/tcp_tx_on_periodic_wakeup_soc-brd4325c -f tcp_tx_on_periodic_wake
 /slc_cli/slc -daemon generate /gsdk/extension/wiseconnect3/examples/si91x_soc/wlan/tcp_tx_on_periodic_wakeup/tcp_tx_on_periodic_wakeup_soc.slcp --force --with "brd4325g;wiseconnect3_sdk" -np -d output/tcp_tx_on_periodic_wakeup_soc-brd4325g
 make -C output/tcp_tx_on_periodic_wakeup_soc-brd4325g -f tcp_tx_on_periodic_wakeup_soc.Makefile -j$((`nproc`/4))
 
-/slc_cli/slc -daemon generate /gsdk/extension/wiseconnect3/examples/snippets/wlan/twt_use_case_remote_app/twt_use_case_remote_app.slcp --force --with "brd4325a;wiseconnect3_sdk" -np -d output/twt_use_case_remote_app-brd4325a
-make -C output/twt_use_case_remote_app-brd4325a -f twt_use_case_remote_app.Makefile -j$((`nproc`/4))
-/slc_cli/slc -daemon generate /gsdk/extension/wiseconnect3/examples/snippets/wlan/twt_use_case_remote_app/twt_use_case_remote_app.slcp --force --with "brd4325c;wiseconnect3_sdk" -np -d output/twt_use_case_remote_app-brd4325c
-make -C output/twt_use_case_remote_app-brd4325c -f twt_use_case_remote_app.Makefile -j$((`nproc`/4))
-/slc_cli/slc -daemon generate /gsdk/extension/wiseconnect3/examples/snippets/wlan/twt_use_case_remote_app/twt_use_case_remote_app.slcp --force --with "brd4325g;wiseconnect3_sdk" -np -d output/twt_use_case_remote_app-brd4325g
-make -C output/twt_use_case_remote_app-brd4325g -f twt_use_case_remote_app.Makefile -j$((`nproc`/4))
+/slc_cli/slc -daemon generate /gsdk/extension/wiseconnect3/examples/snippets/wlan/twt_use_case_remote_app/twt_use_case_remote_app_ncp.slcp --force --with "brd4180b" -np -d output/twt_use_case_remote_app_ncp-brd4180b
+make -C output/twt_use_case_remote_app_ncp-brd4180b -f twt_use_case_remote_app_ncp.Makefile -j$((`nproc`/4))
 
-/slc_cli/slc -daemon generate /gsdk/extension/wiseconnect3/examples/snippets/wlan/wifi6_twt_use_case_demo/wifi6_twt_use_case_demo.slcp --force --with "brd4325a;wiseconnect3_sdk" -np -d output/wifi6_twt_use_case_demo-brd4325a
-make -C output/wifi6_twt_use_case_demo-brd4325a -f wifi6_twt_use_case_demo.Makefile -j$((`nproc`/4))
-/slc_cli/slc -daemon generate /gsdk/extension/wiseconnect3/examples/snippets/wlan/wifi6_twt_use_case_demo/wifi6_twt_use_case_demo.slcp --force --with "brd4325c;wiseconnect3_sdk" -np -d output/wifi6_twt_use_case_demo-brd4325c
-make -C output/wifi6_twt_use_case_demo-brd4325c -f wifi6_twt_use_case_demo.Makefile -j$((`nproc`/4))
-/slc_cli/slc -daemon generate /gsdk/extension/wiseconnect3/examples/snippets/wlan/wifi6_twt_use_case_demo/wifi6_twt_use_case_demo.slcp --force --with "brd4325g;wiseconnect3_sdk" -np -d output/wifi6_twt_use_case_demo-brd4325g
-make -C output/wifi6_twt_use_case_demo-brd4325g -f wifi6_twt_use_case_demo.Makefile -j$((`nproc`/4))
+/slc_cli/slc -daemon generate /gsdk/extension/wiseconnect3/examples/snippets/wlan/twt_use_case_remote_app/twt_use_case_remote_app_soc.slcp --force --with "brd4325a;wiseconnect3_sdk" -np -d output/twt_use_case_remote_app_soc-brd4325a
+make -C output/twt_use_case_remote_app_soc-brd4325a -f twt_use_case_remote_app_soc.Makefile -j$((`nproc`/4))
+/slc_cli/slc -daemon generate /gsdk/extension/wiseconnect3/examples/snippets/wlan/twt_use_case_remote_app/twt_use_case_remote_app_soc.slcp --force --with "brd4325c;wiseconnect3_sdk" -np -d output/twt_use_case_remote_app_soc-brd4325c
+make -C output/twt_use_case_remote_app_soc-brd4325c -f twt_use_case_remote_app_soc.Makefile -j$((`nproc`/4))
+/slc_cli/slc -daemon generate /gsdk/extension/wiseconnect3/examples/snippets/wlan/twt_use_case_remote_app/twt_use_case_remote_app_soc.slcp --force --with "brd4325g;wiseconnect3_sdk" -np -d output/twt_use_case_remote_app_soc-brd4325g
+make -C output/twt_use_case_remote_app_soc-brd4325g -f twt_use_case_remote_app_soc.Makefile -j$((`nproc`/4))
+
+/slc_cli/slc -daemon generate /gsdk/extension/wiseconnect3/examples/snippets/wlan/wifi6_twt_use_case_demo/wifi6_twt_use_case_demo_ncp.slcp --force --with "brd4180b" -np -d output/wifi6_twt_use_case_demo_ncp-brd4180b
+make -C output/wifi6_twt_use_case_demo_ncp-brd4180b -f wifi6_twt_use_case_demo_ncp.Makefile -j$((`nproc`/4))
+
+/slc_cli/slc -daemon generate /gsdk/extension/wiseconnect3/examples/snippets/wlan/wifi6_twt_use_case_demo/wifi6_twt_use_case_demo_soc.slcp --force --with "brd4325a;wiseconnect3_sdk" -np -d output/wifi6_twt_use_case_demo_soc-brd4325a
+make -C output/wifi6_twt_use_case_demo_soc-brd4325a -f wifi6_twt_use_case_demo_soc.Makefile -j$((`nproc`/4))
+/slc_cli/slc -daemon generate /gsdk/extension/wiseconnect3/examples/snippets/wlan/wifi6_twt_use_case_demo/wifi6_twt_use_case_demo_soc.slcp --force --with "brd4325c;wiseconnect3_sdk" -np -d output/wifi6_twt_use_case_demo_soc-brd4325c
+make -C output/wifi6_twt_use_case_demo_soc-brd4325c -f wifi6_twt_use_case_demo_soc.Makefile -j$((`nproc`/4))
+/slc_cli/slc -daemon generate /gsdk/extension/wiseconnect3/examples/snippets/wlan/wifi6_twt_use_case_demo/wifi6_twt_use_case_demo_soc.slcp --force --with "brd4325g;wiseconnect3_sdk" -np -d output/wifi6_twt_use_case_demo_soc-brd4325g
+make -C output/wifi6_twt_use_case_demo_soc-brd4325g -f wifi6_twt_use_case_demo_soc.Makefile -j$((`nproc`/4))
 
 /slc_cli/slc -daemon generate /gsdk/extension/wiseconnect3/examples/snippets/wlan/access_point/access_point_ncp.slcp --force --with "brd4180b" -np -d output/wifi_access_point_ncp-brd4180b
 make -C output/wifi_access_point_ncp-brd4180b -f wifi_access_point_ncp.Makefile -j$((`nproc`/4))
@@ -865,6 +871,13 @@ make -C output/blood_pressure-brd4325c -f blood_pressure.Makefile -j$((`nproc`/4
 /slc_cli/slc -daemon generate /gsdk/extension/wiseconnect3/examples/_internal/Wireless_Examples/ble/blood_pressure/blood_pressure.slcp --force --with "brd4325g;wiseconnect3_sdk" -np -d output/blood_pressure-brd4325g
 make -C output/blood_pressure-brd4325g -f blood_pressure.Makefile -j$((`nproc`/4))
 
+/slc_cli/slc -daemon generate /gsdk/extension/wiseconnect3/examples/_internal/Wireless_Examples/ble/bt_stack_bypass/bt_stack_bypass.slcp --force --with "brd4325a;wiseconnect3_sdk" -np -d output/bt_stack_bypass-brd4325a
+make -C output/bt_stack_bypass-brd4325a -f bt_stack_bypass.Makefile -j$((`nproc`/4))
+/slc_cli/slc -daemon generate /gsdk/extension/wiseconnect3/examples/_internal/Wireless_Examples/ble/bt_stack_bypass/bt_stack_bypass.slcp --force --with "brd4325c;wiseconnect3_sdk" -np -d output/bt_stack_bypass-brd4325c
+make -C output/bt_stack_bypass-brd4325c -f bt_stack_bypass.Makefile -j$((`nproc`/4))
+/slc_cli/slc -daemon generate /gsdk/extension/wiseconnect3/examples/_internal/Wireless_Examples/ble/bt_stack_bypass/bt_stack_bypass.slcp --force --with "brd4325g;wiseconnect3_sdk" -np -d output/bt_stack_bypass-brd4325g
+make -C output/bt_stack_bypass-brd4325g -f bt_stack_bypass.Makefile -j$((`nproc`/4))
+
 /slc_cli/slc -daemon generate /gsdk/extension/wiseconnect3/examples/_internal/Wireless_Examples/ble/gatt_test/gatt_test_ncp.slcp --force --with "brd4180b" -np -d output/gatt_test_ncp-brd4180b
 make -C output/gatt_test_ncp-brd4180b -f gatt_test_ncp.Makefile -j$((`nproc`/4))
 
@@ -980,6 +993,16 @@ make -C output/wifi_si91x_async_select_app_soc-brd4325a -f wifi_si91x_async_sele
 make -C output/wifi_si91x_async_select_app_soc-brd4325c -f wifi_si91x_async_select_app_soc.Makefile -j$((`nproc`/4))
 /slc_cli/slc -daemon generate /gsdk/extension/wiseconnect3/examples/_internal/Wireless_Examples/wlan/si91x_async_select_app/si91x_async_select_app_soc.slcp --force --with "brd4325g;wiseconnect3_sdk" -np -d output/wifi_si91x_async_select_app_soc-brd4325g
 make -C output/wifi_si91x_async_select_app_soc-brd4325g -f wifi_si91x_async_select_app_soc.Makefile -j$((`nproc`/4))
+
+/slc_cli/slc -daemon generate /gsdk/extension/wiseconnect3/examples/_internal/Wireless_Examples/wlan/multicast/si91x_multicast_app_ncp.slcp --force --with "brd4180b" -np -d output/wifi_si91x_multicast_app_ncp-brd4180b
+make -C output/wifi_si91x_multicast_app_ncp-brd4180b -f wifi_si91x_multicast_app_ncp.Makefile -j$((`nproc`/4))
+
+/slc_cli/slc -daemon generate /gsdk/extension/wiseconnect3/examples/_internal/Wireless_Examples/wlan/multicast/si91x_multicast_app_soc.slcp --force --with "brd4325a;wiseconnect3_sdk" -np -d output/wifi_si91x_multicast_app_soc-brd4325a
+make -C output/wifi_si91x_multicast_app_soc-brd4325a -f wifi_si91x_multicast_app_soc.Makefile -j$((`nproc`/4))
+/slc_cli/slc -daemon generate /gsdk/extension/wiseconnect3/examples/_internal/Wireless_Examples/wlan/multicast/si91x_multicast_app_soc.slcp --force --with "brd4325c;wiseconnect3_sdk" -np -d output/wifi_si91x_multicast_app_soc-brd4325c
+make -C output/wifi_si91x_multicast_app_soc-brd4325c -f wifi_si91x_multicast_app_soc.Makefile -j$((`nproc`/4))
+/slc_cli/slc -daemon generate /gsdk/extension/wiseconnect3/examples/_internal/Wireless_Examples/wlan/multicast/si91x_multicast_app_soc.slcp --force --with "brd4325g;wiseconnect3_sdk" -np -d output/wifi_si91x_multicast_app_soc-brd4325g
+make -C output/wifi_si91x_multicast_app_soc-brd4325g -f wifi_si91x_multicast_app_soc.Makefile -j$((`nproc`/4))
 
 /slc_cli/slc -daemon generate /gsdk/extension/wiseconnect3/examples/_internal/Wireless_Examples/wlan/si91x_tcp_async_server/si91x_tcp_async_server.slcp --force --with "brd4325a;wiseconnect3_sdk" -np -d output/wifi_si91x_tcp_async_server-brd4325a
 make -C output/wifi_si91x_tcp_async_server-brd4325a -f wifi_si91x_tcp_async_server.Makefile -j$((`nproc`/4))

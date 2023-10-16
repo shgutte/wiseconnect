@@ -14,8 +14,8 @@
 
 ## Purpose/Scope
 
-This application demonstrates how to SiWx91x is configured as an MQTT client, connects to an MQTT broker and maintains connection with broker while in TWT sleep. 
-In this application, SiWx91x is configured as a Wi-Fi station and connects to an Access Point. After successful Wi-Fi connection, SiWx91x connects to a MQTT broker. Then application configures the TWT session and enables associated power save mode. 
+This application demonstrates how SiWx91x is configured as an MQTT client, connects to an MQTT broker and maintains connection with broker while in TWT sleep. 
+The application configures the TWT session and enables associated power save mode. 
 
 ## Prerequisites/Setup Requirements
 
@@ -99,9 +99,9 @@ The application can be configured to suit user requirements and development envi
       #define ENABLE_MQTT_SUBSCRIBE_PUBLISH 0
       ```
 
-**Note**:
-> ENABLE_MQTT_SUBSCRIBE_PUBLISH is disabled by default, as the purpose of this application is to demonstrate power performance with TWT and without MQTT connection loss.
-
+Note:
+ > ENABLE_MQTT_SUBSCRIBE_PUBLISH is disabled by default because the purpose of this application is to demonstrate power performance with TWT and without MQTT connection loss.
+ 
 - MQTT_BROKER_PORT port refers to the port number on which the remote MQTT broker/server is running.
 
       ```c
@@ -255,9 +255,9 @@ The application can be configured to suit user requirements and development envi
 #### **iTWT Configuration**
 
 There are three TWT configuration APIs. 
->
+
 > - sl_wifi_target_wake_time_auto_selection - This API calculates and automatically configures TWT parameters based on the given inputs. Enables or disables a TWT session.
-> - sl_wifi_enable_target_wake_time - Configures user given TWT parameters. Enables a TWT session.
+> - sl_wifi_enable_target_wake_time - This API allows users to manually configure iTWT session parameters and enables the iTWT session.
 > - sl_wifi_disable_target_wake_time - Disables a TWT session.
 
 **sl_wifi_target_wake_time_auto_selection**
@@ -306,7 +306,8 @@ Sample Macro Settings :
   2 // The number of beacons after the service period completion for which the module wakes up and listens for any pending RX.
 ```
 
-Note :  WLAN Keep Alive should not be disabled while using this API.
+**Note** : 
+> WLAN Keep Alive should not be disabled while using this API.
 
 **sl_wifi_enable_target_wake_time API**
 
@@ -358,37 +359,28 @@ status                          = sl_wifi_enable_target_wake_time(&twt_request);
 
 **iTWT Teardown Configuration**
 
-To teardown TWT session use the matching TWT API:
-
-1. For TWT Auto Selection API :
-
+To teardown TWT session use the matching TWT teardown API corresponding to the TWT setup configuration API:
+1. For TWT parameters Auto Selection API, call the following API to teardown :
 ```c
 status = sl_wifi_target_wake_time_auto_selection(twt_selection);
 ```
-
 Set twt_enable parameter to 0 in the twt_selection structure. The other parameters are ignored. 
 
-2. For user given TWT parameters API call the API as follows:
-
+2. For manually configurable TWT parameters API, call the following API to teardown:
 ```c
 status = sl_wifi_disable_target_wake_time(&twt_req);
 ```
-
-- twt_req->twt_enable should be set to '0' for teardown operation.
-
-- twt_req->twt_flow_id should be configured as described below: 
->
-> - This paramater value range is 0-7. It should be same as setup flow ID, other wise error will be triggered.
-> - 0xFF - To teardown all active sessions. This value is valid only in case of teardown command.
-
-- Rest of the parameters in the structure are ignored for a Teardown operation. 
+* twt_req->twt_enable should be set to '0' for teardown operation.
+* twt_req->twt_flow_id should be configured as described below: 
+> * This paramater value range is 0-7. It should be same as setup flow ID, other wise error will be triggered.
+> * 0xFF - To teardown all active sessions. This value is valid only in case of teardown command.
+* Rest of the parameters in the structure are ignored for a Teardown operation.  
 
 > Note : For setting a new TWT session, the existing TWT session must be teared down.
 
 **iTWT Session Status Codes**
 
 User can get asynchronous TWT session updates if *twt_response_handler* is defined and the callback is registered. A *twt_response_handler* is provided in the example application. The following are the TWT session status codes.
-
 |S.No|  MACRO|  Session status code|  Description|
 |:----|:------|:-------------------|:--------------|
 |1.|  TWT_SESSION_SUCC| 0|  TWT session setup success. TWT session is active.|
@@ -411,11 +403,11 @@ User can get asynchronous TWT session updates if *twt_response_handler* is defin
 
 1. Use sl_wifi_target_wake_time_auto_selection with appropriate Rx Latency input according to the user scenario as it has improved  design over sl_wifi_enable_target_wake_time, handles Embedded MQTT level disconnections and has better user interface. 
 2. iTWT setup is recommended after IP assignment/TCP connection/application connection.
-3. When using sl_wifi_target_wake_time_auto_selection API, increase TCP / ARP Timeouts at remote side depending upon the configured Rx Latency.
-4. When using sl_wifi_enable_target_wake_time, increase TCP / ARP Timeouts at remote side depending upon the configured TWT interval configured.
+3. When using sl_wifi_target_wake_time_auto_selection API, Rx Latency  should be less than TCP / ARP Timeouts at the remote side.
+4. When using sl_wifi_enable_target_wake_time, TWT interval configured should be less than TCP / ARP Timeouts at the remote side.
 5. For iTWT, GTK Interval Should be kept maximum possible value or zero. If GTK interval is not configurable, recommended TWT interval (in case of sl_wifi_enable_target_wake_time) / RX Latency (in case of sl_wifi_target_wake_time_auto_selection API) is less than 4sec.
 6. When sl_wifi_enable_target_wake_time API is used, configuring TWT Wake interval beyond 1 min might lead to disconnections from the AP. Recommended to use TWT wakeup interval less than or equal to 1 min.
-7. WLAN Keep Alive timeout should not be disabled when sl_wifi_target_wake_time_auto_selection API is used or when unannounced TWT session is set up using sl_wifi_enable_target_wake_time API. It is recommended to use WLAN Keep Alive timeout of 30 sec.
+7. WLAN Keep Alive timeout should **not** be disabled when sl_wifi_target_wake_time_auto_selection API is used or when unannounced TWT session is set up using sl_wifi_enable_target_wake_time API. It is recommended to use WLAN Keep Alive timeout of 30 sec which is the default timeout even if not configured specifically by the user.
 
 ## Test the Application
 
@@ -424,7 +416,7 @@ Refer to the instructions [here](https://docs.silabs.com/wiseconnect/latest/wise
 - Build the application
 - Flash, run and debug the application
 
-- Once the SiWx91x gets connected to the MQTT broker, it will subscribe to the topic **TOPIC_TO_BE_SUBSCRIBED (Ex: "THERMOSTAT-DATA")**. The user can see the client connected and subscription success information in the MQTT broker.
+- Once the SiWx91x gets connected to the MQTT broker, if ENABLE_MQTT_SUBSCRIBE_PUBLISH is enabled, it will subscribe to the topic **TOPIC_TO_BE_SUBSCRIBED (Ex: "THERMOSTAT-DATA")**. The user can see the client connected and subscription success information in the MQTT broker.
 
    **![Client connected and subscription success information](resources/readme/connect_subscribe.png)**
 
@@ -505,3 +497,21 @@ Refer to the instructions [here](https://docs.silabs.com/wiseconnect/latest/wise
 4. Connect to MQTT broker by giving IP address and port number of Windows PC1 in HOST and PORT fields in MQTT Explorer respectively and click on **CONNECT** to connect to the MQTT broker. If you are running your MQTT broker on the same PC then the following configuration is made as shown in the below image.
 
    **![MQTT broker Configuration](resources/readme/connect.png)**
+
+**Using Simplicity Studio Energy Profiler for current measurement**
+  
+  After flashing the application code to the module. Energy profiler can be used for current consumption measurements.
+
+- From tools, choose Energy Profiler and click "OK"
+
+  ![Figure: Energy Profiler Step 6](resources/readme/energy_profiler_step_6.png)
+
+- From Quick Access, choose Start Energy Capture option
+
+  ![Figure: Energy Profiler Step 7](resources/readme/energy_profiler_step_7.png)
+
+- Expected output in Energy Profiler
+
+  ![Figure: Energy Profiler Output](resources/readme/outputs_2.png)
+
+**NOTE**: The average current consumption may vary based on the environment, the above image is for reference

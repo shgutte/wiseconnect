@@ -18,7 +18,7 @@ requires:
 flags:
   ld:
     global:
-      - -Wl,--defsym=SI91X_SOC_ROM_START_ADDRESS=0x8C12000
+      - -Wl,--defsym=SI91X_SOC_ROM_START_ADDRESS=0x8202000
       - -Wl,--defsym=SI91X_SOC_RAM_START_ADDRESS=0x400
 
 clang-format: true

@@ -46,6 +46,7 @@
 #ifdef RSI_M4_INTERFACE
 #include "rsi_power_save.h"
 #include "rsi_wisemcu_hardware_setup.h"
+#include "rsi_ps_config.h"
 #endif
 /******************************************************
  *                      Macros
@@ -62,26 +63,6 @@
 #define TWT_SCAN_TIMEOUT  10000
 #define SEND_TCP_DATA     0
 #define TWT_AUTO_CONFIG   1
-
-#ifdef RSI_M4_INTERFACE
-#ifdef COMMON_FLASH_EN
-#ifdef CHIP_917B0
-#define IVT_OFFSET_ADDR 0x81C2000 /*<!Application IVT location VTOR offset>          B0 common flash Board*/
-#else
-#define IVT_OFFSET_ADDR 0x8212000 /*<!Application IVT location VTOR offset>          A0 Common flash Board*/
-#endif
-#else
-#define IVT_OFFSET_ADDR \
-  0x8012000 /*<!Application IVT location VTOR offset>          Dual Flash  (both A0 and B0) Board*/
-#endif
-#ifdef CHIP_917B0
-#define WKP_RAM_USAGE_LOCATION \
-  0x24061EFC /*<!Bootloader RAM usage location upon wake up  */ // B0 Boards (common flash & Dual flash)
-#else
-#define WKP_RAM_USAGE_LOCATION \
-  0x24061000 /*<!Bootloader RAM usage location upon wake up  */ // A0 Boards (common flash & Dual flash)
-#endif
-#endif
 
 // Use case based TWT selection params
 #define DEVICE_AVERAGE_THROUGHPUT            20000
@@ -176,13 +157,13 @@ sl_wifi_twt_selection_t default_twt_selection_configuration = {
   .beacon_wake_up_count_after_sp         = MAX_BEACON_WAKE_UP_AFTER_SP
 };
 
-volatile bool twt_results_complete   = false;
 volatile sl_status_t callback_status = SL_STATUS_OK;
 /******************************************************
   *               Function Declarations
   ******************************************************/
 void application_start();
 sl_status_t set_twt(void);
+sl_status_t send_data(void);
 static sl_status_t twt_callback_handler(sl_wifi_event_t event,
                                         sl_si91x_twt_response_t *result,
                                         uint32_t result_length,
@@ -224,6 +205,13 @@ void application_start()
   }
   printf("\r\nTWT Config Done\r\n");
 
+  status = send_data();
+  if (status != SL_STATUS_OK) {
+    printf("\r\nError while sending data: 0x%lx \r\n", status);
+    return;
+  }
+  printf("\r\nData Sent\r\n");
+
 #ifdef RSI_M4_INTERFACE
   M4_sleep_wakeup();
 #endif
@@ -231,11 +219,43 @@ void application_start()
 
 sl_status_t set_twt(void)
 {
-  int client_socket                                 = -1;
-  int return_value                                  = 0;
-  sl_ipv4_address_t ip                              = { 0 };
   sl_wifi_performance_profile_t performance_profile = { 0 };
   sl_status_t status                                = SL_STATUS_OK;
+
+  //! Set TWT Config
+  sl_wifi_set_twt_config_callback(twt_callback_handler, NULL);
+  if (TWT_AUTO_CONFIG == 1) {
+    performance_profile.twt_selection = default_twt_selection_configuration;
+    status                            = sl_wifi_target_wake_time_auto_selection(&performance_profile.twt_selection);
+  } else {
+    performance_profile.twt_request = default_twt_setup_configuration;
+    status                          = sl_wifi_enable_target_wake_time(&performance_profile.twt_request);
+  }
+  VERIFY_STATUS_AND_RETURN(status);
+  // A small delay is added so that the asynchronous response from TWT is printed in correct format.
+  osDelay(100);
+
+  //! Enable Broadcast data filter
+  status = sl_wifi_filter_broadcast(5000, 1, 1);
+  VERIFY_STATUS_AND_RETURN(status);
+  printf("\r\nEnabled Broadcast Data Filter\n");
+
+  //! Apply power save profile
+  performance_profile.profile = ASSOCIATED_POWER_SAVE;
+  status                      = sl_wifi_set_performance_profile(&performance_profile);
+  if (status != SL_STATUS_OK) {
+    printf("\r\nPowersave Configuration Failed, Error Code : 0x%lX\r\n", status);
+    return status;
+  }
+  printf("\r\nAssociated Power Save Enabled\n");
+  return SL_STATUS_OK;
+}
+
+sl_status_t send_data(void)
+{
+  int client_socket    = -1;
+  int return_value     = 0;
+  sl_ipv4_address_t ip = { 0 };
 
   struct sockaddr_in server_address = { 0 };
 
@@ -260,43 +280,7 @@ sl_status_t set_twt(void)
     close(client_socket);
     return SL_STATUS_FAIL;
   }
-  printf("\r\n Socket Connected\n\n");
-
-  //! Set TWT Config
-  sl_wifi_set_twt_config_callback(twt_callback_handler, NULL);
-  if (TWT_AUTO_CONFIG == 1) {
-    performance_profile.twt_selection = default_twt_selection_configuration;
-    status                            = sl_wifi_target_wake_time_auto_selection(&performance_profile.twt_selection);
-  } else {
-    performance_profile.twt_request = default_twt_setup_configuration;
-    status                          = sl_wifi_enable_target_wake_time(&performance_profile.twt_request);
-  }
-  if (SL_STATUS_IN_PROGRESS == status) {
-    const uint32_t start = osKernelGetTickCount();
-
-    while (!twt_results_complete && (osKernelGetTickCount() - start) <= TWT_SCAN_TIMEOUT) {
-      osThreadYield();
-    }
-
-    status = twt_results_complete ? callback_status : SL_STATUS_TIMEOUT;
-  }
-  VERIFY_STATUS_AND_RETURN(status);
-  printf("\nTWT Setup Successful\n");
-  twt_results_complete = false;
-
-  //! Enable Broadcast data filter
-  status = sl_wifi_filter_broadcast(5000, 1, 1);
-  VERIFY_STATUS_AND_RETURN(status);
-  printf("\r\nEnabled Broadcast Data Filter\n");
-
-  //! Apply power save profile
-  performance_profile.profile = ASSOCIATED_POWER_SAVE;
-  status                      = sl_wifi_set_performance_profile(&performance_profile);
-  if (status != SL_STATUS_OK) {
-    printf("\r\nPowersave Configuration Failed, Error Code : 0x%lX\r\n", status);
-    return status;
-  }
-  printf("\r\nAssociated Power Save Enabled\n");
+  printf("\r\n Socket Connected\r\n");
 
   //! send data
 #if SEND_TCP_DATA
@@ -326,7 +310,6 @@ static sl_status_t twt_callback_handler(sl_wifi_event_t event,
   UNUSED_PARAMETER(arg);
 
   if (CHECK_IF_EVENT_FAILED(event)) {
-    twt_results_complete = true;
     return SL_STATUS_FAIL;
   }
 
@@ -392,7 +375,6 @@ static sl_status_t twt_callback_handler(sl_wifi_event_t event,
     printf("\r\n twt_flow_id : 0x%X", result->twt_flow_id);
     printf("\r\n negotiation_type : 0x%X\r\n", result->negotiation_type);
   }
-  twt_results_complete = true;
   return SL_STATUS_OK;
 }
 

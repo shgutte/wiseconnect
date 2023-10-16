@@ -16,10 +16,6 @@
       file_id: psram_pin_config
     path: sl_si91x_psram_pin_config.h
   - override:
-      component: "%extension-wiseconnect3_sdk%brd4325g"
-      file_id: B0_pin_config
-    path: RTE_Device_917.h
-  - override:
       component: "%extension-wiseconnect3_sdk%adc_instance"
       file_id: adc_config
       instance: channel_0

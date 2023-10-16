@@ -181,7 +181,7 @@ static rsi_ble_event_read_by_type1_t char_servs;
 static rsi_ble_event_read_by_type1_t char_servs;
 rsi_ble_event_profile_by_uuid_t profiles_list;
 rsi_ble_event_gatt_desc_t attr_desc_list;
-int8_t notify_start            = 0;
+int8_t notify_start            = false;
 heart_rate_t rate              = { 0x00, 75, 73, 70, 0 };
 uint8_t str_remote_address[18] = { '\0' };
 
@@ -560,7 +560,7 @@ void rsi_ble_phy_update_complete_event(rsi_ble_event_phy_update_t *rsi_ble_event
  */
 void rsi_ble_simple_central_on_adv_report_event(rsi_ble_event_adv_report_t *adv_report)
 {
-  if (device_found == 1) {
+  if (device_found == true) {
     return;
   }
 
@@ -570,11 +570,11 @@ void rsi_ble_simple_central_on_adv_report_event(rsi_ble_event_adv_report_t *adv_
   remote_addr_type = adv_report->dev_addr_type;
   rsi_6byte_dev_address_to_ascii(remote_dev_addr, (uint8_t *)adv_report->dev_addr);
   memcpy(remote_dev_bd_addr, (uint8_t *)adv_report->dev_addr, sizeof(remote_dev_bd_addr));
-  if ((device_found == 0)
+  if ((device_found == false)
       && (((strcmp((const char *)remote_name, RSI_REMOTE_DEVICE_NAME)) == 0)
           || ((remote_addr_type == RSI_BLE_DEV_ADDR_TYPE)
               && ((strcmp((const char *)remote_dev_addr, RSI_BLE_DEV_ADDR) == 0))))) {
-    device_found = 1;
+    device_found = true;
     rsi_ble_app_set_event(RSI_APP_EVENT_ADV_REPORT);
   }
 }
@@ -644,10 +644,10 @@ static void rsi_ble_on_gatt_write_event(uint16_t event_id, rsi_ble_event_write_t
   memcpy(&app_ble_write_event, rsi_ble_write, sizeof(rsi_ble_event_write_t));
   if ((rsi_ble_measurement_hndl + 1) == *((uint16_t *)app_ble_write_event.handle)) {
     if (app_ble_write_event.att_value[0] == 1) {
-      notify_start = 1;
+      notify_start = true;
       rsi_ble_app_set_event(RSI_BLE_GATT_SEND_DATA);
     } else if (app_ble_write_event.att_value[0] == 0) {
-      notify_start = 0;
+      notify_start = false;
       rsi_ble_app_clear_event(RSI_BLE_GATT_SEND_DATA);
     }
   }
@@ -797,7 +797,7 @@ void ble_heart_rate_gatt_server(void *argument)
   int32_t event_id;
   int8_t data[8] = { 0 };
   uint8_t len;
-  uint8_t connected                = 0;
+  uint8_t connected                = false;
   sl_wifi_version_string_t version = { 0 };
 #if (GATT_ROLE == CLIENT)
   uuid_t service_uuid = { 0 };
@@ -808,7 +808,7 @@ void ble_heart_rate_gatt_server(void *argument)
 #else
   uint8_t adv[31] = { 2, 1, 6 };
 #endif
-#ifdef RSI_M4_INTERFACE
+#if (defined RSI_M4_INTERFACE && ENABLE_POWER_SAVE)
   sl_si91x_hardware_setup();
 #if (defined ALARM_TIMER_BASED_WAKEUP && (GATT_ROLE == CLIENT))
   initialize_m4_alarm();
@@ -934,7 +934,7 @@ void ble_heart_rate_gatt_server(void *argument)
       //! if events are not received loop will be continued.
       if ((!(P2P_STATUS_REG & TA_wakeup_M4))) {
         P2P_STATUS_REG &= ~M4_wakeup_TA;
-        sl_m4_sleep_wakeup();
+        sl_si91x_m4_sleep_wakeup();
 #if (defined ALARM_TIMER_BASED_WAKEUP && (GATT_ROLE == CLIENT))
         check_wakeup_source();
 #endif
@@ -968,7 +968,7 @@ void ble_heart_rate_gatt_server(void *argument)
         rsi_6byte_dev_address_to_ascii(str_remote_address, conn_event_to_app.dev_addr);
         LOG_PRINT("\r\n Module connected to address : %s \r\n", str_remote_address);
 
-        connected = 1;
+        connected = true;
 
 #if (GATT_ROLE == CLIENT)
         rsi_ble_app_set_event(RSI_BLE_GATT_PROFILES_RESP_EVENT);
@@ -979,7 +979,7 @@ void ble_heart_rate_gatt_server(void *argument)
         //! event invokes when disconnection was completed
 
         //! clear the served event
-        notify_start = 0;
+        notify_start = false;
         rsi_ble_app_clear_event(RSI_BLE_GATT_SEND_DATA);
         rsi_ble_app_clear_event(RSI_BLE_DISCONN_EVENT);
         LOG_PRINT("\r\nModule got Disconnected\r\n");
@@ -1001,7 +1001,7 @@ void ble_heart_rate_gatt_server(void *argument)
           return;
         }
 #endif
-        connected = 0;
+        connected = false;
 
         //! set device in advertising mode.
 #if (GATT_ROLE == SERVER)
@@ -1136,8 +1136,8 @@ adv:
 #endif
       case RSI_BLE_GATT_SEND_DATA: {
 #if ((GATT_ROLE == CLIENT) || (GATT_ROLE == SERVER))
-        if (connected == 1) {
-          if (notify_start == 1) {
+        if (connected == true) {
+          if (notify_start == true) {
             len    = heartratefun(rate, (uint8_t *)data);
             status = rsi_ble_set_local_att_value(rsi_ble_measurement_hndl, len, (uint8_t *)data);
             if (status != RSI_SUCCESS) {
@@ -1150,7 +1150,7 @@ adv:
       case RSI_BLE_COMMAND_SET_PHY: {
         LOG_PRINT("\r\n set PHY");
         rsi_ble_app_clear_event(RSI_BLE_COMMAND_SET_PHY);
-        if (connected == 1) {
+        if (connected == true) {
           if (BLE_2M_PHY == phy_value) {
             status    = rsi_ble_setphy((int8_t *)conn_event_to_app.dev_addr, BLE_2M_PHY, BLE_2M_PHY, CODDED_PHY_RATE);
             phy_value = BLE_1M_PHY;

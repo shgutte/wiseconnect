@@ -1,6 +1,6 @@
 /***************************************************************************/ /**
- * @file adc_joystick.h
- * @brief adc joystick sensor driver
+ * @file adc_sensor_driver.h
+ * @brief adc sensor driver
  *******************************************************************************
  * # License
  * <b>Copyright 2023 Silicon Laboratories Inc. www.silabs.com</b>
@@ -28,22 +28,14 @@
  *
  ******************************************************************************/
 
-#ifndef ADC_JOYSTICK_H_
-#define ADC_JOYSTICK_H_
+#ifndef ADC_SENSOR_DRIVER_H_
+#define ADC_SENSOR_DRIVER_H_
 #include "sl_si91x_adc.h"
-
-/***************************************************************************/ /**
- * @addtogroup SENSOR_HUB
- * @ingroup SENSORHUB_ADC_JOYSTICK_ADC_APIS
- * @{
- ******************************************************************************/
-// -----------------------------------------------------------------------------
 
 /***************************************************************************/ /**
  * Typedef for different pointer handles
  ******************************************************************************/
 typedef void *sl_err_t;
-typedef void *adc_joystick_handle_t;
 typedef void *adc_bus_handle_t;
 
 #ifdef __cplusplus
@@ -54,8 +46,11 @@ extern "C" {
 // Prototypes
 
 /***************************************************************************/ /**
- * @fn        sl_status_t sl_si91x_adc_joystick_init(sl_adc_channel_config_t *adc_ch_cfg, sl_adc_config_t *adc_cfg)
- * @brief     ADC joystick sensor initialization
+ * @fn sl_status_t sl_si91x_adc_channel_init(sl_adc_channel_config_t *adc_ch_cfg, sl_adc_config_t *adc_cfg)
+ * @brief ADC channel initialization
+ * This function should be called before everything else. And ADC peripheral
+ * initialization should be done before calling this function. This function
+ * will only initliaze respective ADC channel and does not start the ADC.
  *
  * @param[in] adc_ch_cfg : ADC channel configuration
  * @param[in] adc_cfg : ADC configuration
@@ -66,11 +61,12 @@ extern "C" {
  *         \ref SL_STATUS_FAIL (0x0001) - The function is failed
  *         \ref SL_STATUS_NOT_INITIALIZED (0x0011) - Clock is not initialized
  ******************************************************************************/
-sl_status_t sl_si91x_adc_joystick_init(sl_adc_channel_config_t *adc_ch_cfg, sl_adc_config_t *adc_cfg);
+sl_status_t sl_si91x_adc_channel_init(sl_adc_channel_config_t *adc_ch_cfg, sl_adc_config_t *adc_cfg);
 
 /***************************************************************************/ /**
- * @fn        sl_status_t sl_si91x_adc_joystick_deinit(sl_adc_config_t *adc_cfg)
- * @brief     ADC joystick sensor deinitialization
+ * @fn sl_status_t sl_si91x_adc_de_init(sl_adc_config_t *adc_cfg)
+ * @brief ADC deinitialization
+ * This function powers off ADC block and stops ADC operations
  *
  * @param[in] adc_cfg : ADC configuration
  * @return status 0 if successful, else error code
@@ -80,11 +76,12 @@ sl_status_t sl_si91x_adc_joystick_init(sl_adc_channel_config_t *adc_ch_cfg, sl_a
  *         \ref SL_STATUS_FAIL (0x0001) - The function is failed
  *         \ref SL_STATUS_NOT_INITIALIZED (0x0011) - Clock is not initialized
  ******************************************************************************/
-sl_status_t sl_si91x_adc_joystick_deinit(sl_adc_config_t *adc_cfg);
+sl_status_t sl_si91x_adc_de_init(sl_adc_config_t *adc_cfg);
 
 /***************************************************************************/ /**
- * @fn        sl_status_t sl_si91x_adc_joystick_enable(uint8_t channel)
- * @brief     ADC joystick sensor enable
+ * @fn sl_status_t sl_si91x_adc_chnl_enable(uint8_t channel)
+ * @brief ADC channel enable
+ * This function enables respective ADC channel.
  *
  * @param[in] channel : ADC channel number
  * @return status 0 if successful, else error code
@@ -94,11 +91,12 @@ sl_status_t sl_si91x_adc_joystick_deinit(sl_adc_config_t *adc_cfg);
  *         \ref SL_STATUS_FAIL (0x0001) - The function is failed
  *         \ref SL_STATUS_NOT_INITIALIZED (0x0011) - Clock is not initialized
  ******************************************************************************/
-sl_status_t sl_si91x_adc_joystick_enable(uint8_t channel);
+sl_status_t sl_si91x_adc_chnl_enable(uint8_t channel);
 
 /***************************************************************************/ /**
- * @fn        sl_status_t sl_si91x_adc_joystick_disable(uint8_t channel)
- * @brief     ADC joystick sensor enable
+ * @fn sl_status_t sl_si91x_adc_chnl_disable(uint8_t channel)
+ * @brief ADC channel disable
+ * This function disables respective ADC channel.
  *
  * @param[in] channel : ADC channel number
  * @return status 0 if successful, else error code
@@ -108,13 +106,14 @@ sl_status_t sl_si91x_adc_joystick_enable(uint8_t channel);
  *         \ref SL_STATUS_FAIL (0x0001) - The function is failed
  *         \ref SL_STATUS_NOT_INITIALIZED (0x0011) - Clock is not initialized
  ******************************************************************************/
-sl_status_t sl_si91x_adc_joystick_disable(uint8_t channel);
+sl_status_t sl_si91x_adc_chnl_disable(uint8_t channel);
 
 /***************************************************************************/ /**
- * @fn        sl_status_t sl_si91x_adc_joystick_read_static_data(sl_adc_channel_config_t *adc_ch_cfg,
-                                                   sl_adc_config_t *adc_cfg,
-                                                   uint16_t *adc_value)
- * @brief     ADC joystick sensor read static data
+ * @fn sl_status_t sl_si91x_adc_read_static_sample(sl_adc_channel_config_t *adc_ch_cfg,
+                                            sl_adc_config_t *adc_cfg,
+                                            uint16_t *adc_value)
+ * @brief ADC read static data
+ * This function reads static ADC data from the register.
  *
  * @param[in] adc_ch_cfg : ADC channel configuration
  * @param[in] adc_cfg : ADC configuration
@@ -126,13 +125,30 @@ sl_status_t sl_si91x_adc_joystick_disable(uint8_t channel);
  *         \ref SL_STATUS_FAIL (0x0001) - The function is failed
  *         \ref SL_STATUS_NOT_INITIALIZED (0x0011) - Clock is not initialized
  ******************************************************************************/
-sl_status_t sl_si91x_adc_joystick_read_static_data(sl_adc_channel_config_t *adc_ch_cfg,
-                                                   sl_adc_config_t *adc_cfg,
-                                                   uint16_t *adc_value);
+sl_status_t sl_si91x_adc_read_static_sample(sl_adc_channel_config_t *adc_ch_cfg,
+                                            sl_adc_config_t *adc_cfg,
+                                            uint16_t *adc_value);
+
+/***************************************************************************/ /**
+ * @fn sl_status_t sl_si91x_adc_channel_read_sample(sl_adc_channel_config_t *adc_ch_cfg, uint8_t channl_num)
+ * @brief ADC read channle sample
+ * This function reads ADC data for specific channel in FIFO mode
+ *
+ * @param[in] ADC channel configuration
+ * @param[in] ADC channle number
+ *
+ * @return status 0 if successful, else error code
+ *         \ref SL_STATUS_OK (0x0000) - Success
+ *         \ref SL_STATUS_NULL_POINTER (0x0022) - The parameter is null pointer
+ *         \ref SL_STATUS_INVALID_PARAMETER (0x0021) - Parameters are invalid
+ *         \ref SL_STATUS_FAIL (0x0001) - The function is failed
+ *         \ref SL_STATUS_NOT_INITIALIZED (0x0011) - Clock is not initialized
+ ******************************************************************************/
+sl_status_t sl_si91x_adc_channel_read_sample(sl_adc_channel_config_t *adc_ch_cfg, uint8_t channl_num);
 
 #ifdef __cplusplus
 extern "C"
 }
 #endif
 
-#endif /* ADC_JOYSTICK_H_ */
+#endif /* ADC_SENSOR_DRIVER_H_ */

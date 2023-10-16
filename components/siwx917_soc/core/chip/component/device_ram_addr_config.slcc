@@ -2,7 +2,7 @@ id: device_ram_addr_config
 package: platform
 description: RAM Address override component for common flash ram based execution examples.
 category: Platform|si91x|core
-quality: internal
+quality: production
 provides:
   - name: device_ram_addr_config
 template_contribution:

@@ -253,26 +253,31 @@ void sl_si91x_sensor_event_handler(uint8_t sensor_id, uint8_t event)
       if (SL_SENSOR_ADC_JOYSTICK_ID == sensor_id) {
         float vout = 0;
         if (sensor_hub_info_t[sens_ind].sensor_mode == SL_SH_INTERRUPT_MODE) {
-          DEBUGOUT("%dmV \t", sensor_hub_info_t[sens_ind].sensor_data_ptr->sensor_data[0].adc);
+          for (uint32_t i = 0; i < SL_SH_ADC_CH0_NUM_SAMPLES; i++) {
+            DEBUGOUT("%dmV \t", sensor_hub_info_t[sens_ind].sensor_data_ptr->sensor_data[0].adc[i]);
+          }
         } else if (sensor_hub_info_t[sens_ind].sensor_mode == SL_SH_POLLING_MODE) {
           if (sensor_hub_info_t[sens_ind].data_deliver.data_mode == SL_SH_TIMEOUT) {
             for (uint32_t i = 0;
                  i < sensor_hub_info_t[sens_ind].data_deliver.timeout / sensor_hub_info_t[sens_ind].sampling_interval;
                  i++) {
-              DEBUGOUT("%dmV \t", sensor_hub_info_t[sens_ind].sensor_data_ptr->sensor_data[i].adc);
+              DEBUGOUT("%dmV \t", sensor_hub_info_t[sens_ind].sensor_data_ptr->sensor_data[0].adc[i]);
             }
           }
           if (sensor_hub_info_t[sens_ind].data_deliver.data_mode == SL_SH_NUM_OF_SAMPLES) {
             for (uint32_t i = 0; i < sensor_hub_info_t[sens_ind].data_deliver.numofsamples; i++) {
-              DEBUGOUT("%dmV \t", sensor_hub_info_t[sens_ind].sensor_data_ptr->sensor_data[i].adc);
+              DEBUGOUT("%dmV \t", sensor_hub_info_t[sens_ind].sensor_data_ptr->sensor_data[0].adc[i]);
             }
           }
           if (sensor_hub_info_t[sens_ind].data_deliver.data_mode == SL_SH_THRESHOLD) {
-            DEBUGOUT("%dmV \t", sensor_hub_info_t[sens_ind].sensor_data_ptr->sensor_data[0].adc);
+            for (uint32_t i = 0; i < SL_SH_ADC_CH0_NUM_SAMPLES; i++) {
+              DEBUGOUT("%dmV \t", sensor_hub_info_t[sens_ind].sensor_data_ptr->sensor_data[0].adc[i]);
+            }
           }
         }
-        vout = (((float)sensor_hub_info_t[sens_ind].sensor_data_ptr->sensor_data[0].adc / (float)SL_ADC_MAX_OP_VALUE)
-                * SL_ADC_VREF_VALUE);
+        vout =
+          (((float)*(sensor_hub_info_t[sens_ind].sensor_data_ptr->sensor_data[0].adc) / (float)SL_SH_ADC_MAX_OP_VALUE)
+           * SL_SH_ADC_VREF_VALUE);
         DEBUGOUT("Single ended input: %lfV \t", (double)vout);
       }
 
