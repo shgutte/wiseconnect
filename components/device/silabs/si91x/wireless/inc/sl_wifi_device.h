@@ -848,12 +848,13 @@ typedef enum {
 //STATIC_ASSERT(sizeof(sl_si91x_operation_mode_t) == 2);
 
 /// Si91x coex mode
+/// @note Only BLE and WLAN-BLE and probably WLAN modes supported
 typedef enum {
   SL_SI91X_WLAN_MODE           = 1,  ///< WLAN Mode
-  SL_SI91X_BLUETOOTH_MODE      = 4,  ///< Bluetooth Only Mode
-  SL_SI91X_WLAN_BLUETOOTH_MODE = 5,  ///< WLAN and Bluetooth Mode
-  SL_SI91X_DUAL_MODE           = 8,  ///< Dual Mode
-  SL_SI91X_WLAN_DUAL_MODE      = 9,  ///< Wlan Dual Mode
+  SL_SI91X_BLUETOOTH_MODE      = 4,  ///< Bluetooth Only Mode (not currently supported)
+  SL_SI91X_WLAN_BLUETOOTH_MODE = 5,  ///< WLAN and Bluetooth Mode (not currently supported)
+  SL_SI91X_DUAL_MODE           = 8,  ///< Dual Mode (not currently supported)
+  SL_SI91X_WLAN_DUAL_MODE      = 9,  ///< Wlan Dual Mode (not currently supported)
   SL_SI91X_BLE_MODE            = 12, ///< Bluetooth Low energy only mode, used when power save mode not needed.
   SL_SI91X_WLAN_BLE_MODE       = 13, ///< WLAN and Bluetooth Low energy Mode
   __FORCE_COEX_ENUM_16BIT      = 0xFFFF

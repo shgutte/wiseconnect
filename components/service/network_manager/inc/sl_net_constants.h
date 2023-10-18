@@ -43,13 +43,14 @@
  * @{ */
 
 /// Enumeration of network interfaces.
+/// @note Only Wi-Fi client and Wi-Fi access point interfaces currently supported.
 typedef enum {
   SL_NET_WIFI_CLIENT_INTERFACE = (1 << 3), ///< WiFi Client Interface
   SL_NET_WIFI_AP_INTERFACE     = (2 << 3), ///< WiFi Access Point Interface
-  SL_NET_ETHERNET_INTERFACE    = (3 << 3), ///< Ethernet Interface
-  SL_NET_THREAD_INTERFACE      = (4 << 3), ///< Thread Interface
-  SL_NET_BLUETOOTH_INTERFACE   = (5 << 3), ///< Bluetooth Interface
-  SL_NET_ZWAVE_INTERFACE       = (6 << 3), ///< Z-Wave Interface
+  SL_NET_ETHERNET_INTERFACE    = (3 << 3), ///< Ethernet Interface (not currently supported)
+  SL_NET_THREAD_INTERFACE      = (4 << 3), ///< Thread Interface (not currently supported)
+  SL_NET_BLUETOOTH_INTERFACE   = (5 << 3), ///< Bluetooth Interface (not currently supported)
+  SL_NET_ZWAVE_INTERFACE       = (6 << 3), ///< Z-Wave Interface (not currently supported)
 } sl_net_interface_t;
 
 /** @} */
@@ -91,11 +92,12 @@ typedef enum {
 } sl_net_packet_type_t;
 
 /// Enumeration of IP address resolution methods.
+/// @note Link local address resolution not currently supported.
 typedef enum {
-  SL_NET_AUTOMATIC_ADDRESS_RESOLUTION,
-  SL_NET_STATIC_ADDRESS_RESOLUTION,
-  SL_NET_DHCP_ADDRESS_RESOLUTION = SL_NET_AUTOMATIC_ADDRESS_RESOLUTION,
-  SL_NET_LINK_LOCAL_ADDRESS_RESOLUTION,
+  SL_NET_AUTOMATIC_ADDRESS_RESOLUTION,                                  ///< Automatic Address Resolution
+  SL_NET_STATIC_ADDRESS_RESOLUTION,                                     ///< Static Address Resolution
+  SL_NET_DHCP_ADDRESS_RESOLUTION = SL_NET_AUTOMATIC_ADDRESS_RESOLUTION, ///< DHCP Address Resolution
+  SL_NET_LINK_LOCAL_ADDRESS_RESOLUTION, ///< Link Local Address Resolution (not currently supported)
 } sl_net_address_resolution_t;
 
 /// Enumeration of DNS resolution IP type.
@@ -121,6 +123,7 @@ typedef enum {
 } sl_net_event_t;
 
 /// SL Network profile ID.
+/// @note Ethernet, Thread and Z-Wave profiles not currently supported.
 typedef enum {
   SL_NET_PROFILE_ID_0  = 0,  ///< Profile Id 0
   SL_NET_PROFILE_ID_1  = 1,  ///< Profile Id 1
@@ -136,9 +139,9 @@ typedef enum {
 
   SL_NET_DEFAULT_WIFI_CLIENT_PROFILE_ID = SL_NET_PROFILE_ID_0, ///< WiFi Client Default Profile
   SL_NET_DEFAULT_WIFI_AP_PROFILE_ID     = SL_NET_PROFILE_ID_0, ///< WiFi Access Point Default Profile
-  SL_NET_DEFAULT_ETHERNET_PROFILE_ID    = SL_NET_PROFILE_ID_0, ///< Ethernet Default Profile
-  SL_NET_DEFAULT_THREAD_PROFILE_ID      = SL_NET_PROFILE_ID_0, ///< Thread Default Profile
-  SL_NET_DEFAULT_ZWAVE_PROFILE_ID       = SL_NET_PROFILE_ID_0, ///< Zwave Default Profile
+  SL_NET_DEFAULT_ETHERNET_PROFILE_ID    = SL_NET_PROFILE_ID_0, ///< Ethernet Default Profile (not currently supported)
+  SL_NET_DEFAULT_THREAD_PROFILE_ID      = SL_NET_PROFILE_ID_0, ///< Thread Default Profile  (not currently supported)
+  SL_NET_DEFAULT_ZWAVE_PROFILE_ID       = SL_NET_PROFILE_ID_0, ///< Zwave Default Profile  (not currently supported)
 } sl_net_profile_id_t;
 
 /// Enumeration of network credential types.

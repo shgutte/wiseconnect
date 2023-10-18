@@ -97,14 +97,16 @@ typedef enum {
 
 typedef uint32_t sl_si91x_semaphore_handle_t;
 
-/// Si91x band mode
+/// Si91x band mode.
+/// @note Only 2.4 GHz currently supported.
 typedef enum {
   SL_SI91X_WIFI_BAND_2_4GHZ = 0, ///< 2.4GHz WiFi band
-  SL_SI91X_WIFI_BAND_5GHZ   = 1, ///< 5GHz WiFi band
-  SL_SI91X_WIFI_DUAL_BAND   = 2  ///< both 2.4GHz and 5GHZ WiFi band
+  SL_SI91X_WIFI_BAND_5GHZ   = 1, ///< 5GHz WiFi band (not currently supported)
+  SL_SI91X_WIFI_DUAL_BAND   = 2  ///< both 2.4GHz and 5GHZ WiFi band (not currently supported)
 } sl_si91x_band_mode_t;
 
-/// Si91x region code
+/// Si91x region code.
+/// @note Singapore region not currently supported.
 typedef enum {
   DEFAULT_REGION, ///< Factory default region
   US,             ///< United States
@@ -112,7 +114,7 @@ typedef enum {
   JP,             ///< Japan
   WORLD_DOMAIN,   ///< World wide domain
   KR,             ///< Korea
-  SG              ///< Singapore
+  SG              ///< Singapore (not currently supported)
 } sl_si91x_region_code_t;
 
 /// Si91x Timeout types

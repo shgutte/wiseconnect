@@ -28,10 +28,11 @@
  */
 
 /// MQTT QOS levels
+/// @note Quality of service (QoS) level 2 not currently supported.
 typedef enum {
   SL_MQTT_QOS_LEVEL_0, ///< MQTT QOS level 0
   SL_MQTT_QOS_LEVEL_1, ///< MQTT QOS level 1
-  SL_MQTT_QOS_LEVEL_2, ///< MQTT QOS level 2
+  SL_MQTT_QOS_LEVEL_2, ///< MQTT QOS level 2 (not currently supported)
 } sl_mqtt_qos_t;
 
 /// MQTT Client connection states
