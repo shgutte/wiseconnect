@@ -50,7 +50,9 @@
 #include "rsi_common_apis.h"
 #include <stdio.h>
 #include <string.h>
-
+#ifdef RSI_M4_INTERFACE
+#include "sl_si91x_m4_ps.h"
+#endif
 /******************************************************
 *                    Constants
 ******************************************************/
@@ -113,6 +115,19 @@
 
 //! Remote Device Name to connect
 #define RSI_REMOTE_DEVICE_NAME "SILABS_DEV"
+/*=======================================================================*/
+//!    Powersave configurations
+/*=======================================================================*/
+#define ENABLE_POWER_SAVE 0 //! Set to 1 for powersave mode
+
+#if ENABLE_POWER_SAVE
+//! Power Save Profile Mode
+#define PSP_MODE RSI_SLEEP_MODE_2
+//! Power Save Profile type
+#define PSP_TYPE RSI_MAX_PSP
+
+sl_wifi_performance_profile_t wifi_profile = { ASSOCIATED_POWER_SAVE, 0, 0, 1000 };
+#endif
 
 /******************************************************
  *               GLOBAL Variable Definitions
@@ -773,7 +788,9 @@ void rsi_ble_simple_gatt_test(void *argument)
   // rsi_ble_resp_local_att_value_t local_att_val;
 
   uint8_t read_data[100] = { 2 };
-
+#ifdef RSI_M4_INTERFACE
+  sl_si91x_hardware_setup();
+#endif /* RSI_M4_INTERFACE */
   status = sl_wifi_init(&config, default_wifi_event_handler);
   if (status != SL_STATUS_OK) {
     LOG_PRINT("\r\nWi-Fi Initialization Failed, Error Code : 0x%lX\r\n", status);
@@ -867,13 +884,38 @@ void rsi_ble_simple_gatt_test(void *argument)
     return;
   }
 #endif
+#if ENABLE_POWER_SAVE
+  LOG_PRINT("\r\n keep module in to power save \r\n");
+  //! initiating power save in BLE mode
+  status = rsi_bt_power_save_profile(PSP_MODE, PSP_TYPE);
+  if (status != RSI_SUCCESS) {
+    LOG_PRINT("\r\n Failed to initiate power save in BLE mode \r\n");
+    return;
+  }
 
+  //! initiating power save in wlan mode
+  status = sl_wifi_set_performance_profile(&wifi_profile);
+  if (status != SL_STATUS_OK) {
+    LOG_PRINT("\r\n Failed to initiate power save in Wi-Fi mode :%lx\r\n", status);
+    return;
+  }
+
+  LOG_PRINT("\r\n Module is in power save \r\n");
+#endif
   //! waiting for events from controller.
   while (1) {
     //! checking for events list
     event_id = rsi_ble_app_get_event();
     if (event_id == -1) {
+#if RSI_M4_INTERFACE && ENABLE_POWER_SAVE
+      //! if events are not received loop will be continued.
+      if ((!(P2P_STATUS_REG & TA_wakeup_M4))) {
+        P2P_STATUS_REG &= ~M4_wakeup_TA;
+        sl_si91x_m4_sleep_wakeup();
+      }
+#else
       osSemaphoreAcquire(ble_main_task_sem, osWaitForever);
+#endif
       continue;
     }
 
@@ -923,6 +965,23 @@ retry:
         //! clear the served event
         rsi_ble_app_clear_event(RSI_BLE_DISCONN_EVENT);
         LOG_PRINT("\r\nModule got Disconnected\r\n");
+#if ENABLE_POWER_SAVE
+        LOG_PRINT("\r\n keep module in to active state \r\n");
+        //! initiating Active mode in BT mode
+        status = rsi_bt_power_save_profile(RSI_ACTIVE, PSP_TYPE);
+        if (status != RSI_SUCCESS) {
+          LOG_PRINT("\r\n Failed to keep Module in ACTIVE mode \r\n");
+          return;
+        }
+
+        //! initiating power save in wlan mode
+        wifi_profile.profile = HIGH_PERFORMANCE;
+        status               = sl_wifi_set_performance_profile(&wifi_profile);
+        if (status != SL_STATUS_OK) {
+          LOG_PRINT("\r\n Failed to keep module in HIGH_PERFORMANCE mode \r\n");
+          return;
+        }
+#endif
 #if (GATT_ROLE == SERVER)
 adv:
         //! set device in advertising mode.
@@ -939,6 +998,22 @@ adv:
         if (status != RSI_SUCCESS) {
           LOG_PRINT("start_scanning status: 0x%lX\r\n", status);
         }
+#endif
+#if ENABLE_POWER_SAVE
+        LOG_PRINT("\r\n keep module in to power save \r\n");
+        status = rsi_bt_power_save_profile(PSP_MODE, PSP_TYPE);
+        if (status != RSI_SUCCESS) {
+          return;
+        }
+
+        //! initiating power save in wlan mode
+        wifi_profile.profile = ASSOCIATED_POWER_SAVE;
+        status               = sl_wifi_set_performance_profile(&wifi_profile);
+        if (status != SL_STATUS_OK) {
+          LOG_PRINT("\r\n Failed to keep module in power save \r\n");
+          return;
+        }
+        LOG_PRINT("\r\n Module is in power save \r\n");
 #endif
       } break;
       case RSI_BLE_GATT_WRITE_EVENT: {

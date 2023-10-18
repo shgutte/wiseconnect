@@ -98,9 +98,11 @@ static sl_status_t twt_callback_handler(sl_wifi_event_t event,
  *               Global Variable
  ******************************************************/
 
-static uint8_t stats_count           = 0;
-volatile bool scan_results_complete  = false;
-volatile sl_status_t callback_status = SL_STATUS_OK;
+static uint8_t stats_count               = 0;
+volatile bool scan_results_complete      = false;
+volatile sl_status_t callback_status     = SL_STATUS_OK;
+volatile bool stop_wifi_statistic_report = false;
+osThreadId_t wifi_statistic_thread_id    = NULL;
 
 /******************************************************
  *               Variable Definitions
@@ -198,6 +200,41 @@ const structure_descriptor_entry_t rs91x_chip_config[] = {
                              boot_config.config_feature_bit_map,
                              sl_wifi_device_configuration_t,
                              CONSOLE_VARIABLE_UINT),
+};
+
+const sl_wifi_data_rate_t rate               = SL_WIFI_DATA_RATE_6;
+sl_si91x_request_tx_test_info_t tx_test_info = {
+  .enable      = 1,
+  .power       = 127,
+  .rate        = rate,
+  .length      = 100,
+  .mode        = 0,
+  .channel     = 1,
+  .aggr_enable = 0,
+#ifdef CHIP_917
+  .enable_11ax            = 0,
+  .coding_type            = 0,
+  .nominal_pe             = 0,
+  .UL_DL                  = 0,
+  .he_ppdu_type           = 0,
+  .beam_change            = 0,
+  .BW                     = 0,
+  .STBC                   = 0,
+  .Tx_BF                  = 0,
+  .GI_LTF                 = 0,
+  .DCM                    = 0,
+  .NSTS_MIDAMBLE          = 0,
+  .spatial_reuse          = 0,
+  .BSS_color              = 0,
+  .HE_SIGA2_RESERVED      = 0,
+  .RU_ALLOCATION          = 0,
+  .N_HELTF_TOT            = 0,
+  .SIGB_DCM               = 0,
+  .SIGB_MCS               = 0,
+  .USER_STA_ID            = 0,
+  .USER_IDX               = 0,
+  .SIGB_COMPRESSION_FIELD = 0,
+#endif
 };
 
 /******************************************************
@@ -685,34 +722,55 @@ sl_status_t wifi_get_statistics_command_handler(console_args_t *arguments)
   return status;
 }
 
-sl_status_t wifi_start_statistic_report_command_handler(console_args_t *arguments)
+void wifi_statistic_thread(const void *arg)
 {
-  sl_status_t status            = SL_STATUS_OK;
-  sl_wifi_interface_t interface = GET_OPTIONAL_COMMAND_ARG(arguments, 0, SL_WIFI_CLIENT_INTERFACE, sl_wifi_interface_t);
-  sl_wifi_channel_t channel     = { 0 };
-  channel.channel               = GET_OPTIONAL_COMMAND_ARG(arguments, 1, 1, const uint16_t);
-  stats_count                   = 0;
+  console_args_t *arguments = (console_args_t *)arg;
+  sl_status_t status;
+  sl_wifi_interface_t interface;
+  sl_wifi_channel_t channel;
+
+  interface       = GET_OPTIONAL_COMMAND_ARG(arguments, 0, SL_WIFI_CLIENT_INTERFACE, sl_wifi_interface_t);
+  channel.channel = GET_OPTIONAL_COMMAND_ARG(arguments, 1, 1, const uint16_t);
+
+  stats_count = 0;
   sl_wifi_set_stats_callback(wifi_stats_receive_handler, NULL);
 
   status = sl_wifi_start_statistic_report(interface, channel);
   if (SL_STATUS_IN_PROGRESS == status) {
     callback_status = SL_STATUS_IN_PROGRESS;
-    printf("Receive Statistics...\r\n");
     while (stats_count <= MAX_RECEIVE_STATS_COUNT) {
+      if (stop_wifi_statistic_report) {
+        osThreadExit();
+      }
       osThreadYield();
       if (stats_count == MAX_RECEIVE_STATS_COUNT && callback_status != SL_STATUS_IN_PROGRESS) {
         printf("%s: Stop Statistics Report\n", __func__);
         sl_wifi_stop_statistic_report(SL_WIFI_CLIENT_INTERFACE);
-        return SL_STATUS_OK;
+        osThreadExit();
       }
     }
-    status = callback_status;
   }
-  return status;
+}
+
+sl_status_t wifi_start_statistic_report_command_handler(console_args_t *arguments)
+{
+  stop_wifi_statistic_report = false;
+  // Run the start_statistic_report on a different thread as we should be able to call stop_statistic_report while the start_statistic_report is still running.
+  wifi_statistic_thread_id = osThreadNew(wifi_statistic_thread, arguments, NULL);
+  if (wifi_statistic_thread_id == NULL) {
+    return SL_STATUS_FAIL;
+  }
+
+  return SL_STATUS_OK;
 }
 
 sl_status_t wifi_stop_statistic_report_command_handler(console_args_t *arguments)
 {
+  if (wifi_statistic_thread_id != NULL) {
+    stop_wifi_statistic_report = true;
+    osThreadTerminate(wifi_statistic_thread_id);
+    wifi_statistic_thread_id = NULL;
+  }
   sl_status_t status            = SL_STATUS_OK;
   sl_wifi_interface_t interface = GET_OPTIONAL_COMMAND_ARG(arguments, 0, SL_WIFI_CLIENT_INTERFACE, sl_wifi_interface_t);
 
@@ -1504,13 +1562,13 @@ sl_status_t sl_si91x_get_ram_log_command_handler(console_args_t *arguments)
 
 sl_status_t sl_wifi_transmit_test_start_command_handler(console_args_t *arguments)
 {
-  sl_status_t status = SL_STATUS_OK;
-  uint16_t power     = (uint16_t)GET_COMMAND_ARG(arguments, 0);
-  uint32_t rate      = (uint32_t)GET_COMMAND_ARG(arguments, 1);
-  uint16_t length    = (uint16_t)GET_COMMAND_ARG(arguments, 2);
-  uint16_t mode      = (uint16_t)GET_COMMAND_ARG(arguments, 3);
-  uint16_t channel   = (uint16_t)GET_COMMAND_ARG(arguments, 4);
-  status             = sl_si91x_transmit_test_start(power, rate, length, mode, channel);
+  sl_status_t status   = SL_STATUS_OK;
+  tx_test_info.power   = (uint16_t)GET_COMMAND_ARG(arguments, 0);
+  tx_test_info.rate    = (uint32_t)GET_COMMAND_ARG(arguments, 1);
+  tx_test_info.length  = (uint16_t)GET_COMMAND_ARG(arguments, 2);
+  tx_test_info.mode    = (uint16_t)GET_COMMAND_ARG(arguments, 3);
+  tx_test_info.channel = (uint16_t)GET_COMMAND_ARG(arguments, 4);
+  status               = sl_si91x_transmit_test_start(&tx_test_info);
   VERIFY_STATUS_AND_RETURN(status);
   return SL_STATUS_OK;
 }
@@ -1555,6 +1613,17 @@ sl_status_t wifi_get_pairwise_master_key_command_handler(console_args_t *argumen
   memcpy(ssid_arg.value, ssid, ssid_arg.length);
 
   status = sl_wifi_get_pairwise_master_key(interface, type, &ssid_arg, pre_shared_key, pairwise_master_key);
+  VERIFY_STATUS_AND_RETURN(status);
+  return SL_STATUS_OK;
+}
+
+sl_status_t wifi_configure_timeout_command_handler(console_args_t *arguments)
+{
+  sl_status_t status                         = SL_STATUS_OK;
+  const sl_si91x_timeout_type_t timeout_type = (sl_si91x_timeout_type_t)GET_COMMAND_ARG(arguments, 0);
+  const uint16_t timeout_value               = (uint16_t)GET_COMMAND_ARG(arguments, 1);
+
+  status = sl_si91x_configure_timeout(timeout_type, timeout_value);
   VERIFY_STATUS_AND_RETURN(status);
   return SL_STATUS_OK;
 }

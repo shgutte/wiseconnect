@@ -1,0 +1,123 @@
+# Silicon Labs Project Configuration Tools: slcp, v0, Component selection file.
+project_name: sl_si91x_sensorhub
+label: SI91x - SoC SL_SI91X_SENSORHUB
+description: |
+  Demonstrates how to use of the sensorhub in SI91x SoC device.
+category: example|peripheral
+package: platform
+quality: production
+sdk: {id: gecko_sdk, version: 4.1.0}
+sdk_extension:
+  - id: wiseconnect3_sdk
+    version: 3.1.1
+source:
+  - path: sensorhub_config.c
+  - path: sensors/src/hub_hal_intf.c
+  - path: sensors/src/light_sensor/bh1750fvi.c
+  - path: sensors/src/light_sensor/lightsensor_hal.c
+  - path: sensors/src/temperature_sensor/lm75.c
+  - path: sensors/src/temperature_sensor/tempSensor_hal.c
+  - path: sensors/src/apds_sensor/apds9960.c
+  - path: sensors/src/apds_sensor/apds9960Sensor_hal.c
+  - path: sensors/src/accelerometer_sensor/accelerometerSensor_hal.c
+  - path: sensors/src/accelerometer_sensor/adxl345.c
+  - path: sensors/src/adc_sensor/adc_sensor_hal.c
+  - path: sensors/src/adc_sensor/adc_sensor_driver.c
+  - path: sensors/inc/light_sensor/bh1750fvi.h
+  - path: sensors/inc/light_sensor/lightsensor_hal.h
+  - path: sensors/inc/temperature_sensor/lm75.h
+  - path: sensors/inc/temperature_sensor/tempSensor_hal.h
+  - path: sensors/inc/apds_sensor/apds9960.h
+  - path: sensors/inc/apds_sensor/apds9960Sensor_hal.h
+  - path: sensors/inc/accelerometer_sensor/accelerometerSensor_hal.h
+  - path: sensors/inc/accelerometer_sensor/adxl345.h
+  - path: sensors/inc/adc_sensor/adc_sensor_hal.h
+  - path: sensors/inc/adc_sensor/adc_sensor_driver.h
+  - path: sensors/inc/sensors_config.h
+  - path: sensors/inc/sensor_type.h
+  - path: sensors/inc/hub_hal_intf.h
+  - path: app.c
+  - path: main.c
+  - path: app.h
+  - path: sensorhub_app.c
+include:
+  - path: sensors/inc
+  - path: sensors/inc/adc_sensor
+  - path: sensors/inc/accelerometer_sensor
+  - path: sensors/inc/temperature_sensor
+  - path: sensors/inc/light_sensor
+  - path: sensors/inc/apds_sensor
+toolchain_settings: []
+component:
+  - id: si917_memory_default_config
+    from: wiseconnect3_sdk
+  - id: rsilib_userconfig
+    from: wiseconnect3_sdk
+  - id: romdriver_egpio
+    from: wiseconnect3_sdk
+  - id: rsilib_clock_update
+    from: wiseconnect3_sdk
+  - id: cmsis_spi
+    from: wiseconnect3_sdk
+  - id: udma_linker_config
+    from: wiseconnect3_sdk
+  - id: cmsis_i2c
+    from: wiseconnect3_sdk
+  - id: sl_adc
+    from: wiseconnect3_sdk
+  - id: rsilib_adc
+    from: wiseconnect3_sdk
+  - id: sensor_hub
+    from: wiseconnect3_sdk
+  - id: freertos
+  - id: network_manager
+    from: wiseconnect3_sdk
+  - id: basic_network_manager
+    from: wiseconnect3_sdk
+  - id: wiseconnect3_common
+    from: wiseconnect3_sdk
+  - id: wifi
+    from: wiseconnect3_sdk
+  - id: sl_si91x_wireless
+    from: wiseconnect3_sdk
+  - id: sl_si91x_internal_stack
+    from: wiseconnect3_sdk
+  - id: sl_si91x_basic_buffers
+    from: wiseconnect3_sdk
+  - id: wifi_resources
+    from: wiseconnect3_sdk
+  - id: sl_adc
+    from: wiseconnect3_sdk
+  - id: rsilib_adc
+    from: wiseconnect3_sdk
+  - id: si91x_debug
+    from: wiseconnect3_sdk
+  - id: syscalls
+    from: wiseconnect3_sdk
+  - id: slist
+  - id: sl_system
+define:
+  - name: RSI_M4_INTERFACE
+  - name: SPI_MULTI_SLAVE
+  - name: M4_PS2_STATE
+  - name: SSI_CONFIG  
+template_contribution:
+  - name: RAM_EXECUTION
+    value: 1
+  - name: ULP_PLATFORM
+    value: 1
+provides:
+  - name: si91x_soc
+other_file:
+  - path: resources/readme/image508a.png
+  - path: resources/readme/image508b.png
+  - path: resources/readme/image508c.png
+  - path: resources/readme/image508d.png
+readme:
+  - path: readme.md
+ui_hints:
+  highlight: 
+    - path: readme.md
+      focus: true
+post_build:
+  path: ../../../../utilities/postbuild_profile/wiseconnect_soc.slpb

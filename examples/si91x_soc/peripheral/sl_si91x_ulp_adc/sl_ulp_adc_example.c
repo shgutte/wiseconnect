@@ -24,10 +24,7 @@
  ***************************  Defines / Macros  ********************************
  ******************************************************************************/
 /* Macros */
-#define DVISION_FACTOR        0 // Division factor
-#define RESERVED_IRQ_COUNT    16
-#define EXT_IRQ_COUNT         98
-#define VECTOR_TABLE_ENTRIES  (RESERVED_IRQ_COUNT + EXT_IRQ_COUNT)
+#define DVISION_FACTOR        0    // Division factor
 #define CHANNEL_SAMPLE_LENGTH 1023 // Number of ADC sample collect for operation
 #define ADC_MAX_OP_VALUE      4096 // Maximum output value get from adc data register
 #define VREF_VALUE            3.3  // reference voltage
@@ -39,7 +36,7 @@ sl_adc_config_t sl_adc_config;
 static uint32_t intr_cnt = 0;
 static float vref_value  = (float)VREF_VALUE;
 static int16_t adc_output[CHANNEL_SAMPLE_LENGTH];
-static uint32_t ramVector[VECTOR_TABLE_ENTRIES] __attribute__((aligned(256)));
+static uint32_t ramVector[SI91X_VECTOR_TABLE_ENTRIES] __attribute__((aligned(256)));
 /*******************************************************************************
  **********************  Local Function prototypes   ***************************
  ******************************************************************************/
@@ -57,10 +54,9 @@ void adc_example_init(void)
 {
   sl_adc_version_t version;
   sl_status_t status;
-  volatile float battery_status = 0;
 
   //copying the vector table from flash to ram
-  memcpy(ramVector, (uint32_t *)SCB->VTOR, sizeof(uint32_t) * VECTOR_TABLE_ENTRIES);
+  memcpy(ramVector, (uint32_t *)SCB->VTOR, sizeof(uint32_t) * SI91X_VECTOR_TABLE_ENTRIES);
 
   //assing the ram vector adress to VTOR register
   SCB->VTOR = (uint32_t)ramVector;
@@ -78,25 +74,16 @@ void adc_example_init(void)
     version = sl_si91x_adc_get_version();
     DEBUGOUT("ADC version is fetched successfully \n");
     DEBUGOUT("API version is %d.%d.%d\n", version.release, version.major, version.minor);
-    battery_status = sl_si91x_adc_get_chip_voltage();
     // Converting M4 to ULP mode.
     hardware_setup();
-    status = sl_si91x_adc_init(sl_adc_channel_config, sl_adc_config);
+    status = sl_si91x_adc_init(sl_adc_channel_config, sl_adc_config, vref_value);
     DEBUGINIT();
     if (status != SL_STATUS_OK) {
       DEBUGOUT("sl_si91x_adc_init: Error Code : %lu \n", status);
       break;
     }
     DEBUGOUT("ADC Initialization Success\n");
-    /* Configure reference voltage for analog peripheral ,here till 2.8V generate by using
-        AUX_LDO so more than 2.8V enable LDO bypass mode */
-    status = sl_si91x_adc_configure_reference_voltage(vref_value, battery_status);
-    if (status != SL_STATUS_OK) {
-      DEBUGOUT("sl_si91x_adc_reference_voltage_configuration: Error Code : %lu \n", status);
-      break;
-    }
-    DEBUGOUT("ADC reference voltage configured Success\n");
-    status = sl_si91x_adc_channel_set_configuration(sl_adc_channel_config, sl_adc_config);
+    status = sl_si91x_adc_set_channel_configuration(sl_adc_channel_config, sl_adc_config);
     if (status != SL_STATUS_OK) {
       DEBUGOUT("sl_si91x_adc_channel_set_configuration: Error Code : %lu \n", status);
       break;

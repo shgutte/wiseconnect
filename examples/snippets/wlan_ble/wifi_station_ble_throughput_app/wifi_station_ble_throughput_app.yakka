@@ -20,11 +20,11 @@ defines:
 requires:
   components:
     - si91x_debug
-    - si91x
+    - sl_si91x_wireless
     - wifi
     - network_manager
     - freertos
-    - socket
+    - sl_si91x_asynchronous_socket
     - clang-format
     - ble
     - bsd_socket

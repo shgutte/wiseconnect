@@ -13,6 +13,11 @@ Note: Currently only Wi-Fi connection, powersave and RF test commands are suppor
 - **SoC Mode**:
   - Silicon Labs [BRD4325A, BRD4325B, BRD4325C, BRD4325G, BRD4338A](https://www.silabs.com/)
 
+- **NCP Mode**:
+  - [Silicon Labs SLWSTK6006A EFR32xG21 Wireless Starter Kit](https://www.silabs.com/development-tools/wireless/efr32xg21-wireless-starter-kit) which includes
+      - BRD4001A Wireless Starter Kit Mainboard (WSTK)/BRD4002A Wireless Pro Kit Mainboard (WPK)
+      - BRD4180A/BRD4180B Radio Board  
+
 ### 2.2 Software Requirements
 
 - Simplicity Studio IDE
@@ -26,12 +31,19 @@ Note: Currently only Wi-Fi connection, powersave and RF test commands are suppor
 
 ![Figure: Setup Diagram SoC Mode for cli_demo Example](resources/readme/clidemo_soc.png)
 
-Follow the [Getting Started with Wiseconnect SDK](https://docs.silabs.com/wiseconnect/latest/wiseconnect-getting-started/) guide to set up the hardware connections and Simplicity Studio IDE.
-
 #### Setup for the RF test in SoC Mode
 
 ![Figure: Setup Diagram in SoC Mode for cli_demo RF test Example](resources/readme/setup_rf.png)
 
+#### NCP Mode 
+
+![Figure: Setup Diagram SoC Mode for cli_demo Example](resources/readme/clidemo_NCP.png)
+
+**NOTE**:
+
+- The Host MCU platform (EFR32MG21) and the SiWx91x interact with each other through the SPI interface.
+
+Follow the [Getting Started with Wiseconnect SDK](https://docs.silabs.com/wiseconnect/latest/wiseconnect-getting-started/) guide to set up the hardware connections and Simplicity Studio IDE.
 ## 3 Project Environment
 
 - Ensure the SiWx91x loaded with the latest firmware following the [Upgrade Si91x firmware](https://docs.silabs.com/wiseconnect/latest/wiseconnect-getting-started/getting-started-with-soc-mode#upgrade-si-wx91x-connectivity-firmware)
@@ -48,6 +60,14 @@ Follow the [Getting Started with Wiseconnect SDK](https://docs.silabs.com/wiseco
 
   **![Soc Board detection](resources/readme/soc_board_detection.png)**
 
+#### 3.1.2 NCP mode
+
+- Ensure the EFx32 and SiWx91x set up is connected to your PC.
+
+- In the Simplicity Studio IDE, the EFR32 board will be detected under **Debug Adapters** pane as shown below.
+
+  **![EFR32 Board detection](resources/readme/efr32.png)**
+
 ### 3.2 Importing the project
 
 - Studio should detect your board. Your board will be shown here. Click on the board detected and go to **EXAMPLE PROJECTS & DEMOS** section 
@@ -56,11 +76,21 @@ Follow the [Getting Started with Wiseconnect SDK](https://docs.silabs.com/wiseco
 
 - Select **Cli Demo** test application
 
-  **![project_selection](resources/readme/create_project1.png)**
+  **![project_selection](resources/readme/create_project1_soc.png)**
 
 - Click 'Create'. The "New Project Wizard" window appears. Click 'Finish'
 
-  **![creation_final](resources/readme/create_project2.png)**
+  **![creation_final](resources/readme/create_project2_soc.png)**
+
+#### NCP Mode
+
+- Select **Cli Demo** test application
+
+  **![project_selection](resources/readme/create_project1_ncp.png)**
+
+- Click 'Create'. The "New Project Wizard" window appears. Click 'Finish'
+
+  **![creation_final](resources/readme/create_project2_ncp.png)**  
 
 ### 3.3 Set up for application prints
 
@@ -112,9 +142,13 @@ The application can be configured to suit your requirements and development envi
 
 ### 4.2 Build the application
 
-- SoC mode: Build as cli_demo Example
+- SoC mode: Build as cli_demo_ccp Example
 
-  **![Build as](resources/readme/build_project.png)**
+  **![Build as](resources/readme/build_project_soc.png)**
+
+- NCP mode: Build as cli_demo_ncp Example
+
+  **![Build as](resources/readme/build_project_ncp.png)**
 
 ### 4.3 Run and Test the application
 
@@ -122,7 +156,11 @@ The application can be configured to suit your requirements and development envi
 
   - SoC
 
-    **![debug_mode_soc](resources/readme/run_project.png)**
+    **![debug_mode_soc](resources/readme/run_project_soc.png)**
+
+  - NCP
+
+    **![debug_mode_soc](resources/readme/run_project_ncp.png)**  
 
 ### 4.4 Application Output
 

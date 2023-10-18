@@ -55,22 +55,24 @@ make -C output/ble_datalength-brd4325c -f ble_datalength.Makefile -j$((`nproc`/4
 /slc_cli/slc -daemon generate /gsdk/extension/wiseconnect3/examples/snippets/ble/ble_datalength/ble_datalength.slcp --force --with "brd4325g;wiseconnect3_sdk" -np -d output/ble_datalength-brd4325g
 make -C output/ble_datalength-brd4325g -f ble_datalength.Makefile -j$((`nproc`/4))
 
-/slc_cli/slc -daemon generate /gsdk/extension/wiseconnect3/examples/snippets/ble/gatt_long_read/gatt_long_read.slcp --force --with "brd4325a;wiseconnect3_sdk" -np -d output/ble_gatt_long_read-brd4325a
-make -C output/ble_gatt_long_read-brd4325a -f ble_gatt_long_read.Makefile -j$((`nproc`/4))
-/slc_cli/slc -daemon generate /gsdk/extension/wiseconnect3/examples/snippets/ble/gatt_long_read/gatt_long_read.slcp --force --with "brd4325c;wiseconnect3_sdk" -np -d output/ble_gatt_long_read-brd4325c
-make -C output/ble_gatt_long_read-brd4325c -f ble_gatt_long_read.Makefile -j$((`nproc`/4))
-/slc_cli/slc -daemon generate /gsdk/extension/wiseconnect3/examples/snippets/ble/gatt_long_read/gatt_long_read.slcp --force --with "brd4325g;wiseconnect3_sdk" -np -d output/ble_gatt_long_read-brd4325g
-make -C output/ble_gatt_long_read-brd4325g -f ble_gatt_long_read.Makefile -j$((`nproc`/4))
+/slc_cli/slc -daemon generate /gsdk/extension/wiseconnect3/examples/snippets/ble/gatt_long_read/gatt_long_read_ncp.slcp --force --with "brd4180b" -np -d output/ble_gatt_long_read_ncp-brd4180b
+make -C output/ble_gatt_long_read_ncp-brd4180b -f ble_gatt_long_read_ncp.Makefile -j$((`nproc`/4))
+
+/slc_cli/slc -daemon generate /gsdk/extension/wiseconnect3/examples/snippets/ble/gatt_long_read/gatt_long_read_soc.slcp --force --with "brd4325a;wiseconnect3_sdk" -np -d output/ble_gatt_long_read_soc-brd4325a
+make -C output/ble_gatt_long_read_soc-brd4325a -f ble_gatt_long_read_soc.Makefile -j$((`nproc`/4))
+/slc_cli/slc -daemon generate /gsdk/extension/wiseconnect3/examples/snippets/ble/gatt_long_read/gatt_long_read_soc.slcp --force --with "brd4325c;wiseconnect3_sdk" -np -d output/ble_gatt_long_read_soc-brd4325c
+make -C output/ble_gatt_long_read_soc-brd4325c -f ble_gatt_long_read_soc.Makefile -j$((`nproc`/4))
+/slc_cli/slc -daemon generate /gsdk/extension/wiseconnect3/examples/snippets/ble/gatt_long_read/gatt_long_read_soc.slcp --force --with "brd4325g;wiseconnect3_sdk" -np -d output/ble_gatt_long_read_soc-brd4325g
+make -C output/ble_gatt_long_read_soc-brd4325g -f ble_gatt_long_read_soc.Makefile -j$((`nproc`/4))
 
 /slc_cli/slc -daemon generate /gsdk/extension/wiseconnect3/examples/snippets/ble/ble_heart_rate_profile/ble_heart_rate_profile_ncp.slcp --force --with "brd4180b" -np -d output/ble_heart_rate_profile_ncp-brd4180b
 make -C output/ble_heart_rate_profile_ncp-brd4180b -f ble_heart_rate_profile_ncp.Makefile -j$((`nproc`/4))
+
 
 /slc_cli/slc -daemon generate /gsdk/extension/wiseconnect3/examples/snippets/ble/ble_heart_rate_profile/ble_heart_rate_profile_soc.slcp --force --with "brd4325a;wiseconnect3_sdk" -np -d output/ble_heart_rate_profile_soc-brd4325a
 make -C output/ble_heart_rate_profile_soc-brd4325a -f ble_heart_rate_profile_soc.Makefile -j$((`nproc`/4))
 /slc_cli/slc -daemon generate /gsdk/extension/wiseconnect3/examples/snippets/ble/ble_heart_rate_profile/ble_heart_rate_profile_soc.slcp --force --with "brd4325c;wiseconnect3_sdk" -np -d output/ble_heart_rate_profile_soc-brd4325c
 make -C output/ble_heart_rate_profile_soc-brd4325c -f ble_heart_rate_profile_soc.Makefile -j$((`nproc`/4))
-/slc_cli/slc -daemon generate /gsdk/extension/wiseconnect3/examples/snippets/ble/ble_heart_rate_profile/ble_heart_rate_profile_soc.slcp --force --with "brd4325g;wiseconnect3_sdk" -np -d output/ble_heart_rate_profile_soc-brd4325g
-make -C output/ble_heart_rate_profile_soc-brd4325g -f ble_heart_rate_profile_soc.Makefile -j$((`nproc`/4))
 
 /slc_cli/slc -daemon generate /gsdk/extension/wiseconnect3/examples/snippets/ble/ble_hid_on_gatt/ble_hid_on_gatt.slcp --force --with "brd4325a;wiseconnect3_sdk" -np -d output/ble_hid_on_gatt-brd4325a
 make -C output/ble_hid_on_gatt-brd4325a -f ble_hid_on_gatt.Makefile -j$((`nproc`/4))
@@ -109,22 +111,20 @@ make -C output/ble_multiconnection_gatt_test-brd4325g -f ble_multiconnection_gat
 /slc_cli/slc -daemon generate /gsdk/extension/wiseconnect3/examples/featured/ble_per/ble_per_ncp.slcp --force --with "brd4180b" -np -d output/ble_per_ncp-brd4180b
 make -C output/ble_per_ncp-brd4180b -f ble_per_ncp.Makefile -j$((`nproc`/4))
 
+
 /slc_cli/slc -daemon generate /gsdk/extension/wiseconnect3/examples/featured/ble_per/ble_per_soc.slcp --force --with "brd4325a;wiseconnect3_sdk" -np -d output/ble_per_soc-brd4325a
 make -C output/ble_per_soc-brd4325a -f ble_per_soc.Makefile -j$((`nproc`/4))
 /slc_cli/slc -daemon generate /gsdk/extension/wiseconnect3/examples/featured/ble_per/ble_per_soc.slcp --force --with "brd4325c;wiseconnect3_sdk" -np -d output/ble_per_soc-brd4325c
 make -C output/ble_per_soc-brd4325c -f ble_per_soc.Makefile -j$((`nproc`/4))
-/slc_cli/slc -daemon generate /gsdk/extension/wiseconnect3/examples/featured/ble_per/ble_per_soc.slcp --force --with "brd4325g;wiseconnect3_sdk" -np -d output/ble_per_soc-brd4325g
-make -C output/ble_per_soc-brd4325g -f ble_per_soc.Makefile -j$((`nproc`/4))
 
 /slc_cli/slc -daemon generate /gsdk/extension/wiseconnect3/examples/snippets/ble/ble_power_save/ble_power_save_ncp.slcp --force --with "brd4180b" -np -d output/ble_power_save_ncp-brd4180b
 make -C output/ble_power_save_ncp-brd4180b -f ble_power_save_ncp.Makefile -j$((`nproc`/4))
+
 
 /slc_cli/slc -daemon generate /gsdk/extension/wiseconnect3/examples/snippets/ble/ble_power_save/ble_power_save_soc.slcp --force --with "brd4325a;wiseconnect3_sdk" -np -d output/ble_power_save_soc-brd4325a
 make -C output/ble_power_save_soc-brd4325a -f ble_power_save_soc.Makefile -j$((`nproc`/4))
 /slc_cli/slc -daemon generate /gsdk/extension/wiseconnect3/examples/snippets/ble/ble_power_save/ble_power_save_soc.slcp --force --with "brd4325c;wiseconnect3_sdk" -np -d output/ble_power_save_soc-brd4325c
 make -C output/ble_power_save_soc-brd4325c -f ble_power_save_soc.Makefile -j$((`nproc`/4))
-/slc_cli/slc -daemon generate /gsdk/extension/wiseconnect3/examples/snippets/ble/ble_power_save/ble_power_save_soc.slcp --force --with "brd4325g;wiseconnect3_sdk" -np -d output/ble_power_save_soc-brd4325g
-make -C output/ble_power_save_soc-brd4325g -f ble_power_save_soc.Makefile -j$((`nproc`/4))
 
 /slc_cli/slc -daemon generate /gsdk/extension/wiseconnect3/examples/snippets/ble/ble_privacy/ble_privacy_ncp.slcp --force --with "brd4180b" -np -d output/ble_privacy_ncp-brd4180b
 make -C output/ble_privacy_ncp-brd4180b -f ble_privacy_ncp.Makefile -j$((`nproc`/4))
@@ -159,19 +159,28 @@ make -C output/ble_testmodes_soc-brd4325g -f ble_testmodes_soc.Makefile -j$((`np
 /slc_cli/slc -daemon generate /gsdk/extension/wiseconnect3/examples/snippets/ble/ble_throughput_app/ble_throughput_app_ncp.slcp --force --with "brd4180b" -np -d output/ble_throughput_app_ncp-brd4180b
 make -C output/ble_throughput_app_ncp-brd4180b -f ble_throughput_app_ncp.Makefile -j$((`nproc`/4))
 
+
 /slc_cli/slc -daemon generate /gsdk/extension/wiseconnect3/examples/snippets/ble/ble_throughput_app/ble_throughput_app_soc.slcp --force --with "brd4325a;wiseconnect3_sdk" -np -d output/ble_throughput_app_soc-brd4325a
 make -C output/ble_throughput_app_soc-brd4325a -f ble_throughput_app_soc.Makefile -j$((`nproc`/4))
 /slc_cli/slc -daemon generate /gsdk/extension/wiseconnect3/examples/snippets/ble/ble_throughput_app/ble_throughput_app_soc.slcp --force --with "brd4325c;wiseconnect3_sdk" -np -d output/ble_throughput_app_soc-brd4325c
 make -C output/ble_throughput_app_soc-brd4325c -f ble_throughput_app_soc.Makefile -j$((`nproc`/4))
-/slc_cli/slc -daemon generate /gsdk/extension/wiseconnect3/examples/snippets/ble/ble_throughput_app/ble_throughput_app_soc.slcp --force --with "brd4325g;wiseconnect3_sdk" -np -d output/ble_throughput_app_soc-brd4325g
-make -C output/ble_throughput_app_soc-brd4325g -f ble_throughput_app_soc.Makefile -j$((`nproc`/4))
 
-/slc_cli/slc -daemon generate /gsdk/extension/wiseconnect3/examples/snippets/cli_demo/cli_demo.slcp --force --with "brd4325a;wiseconnect3_sdk" -np -d output/cli_demo-brd4325a
-make -C output/cli_demo-brd4325a -f cli_demo.Makefile -j$((`nproc`/4))
-/slc_cli/slc -daemon generate /gsdk/extension/wiseconnect3/examples/snippets/cli_demo/cli_demo.slcp --force --with "brd4325c;wiseconnect3_sdk" -np -d output/cli_demo-brd4325c
-make -C output/cli_demo-brd4325c -f cli_demo.Makefile -j$((`nproc`/4))
-/slc_cli/slc -daemon generate /gsdk/extension/wiseconnect3/examples/snippets/cli_demo/cli_demo.slcp --force --with "brd4325g;wiseconnect3_sdk" -np -d output/cli_demo-brd4325g
-make -C output/cli_demo-brd4325g -f cli_demo.Makefile -j$((`nproc`/4))
+/slc_cli/slc -daemon generate /gsdk/extension/wiseconnect3/examples/snippets/ble/ble_unified_ae_coex_app/ble_unified_ae_coex_app.slcp --force --with "brd4325a;wiseconnect3_sdk" -np -d output/ble_unified_ae_coex_app-brd4325a
+make -C output/ble_unified_ae_coex_app-brd4325a -f ble_unified_ae_coex_app.Makefile -j$((`nproc`/4))
+/slc_cli/slc -daemon generate /gsdk/extension/wiseconnect3/examples/snippets/ble/ble_unified_ae_coex_app/ble_unified_ae_coex_app.slcp --force --with "brd4325c;wiseconnect3_sdk" -np -d output/ble_unified_ae_coex_app-brd4325c
+make -C output/ble_unified_ae_coex_app-brd4325c -f ble_unified_ae_coex_app.Makefile -j$((`nproc`/4))
+/slc_cli/slc -daemon generate /gsdk/extension/wiseconnect3/examples/snippets/ble/ble_unified_ae_coex_app/ble_unified_ae_coex_app.slcp --force --with "brd4325g;wiseconnect3_sdk" -np -d output/ble_unified_ae_coex_app-brd4325g
+make -C output/ble_unified_ae_coex_app-brd4325g -f ble_unified_ae_coex_app.Makefile -j$((`nproc`/4))
+
+/slc_cli/slc -daemon generate /gsdk/extension/wiseconnect3/examples/snippets/cli_demo/cli_demo_ncp.slcp --force --with "brd4180b" -np -d output/cli_demo_ncp-brd4180b
+make -C output/cli_demo_ncp-brd4180b -f cli_demo_ncp.Makefile -j$((`nproc`/4))
+
+/slc_cli/slc -daemon generate /gsdk/extension/wiseconnect3/examples/snippets/cli_demo/cli_demo_soc.slcp --force --with "brd4325a;wiseconnect3_sdk" -np -d output/cli_demo_soc-brd4325a
+make -C output/cli_demo_soc-brd4325a -f cli_demo_soc.Makefile -j$((`nproc`/4))
+/slc_cli/slc -daemon generate /gsdk/extension/wiseconnect3/examples/snippets/cli_demo/cli_demo_soc.slcp --force --with "brd4325c;wiseconnect3_sdk" -np -d output/cli_demo_soc-brd4325c
+make -C output/cli_demo_soc-brd4325c -f cli_demo_soc.Makefile -j$((`nproc`/4))
+/slc_cli/slc -daemon generate /gsdk/extension/wiseconnect3/examples/snippets/cli_demo/cli_demo_soc.slcp --force --with "brd4325g;wiseconnect3_sdk" -np -d output/cli_demo_soc-brd4325g
+make -C output/cli_demo_soc-brd4325g -f cli_demo_soc.Makefile -j$((`nproc`/4))
 
 /slc_cli/slc -daemon generate /gsdk/extension/wiseconnect3/examples/snippets/crypto/aes/aes.slcp --force --with "brd4325a;wiseconnect3_sdk" -np -d output/crypto_aes-brd4325a
 make -C output/crypto_aes-brd4325a -f crypto_aes.Makefile -j$((`nproc`/4))
@@ -348,6 +357,20 @@ make -C output/sl_si91x_gspi-brd4325c -f sl_si91x_gspi.Makefile -j$((`nproc`/4))
 /slc_cli/slc -daemon generate /gsdk/extension/wiseconnect3/examples/si91x_soc/peripheral/sl_si91x_gspi/sl_si91x_gspi.slcp --force --with "brd4325g;wiseconnect3_sdk" -np -d output/sl_si91x_gspi-brd4325g
 make -C output/sl_si91x_gspi-brd4325g -f sl_si91x_gspi.Makefile -j$((`nproc`/4))
 
+/slc_cli/slc -daemon generate /gsdk/extension/wiseconnect3/examples/si91x_soc/peripheral/sl_si91x_i2c_driver_follower/sl_si91x_i2c_driver_follower.slcp --force --with "brd4325a;wiseconnect3_sdk" -np -d output/sl_si91x_i2c_driver_follower-brd4325a
+make -C output/sl_si91x_i2c_driver_follower-brd4325a -f sl_si91x_i2c_driver_follower.Makefile -j$((`nproc`/4))
+/slc_cli/slc -daemon generate /gsdk/extension/wiseconnect3/examples/si91x_soc/peripheral/sl_si91x_i2c_driver_follower/sl_si91x_i2c_driver_follower.slcp --force --with "brd4325c;wiseconnect3_sdk" -np -d output/sl_si91x_i2c_driver_follower-brd4325c
+make -C output/sl_si91x_i2c_driver_follower-brd4325c -f sl_si91x_i2c_driver_follower.Makefile -j$((`nproc`/4))
+/slc_cli/slc -daemon generate /gsdk/extension/wiseconnect3/examples/si91x_soc/peripheral/sl_si91x_i2c_driver_follower/sl_si91x_i2c_driver_follower.slcp --force --with "brd4325g;wiseconnect3_sdk" -np -d output/sl_si91x_i2c_driver_follower-brd4325g
+make -C output/sl_si91x_i2c_driver_follower-brd4325g -f sl_si91x_i2c_driver_follower.Makefile -j$((`nproc`/4))
+
+/slc_cli/slc -daemon generate /gsdk/extension/wiseconnect3/examples/si91x_soc/peripheral/sl_si91x_i2c_driver_leader/sl_si91x_i2c_driver_leader.slcp --force --with "brd4325a;wiseconnect3_sdk" -np -d output/sl_si91x_i2c_driver_leader-brd4325a
+make -C output/sl_si91x_i2c_driver_leader-brd4325a -f sl_si91x_i2c_driver_leader.Makefile -j$((`nproc`/4))
+/slc_cli/slc -daemon generate /gsdk/extension/wiseconnect3/examples/si91x_soc/peripheral/sl_si91x_i2c_driver_leader/sl_si91x_i2c_driver_leader.slcp --force --with "brd4325c;wiseconnect3_sdk" -np -d output/sl_si91x_i2c_driver_leader-brd4325c
+make -C output/sl_si91x_i2c_driver_leader-brd4325c -f sl_si91x_i2c_driver_leader.Makefile -j$((`nproc`/4))
+/slc_cli/slc -daemon generate /gsdk/extension/wiseconnect3/examples/si91x_soc/peripheral/sl_si91x_i2c_driver_leader/sl_si91x_i2c_driver_leader.slcp --force --with "brd4325g;wiseconnect3_sdk" -np -d output/sl_si91x_i2c_driver_leader-brd4325g
+make -C output/sl_si91x_i2c_driver_leader-brd4325g -f sl_si91x_i2c_driver_leader.Makefile -j$((`nproc`/4))
+
 /slc_cli/slc -daemon generate /gsdk/extension/wiseconnect3/examples/si91x_soc/peripheral/sl_si91x_i2c_follower/sl_si91x_i2c_follower.slcp --force --with "brd4325a;wiseconnect3_sdk" -np -d output/sl_si91x_i2c_follower-brd4325a
 make -C output/sl_si91x_i2c_follower-brd4325a -f sl_si91x_i2c_follower.Makefile -j$((`nproc`/4))
 /slc_cli/slc -daemon generate /gsdk/extension/wiseconnect3/examples/si91x_soc/peripheral/sl_si91x_i2c_follower/sl_si91x_i2c_follower.slcp --force --with "brd4325c;wiseconnect3_sdk" -np -d output/sl_si91x_i2c_follower-brd4325c
@@ -390,6 +413,13 @@ make -C output/sl_si91x_i2s_secondary-brd4325c -f sl_si91x_i2s_secondary.Makefil
 /slc_cli/slc -daemon generate /gsdk/extension/wiseconnect3/examples/si91x_soc/peripheral/sl_si91x_i2s_secondary/sl_si91x_i2s_secondary.slcp --force --with "brd4325g;wiseconnect3_sdk" -np -d output/sl_si91x_i2s_secondary-brd4325g
 make -C output/sl_si91x_i2s_secondary-brd4325g -f sl_si91x_i2s_secondary.Makefile -j$((`nproc`/4))
 
+/slc_cli/slc -daemon generate /gsdk/extension/wiseconnect3/examples/si91x_soc/peripheral/sl_si91x_joystick/sl_si91x_joystick.slcp --force --with "brd4325a;wiseconnect3_sdk" -np -d output/sl_si91x_joystick-brd4325a
+make -C output/sl_si91x_joystick-brd4325a -f sl_si91x_joystick.Makefile -j$((`nproc`/4))
+/slc_cli/slc -daemon generate /gsdk/extension/wiseconnect3/examples/si91x_soc/peripheral/sl_si91x_joystick/sl_si91x_joystick.slcp --force --with "brd4325c;wiseconnect3_sdk" -np -d output/sl_si91x_joystick-brd4325c
+make -C output/sl_si91x_joystick-brd4325c -f sl_si91x_joystick.Makefile -j$((`nproc`/4))
+/slc_cli/slc -daemon generate /gsdk/extension/wiseconnect3/examples/si91x_soc/peripheral/sl_si91x_joystick/sl_si91x_joystick.slcp --force --with "brd4325g;wiseconnect3_sdk" -np -d output/sl_si91x_joystick-brd4325g
+make -C output/sl_si91x_joystick-brd4325g -f sl_si91x_joystick.Makefile -j$((`nproc`/4))
+
 /slc_cli/slc -daemon generate /gsdk/extension/wiseconnect3/examples/si91x_soc/peripheral/sl_si91x_ml_blink/sl_si91x_ml_blink.slcp --force --with "brd4325c;wiseconnect3_sdk" -np -d output/sl_si91x_ml_blink-brd4325c
 make -C output/sl_si91x_ml_blink-brd4325c -f sl_si91x_ml_blink.Makefile -j$((`nproc`/4))
 /slc_cli/slc -daemon generate /gsdk/extension/wiseconnect3/examples/si91x_soc/peripheral/sl_si91x_ml_blink/sl_si91x_ml_blink.slcp --force --with "brd4325g;wiseconnect3_sdk" -np -d output/sl_si91x_ml_blink-brd4325g
@@ -408,6 +438,13 @@ make -C output/sl_si91x_nvm3_common_flash-brd4325c -f sl_si91x_nvm3_common_flash
 make -C output/sl_si91x_nvm3_common_flash-brd4325g -f sl_si91x_nvm3_common_flash.Makefile -j$((`nproc`/4))
 
 
+/slc_cli/slc -daemon generate /gsdk/extension/wiseconnect3/examples/si91x_soc/service/sl_si91x_power_manager_m4_wireless/sl_si91x_power_manager_m4_wireless.slcp --force --with "brd4325a;wiseconnect3_sdk" -np -d output/sl_si91x_power_manager_m4_wireless-brd4325a
+make -C output/sl_si91x_power_manager_m4_wireless-brd4325a -f sl_si91x_power_manager_m4_wireless.Makefile -j$((`nproc`/4))
+/slc_cli/slc -daemon generate /gsdk/extension/wiseconnect3/examples/si91x_soc/service/sl_si91x_power_manager_m4_wireless/sl_si91x_power_manager_m4_wireless.slcp --force --with "brd4325c;wiseconnect3_sdk" -np -d output/sl_si91x_power_manager_m4_wireless-brd4325c
+make -C output/sl_si91x_power_manager_m4_wireless-brd4325c -f sl_si91x_power_manager_m4_wireless.Makefile -j$((`nproc`/4))
+/slc_cli/slc -daemon generate /gsdk/extension/wiseconnect3/examples/si91x_soc/service/sl_si91x_power_manager_m4_wireless/sl_si91x_power_manager_m4_wireless.slcp --force --with "brd4325g;wiseconnect3_sdk" -np -d output/sl_si91x_power_manager_m4_wireless-brd4325g
+make -C output/sl_si91x_power_manager_m4_wireless-brd4325g -f sl_si91x_power_manager_m4_wireless.Makefile -j$((`nproc`/4))
+
 /slc_cli/slc -daemon generate /gsdk/extension/wiseconnect3/examples/si91x_soc/peripheral/sl_si91x_pwm/sl_si91x_pwm.slcp --force --with "brd4325c;wiseconnect3_sdk" -np -d output/sl_si91x_pwm-brd4325c
 make -C output/sl_si91x_pwm-brd4325c -f sl_si91x_pwm.Makefile -j$((`nproc`/4))
 /slc_cli/slc -daemon generate /gsdk/extension/wiseconnect3/examples/si91x_soc/peripheral/sl_si91x_pwm/sl_si91x_pwm.slcp --force --with "brd4325g;wiseconnect3_sdk" -np -d output/sl_si91x_pwm-brd4325g
@@ -416,12 +453,19 @@ make -C output/sl_si91x_pwm-brd4325g -f sl_si91x_pwm.Makefile -j$((`nproc`/4))
 /slc_cli/slc -daemon generate /gsdk/extension/wiseconnect3/examples/si91x_soc/peripheral/sl_si91x_sdio_secondary/sl_si91x_sdio_secondary.slcp --force --with "brd4325a;wiseconnect3_sdk" -np -d output/sl_si91x_sdio_secondary-brd4325a
 make -C output/sl_si91x_sdio_secondary-brd4325a -f sl_si91x_sdio_secondary.Makefile -j$((`nproc`/4))
 
-/slc_cli/slc -daemon generate /gsdk/extension/wiseconnect3/examples/si91x_soc/peripheral/sl_si91x_sensorhub/sl_si91x_sensorhub.slcp --force --with "brd4325a;wiseconnect3_sdk" -np -d output/sl_si91x_sensorhub-brd4325a
+/slc_cli/slc -daemon generate /gsdk/extension/wiseconnect3/examples/si91x_soc/service/sl_si91x_sensorhub/sl_si91x_sensorhub.slcp --force --with "brd4325a;wiseconnect3_sdk" -np -d output/sl_si91x_sensorhub-brd4325a
 make -C output/sl_si91x_sensorhub-brd4325a -f sl_si91x_sensorhub.Makefile -j$((`nproc`/4))
-/slc_cli/slc -daemon generate /gsdk/extension/wiseconnect3/examples/si91x_soc/peripheral/sl_si91x_sensorhub/sl_si91x_sensorhub.slcp --force --with "brd4325c;wiseconnect3_sdk" -np -d output/sl_si91x_sensorhub-brd4325c
+/slc_cli/slc -daemon generate /gsdk/extension/wiseconnect3/examples/si91x_soc/service/sl_si91x_sensorhub/sl_si91x_sensorhub.slcp --force --with "brd4325c;wiseconnect3_sdk" -np -d output/sl_si91x_sensorhub-brd4325c
 make -C output/sl_si91x_sensorhub-brd4325c -f sl_si91x_sensorhub.Makefile -j$((`nproc`/4))
-/slc_cli/slc -daemon generate /gsdk/extension/wiseconnect3/examples/si91x_soc/peripheral/sl_si91x_sensorhub/sl_si91x_sensorhub.slcp --force --with "brd4325g;wiseconnect3_sdk" -np -d output/sl_si91x_sensorhub-brd4325g
+/slc_cli/slc -daemon generate /gsdk/extension/wiseconnect3/examples/si91x_soc/service/sl_si91x_sensorhub/sl_si91x_sensorhub.slcp --force --with "brd4325g;wiseconnect3_sdk" -np -d output/sl_si91x_sensorhub-brd4325g
 make -C output/sl_si91x_sensorhub-brd4325g -f sl_si91x_sensorhub.Makefile -j$((`nproc`/4))
+
+/slc_cli/slc -daemon generate /gsdk/extension/wiseconnect3/examples/si91x_soc/peripheral/sl_si91x_si70xx/sl_si91x_si70xx.slcp --force --with "brd4325a;wiseconnect3_sdk" -np -d output/sl_si91x_si70xx-brd4325a
+make -C output/sl_si91x_si70xx-brd4325a -f sl_si91x_si70xx.Makefile -j$((`nproc`/4))
+/slc_cli/slc -daemon generate /gsdk/extension/wiseconnect3/examples/si91x_soc/peripheral/sl_si91x_si70xx/sl_si91x_si70xx.slcp --force --with "brd4325c;wiseconnect3_sdk" -np -d output/sl_si91x_si70xx-brd4325c
+make -C output/sl_si91x_si70xx-brd4325c -f sl_si91x_si70xx.Makefile -j$((`nproc`/4))
+/slc_cli/slc -daemon generate /gsdk/extension/wiseconnect3/examples/si91x_soc/peripheral/sl_si91x_si70xx/sl_si91x_si70xx.slcp --force --with "brd4325g;wiseconnect3_sdk" -np -d output/sl_si91x_si70xx-brd4325g
+make -C output/sl_si91x_si70xx-brd4325g -f sl_si91x_si70xx.Makefile -j$((`nproc`/4))
 
 /slc_cli/slc -daemon generate /gsdk/extension/wiseconnect3/examples/si91x_soc/peripheral/sl_si91x_sio/sl_si91x_sio.slcp --force --with "brd4325c;wiseconnect3_sdk" -np -d output/sl_si91x_sio-brd4325c
 make -C output/sl_si91x_sio-brd4325c -f sl_si91x_sio.Makefile -j$((`nproc`/4))
@@ -696,6 +740,7 @@ make -C output/wifi_power_save_deep_sleep_soc-brd4325g -f wifi_power_save_deep_s
 /slc_cli/slc -daemon generate /gsdk/extension/wiseconnect3/examples/featured/powersave_standby_associated/powersave_standby_associated_ncp.slcp --force --with "brd4180b" -np -d output/wifi_powersave_standby_associated_ncp-brd4180b
 make -C output/wifi_powersave_standby_associated_ncp-brd4180b -f wifi_powersave_standby_associated_ncp.Makefile -j$((`nproc`/4))
 
+
 /slc_cli/slc -daemon generate /gsdk/extension/wiseconnect3/examples/featured/powersave_standby_associated/powersave_standby_associated_soc.slcp --force --with "brd4325a;wiseconnect3_sdk" -np -d output/wifi_powersave_standby_associated_soc-brd4325a
 make -C output/wifi_powersave_standby_associated_soc-brd4325a -f wifi_powersave_standby_associated_soc.Makefile -j$((`nproc`/4))
 /slc_cli/slc -daemon generate /gsdk/extension/wiseconnect3/examples/featured/powersave_standby_associated/powersave_standby_associated_soc.slcp --force --with "brd4325c;wiseconnect3_sdk" -np -d output/wifi_powersave_standby_associated_soc-brd4325c
@@ -807,6 +852,8 @@ make -C output/wifi_user_gain_table_soc-brd4325g -f wifi_user_gain_table_soc.Mak
 /slc_cli/slc -daemon generate /gsdk/extension/wiseconnect3/examples/featured/wlan_throughput/wlan_throughput_ncp.slcp --force --with "brd4180b" -np -d output/wifi_wlan_throughput_ncp-brd4180b
 make -C output/wifi_wlan_throughput_ncp-brd4180b -f wifi_wlan_throughput_ncp.Makefile -j$((`nproc`/4))
 
+/slc_cli/slc -daemon generate /gsdk/extension/wiseconnect3/examples/si91x_soc/wlan/wlan_throughput_psram/wlan_throughput_psram.slcp --force --with "brd4325g;wiseconnect3_sdk" -np -d output/wifi_wlan_throughput_psram-brd4325g
+make -C output/wifi_wlan_throughput_psram-brd4325g -f wifi_wlan_throughput_psram.Makefile -j$((`nproc`/4))
 
 /slc_cli/slc -daemon generate /gsdk/extension/wiseconnect3/examples/featured/wlan_throughput/wlan_throughput_soc.slcp --force --with "brd4325a;wiseconnect3_sdk" -np -d output/wifi_wlan_throughput_soc-brd4325a
 make -C output/wifi_wlan_throughput_soc-brd4325a -f wifi_wlan_throughput_soc.Makefile -j$((`nproc`/4))
@@ -929,12 +976,15 @@ make -C output/wifi_aws_device_shadow_logging_stats_soc-brd4325c -f wifi_aws_dev
 /slc_cli/slc -daemon generate /gsdk/extension/wiseconnect3/examples/_internal/Wireless_Examples/wlan/aws_device_shadow_logging_stats/aws_device_shadow_logging_stats_soc.slcp --force --with "brd4325g;wiseconnect3_sdk" -np -d output/wifi_aws_device_shadow_logging_stats_soc-brd4325g
 make -C output/wifi_aws_device_shadow_logging_stats_soc-brd4325g -f wifi_aws_device_shadow_logging_stats_soc.Makefile -j$((`nproc`/4))
 
-/slc_cli/slc -daemon generate /gsdk/extension/wiseconnect3/examples/_internal/Wireless_Examples/wlan_ble/wifi_ble_power_save/wifi_ble_power_save.slcp --force --with "brd4325a;wiseconnect3_sdk" -np -d output/wifi_ble_power_save-brd4325a
-make -C output/wifi_ble_power_save-brd4325a -f wifi_ble_power_save.Makefile -j$((`nproc`/4))
-/slc_cli/slc -daemon generate /gsdk/extension/wiseconnect3/examples/_internal/Wireless_Examples/wlan_ble/wifi_ble_power_save/wifi_ble_power_save.slcp --force --with "brd4325c;wiseconnect3_sdk" -np -d output/wifi_ble_power_save-brd4325c
-make -C output/wifi_ble_power_save-brd4325c -f wifi_ble_power_save.Makefile -j$((`nproc`/4))
-/slc_cli/slc -daemon generate /gsdk/extension/wiseconnect3/examples/_internal/Wireless_Examples/wlan_ble/wifi_ble_power_save/wifi_ble_power_save.slcp --force --with "brd4325g;wiseconnect3_sdk" -np -d output/wifi_ble_power_save-brd4325g
-make -C output/wifi_ble_power_save-brd4325g -f wifi_ble_power_save.Makefile -j$((`nproc`/4))
+/slc_cli/slc -daemon generate /gsdk/extension/wiseconnect3/examples/_internal/Wireless_Examples/wlan_ble/wifi_ble_power_save/wifi_ble_power_save_ncp.slcp --force --with "brd4180b" -np -d output/wifi_ble_power_save_ncp-brd4180b
+make -C output/wifi_ble_power_save_ncp-brd4180b -f wifi_ble_power_save_ncp.Makefile -j$((`nproc`/4))
+
+/slc_cli/slc -daemon generate /gsdk/extension/wiseconnect3/examples/_internal/Wireless_Examples/wlan_ble/wifi_ble_power_save/wifi_ble_power_save_soc.slcp --force --with "brd4325a;wiseconnect3_sdk" -np -d output/wifi_ble_power_save_soc-brd4325a
+make -C output/wifi_ble_power_save_soc-brd4325a -f wifi_ble_power_save_soc.Makefile -j$((`nproc`/4))
+/slc_cli/slc -daemon generate /gsdk/extension/wiseconnect3/examples/_internal/Wireless_Examples/wlan_ble/wifi_ble_power_save/wifi_ble_power_save_soc.slcp --force --with "brd4325c;wiseconnect3_sdk" -np -d output/wifi_ble_power_save_soc-brd4325c
+make -C output/wifi_ble_power_save_soc-brd4325c -f wifi_ble_power_save_soc.Makefile -j$((`nproc`/4))
+/slc_cli/slc -daemon generate /gsdk/extension/wiseconnect3/examples/_internal/Wireless_Examples/wlan_ble/wifi_ble_power_save/wifi_ble_power_save_soc.slcp --force --with "brd4325g;wiseconnect3_sdk" -np -d output/wifi_ble_power_save_soc-brd4325g
+make -C output/wifi_ble_power_save_soc-brd4325g -f wifi_ble_power_save_soc.Makefile -j$((`nproc`/4))
 
 /slc_cli/slc -daemon generate /gsdk/extension/wiseconnect3/examples/_internal/Wireless_Examples/wlan/http_client/http_client_ncp.slcp --force --with "brd4180b" -np -d output/wifi_http_client_ncp-brd4180b
 make -C output/wifi_http_client_ncp-brd4180b -f wifi_http_client_ncp.Makefile -j$((`nproc`/4))

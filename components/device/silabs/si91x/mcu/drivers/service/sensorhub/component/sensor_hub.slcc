@@ -1,0 +1,17 @@
+id: sensor_hub
+label: SENSOR_HUB
+package: platform
+description: >
+  Sensor Hub stack API's 
+category: Device|Si91x|MCU|Middleware
+quality: production
+component_root_path: "components/device/silabs/si91x/mcu/drivers/service/sensorhub"
+source:
+  - path: "src/sensor_hub.c"
+include:
+  - path: "inc"
+    file_list:
+    - path: "sensor_hub.h"
+    - path: "sensorhub_error_codes.h"
+provides:
+  - name: sensor_hub

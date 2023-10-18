@@ -37,6 +37,9 @@ void hardware_setup(void)
                                               at Start-up */
   RSI_ULPSS_TimerClkDisable(ULPCLK); /* Disable Timer clock which is enabled in Bootloader */
 
+  RSI_ULPSS_DisableRefClks(MCU_ULP_40MHZ_CLK_EN);    /* Disabling 40MHz Clocks */
+  RSI_ULPSS_DisableRefClks(MCU_ULP_32KHZ_RC_CLK_EN); /* Disabling LF_RC Clocks */
+
   RSI_PS_BodPwrGateButtonCalibDisable();                     /* Power-Down Button Calibration */
   RSI_IPMU_ProgramConfigData(ana_perif_ptat_common_config2); /* Disable PTAT for Analog Peripherals */
   RSI_IPMU_ProgramConfigData(ipmu_bod_clks_common_config2);  /* Disable PTAT for Brown-Out Detection
@@ -59,7 +62,6 @@ void hardware_setup(void)
                                 not present */
 
   // /* Change 32MHz-RC to 20MHz-RC to be used as Processor Clock in PS2 state */
-  RSI_IPMU_M20rcOsc_TrimEfuse();
   RSI_PS_FsmHfFreqConfig(20);
   system_clocks.rc_32mhz_clock = 20000000;
 

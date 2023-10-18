@@ -1,4 +1,4 @@
-name: SL HTTP client
+name: HTTP client
 
 includes:
   global:
@@ -8,12 +8,15 @@ api:
   public:
     - service/http_client/inc
 
-sources:
-  - si91x/sl_http_client.c
-
 requires:
   components:
-    - socket_utility
+    - wiseconnect3_common
+
+supports:
+  components:
+    sl_si91x_socket:
+      sources:
+        - si91x_socket/sl_http_client.c
 
 defines:
   global:
@@ -39,15 +42,11 @@ doxygen:
     - docs/doxygen_indexfile.md 
 
 slc:
-  label: 'HTTP Client Library'
-  description: 'HTTP Client Library'
-  category: 'Networking|Protocol'
+  label: 'HTTP Client'
+  description: 'The HTTP Client provides an API to start a HTTP client service'
+  category: 'Service'
   requires:
-    - name: 'socket_utility'
-  include:
-    - path: inc
-      file_list:
-        - sl_si91x_socket_types.h
+    - name: sl_si91x_socket
   include:
     - path: inc
       file_list:

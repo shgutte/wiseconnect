@@ -352,7 +352,9 @@ sl_status_t mqtt_example()
     uint32_t malloc_size = sizeof(sl_mqtt_client_credentials_t) + username_length + password_length;
 
     client_credentails = malloc(malloc_size);
-
+    if (client_credentails == NULL)
+      return SL_STATUS_ALLOCATION_FAILED;
+    memset(client_credentails, 0, malloc_size);
     client_credentails->username_length = username_length;
     client_credentails->password_length = password_length;
 

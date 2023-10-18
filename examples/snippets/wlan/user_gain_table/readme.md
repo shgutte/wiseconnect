@@ -36,29 +36,7 @@ While measuring the performance of 802.11 Wireless Devices, packet error test ha
 
 Follow the [Getting Started with Wiseconnect3 SDK](https://docs.silabs.com/wiseconnect/latest/wiseconnect-getting-started/) guide to set up the hardware connections and Simplicity Studio IDE.
 
-**NOTE:**
-By default, The radio is mapped to internal antenna path. To perform RF measurements, the signal path has to be shifted towards the U.FL port.
-To change the signal path, the following hardware changes are required (for both SoC and NCP modes) -
-
-1) Unmount C24
-2) Mount R22
-
-This hardware change is required only for the Transmit Performance and Regulatory Testing example. While testing the other applications, the hardware changes have to be reverted (Mount C24 and Unmount R22) for the board to function normally.
-
-SoC
-
-  ![SoC radio front end](resources/readme/soc_radio_front_end.png)
-
-NCP
-
-  ![NCP radio front end](resources/readme/ncp_radio_front_end.png)
-
-  **NOTE**:
-
-- The Host MCU platform (EFR32MG21) and the SiWx91x interact with each other through the SPI interface.
-- The Host MCU platform (EFM32GG11) and the SiWx91x interact with each other through the SDIO interface.
-
-## Project Environment
+## 3 Project Environment
 
 - Ensure the SiWx91x loaded with the latest firmware following the [Upgrade Si91x firmware](https://docs.silabs.com/wiseconnect/latest/wiseconnect-getting-started/getting-started-with-soc-mode#upgrade-si-wx91x-connectivity-firmware)
 
@@ -179,18 +157,26 @@ The application can be configured to suit user requirements and development envi
 
   - Other STA instance configurations can be modified if required in `default_wifi_client_profile` configuration structure.
 
--  Configure the following parameters in **app.c** to test throughput app as per requirements
+-  Configure the following parameters in **app.c** to test user gain table app as per requirements
 
 ```c
-  sl_wifi_data_rate_t rate = SL_WIFI_DATA_RATE_6; // SL_WIFI_RATE_6 stands for 6 Mbps data rate
-  #define SL_TX_TEST_POWER    4               
-  #define SL_TX_TEST_RATE     rate           
-  #define SL_TX_TEST_LENGTH   30              // Tx packet length in the range [24:1500] bytes in burst mode, 
-                                               //[24:260 ] bytes in continuous mode
-  #define SL_TX_TEST_MODE     0               // Selects burst mode or continuous mode
-  #define SL_TX_TEST_CHANNEL  1               // Channel number in 2.4 or 5 GHz
-  #define SL_WIFI_SELECT_INTERNAL_ANTENNA          0               // 0 = RF_OUT2, 1 = RF_OUT1
+  sl_wifi_data_rate_t rate = SL_WIFI_DATA_RATE_6;
+  sl_si91x_request_tx_test_info_t tx_test_info = {
+    .enable      = 1,          // Enable/disable tx test mode
+    .power       = 4,         // Tx RF power in the range [2:18] dBm
+    .rate        = rate,      // WLAN data rate of 6Mbps
+    .length      = 30,        // Tx packet length in the range [24:1500] bytes in burst mode, 
+    .mode        = 0,         // Selects burst mode or continuous mode
+    .channel     = 1,         // Channel number in 2.4 or 5 GHz
+    // Other configurable parameters
+  }
 ```
+    The different values of mode:
+      0 - Burst Mode
+      1 - Continuous Mode
+      2 - Continuous wave Mode (non modulation) in DC mode
+      3 - Continuous wave Mode (non modulation) in single tone mode (center frequency -2.5MHz)
+      4 - Continuous wave Mode (non modulation) in single tone mode (center frequency +5MHz)
 -  User Gain Table Payload Format  
 
 ```c
@@ -280,13 +266,17 @@ When the application runs, the SiWx91x starts transmitting using the configurati
 The following readme provides example spectrums when the SiWx91x is configured to transmit with the settings shown.
 
 ## Transmit Spectrum Example 
-```c
-  sl_wifi_data_rate_t rate = SL_WIFI_DATA_RATE_6; // For 6 Mbps data rate
-  #define SL_TX_TEST_POWER    127                   
-  #define SL_TX_TEST_RATE     rate                      
-  #define SL_TX_TEST_LENGTH   100                   
-  #define SL_TX_TEST_MODE     0 // 0 for Burst Mode  
-  #define SL_TX_TEST_CHANNEL  6                     
+```c 
+  sl_wifi_data_rate_t rate = SL_WIFI_DATA_RATE_6;
+  sl_si91x_request_tx_test_info_t tx_test_info = {
+    .enable      = 1,
+    .power       = 127,
+    .rate        = rate,
+    .length      = 100,
+    .mode        = 0,     // Burst Mode
+    .channel     = 6,
+    // Other configurable parameters
+  }                  
 ```
 The below result is for PER Mode with Channel '6' with 6 Mbps data rate and max 127 power index, in Burst mode, OFDM modulation technique.
 

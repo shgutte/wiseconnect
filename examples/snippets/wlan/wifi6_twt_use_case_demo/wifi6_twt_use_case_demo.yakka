@@ -28,9 +28,9 @@ requires:
   components:
     - si91x_debug
     - wifi
-    - si91x
+    - sl_si91x_wireless
     - network_manager
     - freertos
     - bsd_socket
-    - socket
+    - sl_si91x_asynchronous_socket
     - clang-format

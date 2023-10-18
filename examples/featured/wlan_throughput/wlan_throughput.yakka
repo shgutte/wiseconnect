@@ -17,7 +17,7 @@ requires:
     - network_manager
     - bsd_socket
     - freertos
-    - socket
+    - sl_si91x_asynchronous_socket
     - clang-format
     - resources
 

@@ -29,11 +29,11 @@ requires:
 - name: bsd_socket
 - name: network_manager
 - name: basic_network_manager
-- name: si91x_support
+- name: wiseconnect3_common
 - name: wifi
-- name: si91x
-- name: si91x_internal_stack
-- name: si91x_basic_buffers
+- name: sl_si91x_wireless
+- name: sl_si91x_internal_stack
+- name: sl_si91x_basic_buffers
 - name: wifi_resources
 - name: freertos
 - name: slist
@@ -52,6 +52,7 @@ requires:
 toolchain_settings: []
 configuration:
 - {name: SL_BOARD_ENABLE_VCOM, value: '1'}
+- {name: configTOTAL_HEAP_SIZE, value: '51200'}
 readme:
   - path: readme.md
 other_file:
@@ -73,7 +74,6 @@ other_file:
   - path: resources/readme/image218.png
   - path: resources/readme/image219.png
   - path: resources/readme/ncp_macros.png 
-  - path: resources/readme/ncp_radio_front_end.png
   - path: resources/readme/port_selection_soc.png
   - path: resources/readme/port_selection.png
   - path: resources/readme/post_build_script.png
@@ -85,7 +85,6 @@ other_file:
   - path: resources/readme/serial_port.png
   - path: resources/readme/soc_board_detection.png
   - path: resources/readme/soc_macros.png
-  - path: resources/readme/soc_radio_front_end.png
   - path: resources/readme/usb_to_uart_1.png
   - path: resources/readme/usb_to_uart_2.png        
 ui_hints:

@@ -22,15 +22,13 @@
 /*******************************************************************************
  ***************************  Defines / Macros  ********************************
  ******************************************************************************/
-#define RESERVED_IRQ_COUNT   16                                   // Reserved IRQ count
-#define EXT_IRQ_COUNT        98                                   // External IRQ count
-#define VECTOR_TABLE_ENTRIES (RESERVED_IRQ_COUNT + EXT_IRQ_COUNT) // Vector table entries
-#define BUFFER_SIZE          1024                                 // Data send and receive length
-#define USART_BAUDRATE       115200                               // Baud rate <9600-7372800>
-#define PORT                 0
-#define PIN                  10
-#define SET                  1
-#define CLR                  0
+
+#define BUFFER_SIZE    1024   // Data send and receive length
+#define USART_BAUDRATE 115200 // Baud rate <9600-7372800>
+#define PORT           0
+#define PIN            10
+#define SET            1
+#define CLR            0
 #define NON_UC_DEFAULT_CONFIG \
   0 //  Enable this macro to set the default configurations in non_uc case, this is useful when someone don't want to use UC configuration
 
@@ -54,7 +52,7 @@ static void compare_loop_back_data(void);
 sl_usart_handle_t usart_handle;
 usart_mode_enum_t current_mode = SL_SEND_DATA;
 
-uint32_t ramVector[VECTOR_TABLE_ENTRIES] __attribute__((aligned(256)));
+uint32_t ramVector[SI91X_VECTOR_TABLE_ENTRIES] __attribute__((aligned(256)));
 extern void hardware_setup(void);
 /*******************************************************************************
  * USART Example Initialization function
@@ -68,7 +66,7 @@ void usart_example_init(void)
      * startup_rs1xxxx.c file
      */
   //copying the vector table from flash to ram
-  memcpy(ramVector, (uint32_t *)SCB->VTOR, sizeof(uint32_t) * VECTOR_TABLE_ENTRIES);
+  memcpy(ramVector, (uint32_t *)SCB->VTOR, sizeof(uint32_t) * SI91X_VECTOR_TABLE_ENTRIES);
   // Assigning the ram vector address to VTOR register
   SCB->VTOR = (uint32_t)ramVector;
   // Switching MCU from PS4 to PS2 state(low power state)

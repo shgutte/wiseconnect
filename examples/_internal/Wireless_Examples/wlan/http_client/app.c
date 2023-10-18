@@ -260,7 +260,7 @@ sl_status_t http_client_application(void)
 
   sl_http_client_credentials_t *client_credentials = (sl_http_client_credentials_t *)malloc(credential_size);
   SL_VERIFY_POINTER_OR_RETURN(client_credentials, SL_STATUS_ALLOCATION_FAILED);
-
+  memset(client_credentials, 0, credential_size);
   client_credentials->username_length = username_length;
   client_credentials->password_length = password_length;
 

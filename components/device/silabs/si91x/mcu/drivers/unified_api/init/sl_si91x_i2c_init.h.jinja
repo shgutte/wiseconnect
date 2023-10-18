@@ -1,0 +1,37 @@
+/***************************************************************************//**
+ * @file sl_si91x_i2c.h
+ * @brief I2C Instances
+ *******************************************************************************
+ * # License
+ * <b>Copyright 2023 Silicon Laboratories Inc. www.silabs.com</b>
+ *******************************************************************************
+ *
+ * The licensor of this software is Silicon Laboratories Inc. Your use of this
+ * software is governed by the terms of Silicon Labs Master Software License
+ * Agreement (MSLA) available at
+ * www.silabs.com/about-us/legal/master-software-license-agreement. This
+ * software is distributed to you in Source Code format and is governed by the
+ * sections of the MSLA applicable to Source Code.
+ *
+ ******************************************************************************/
+
+#ifndef SL_SI91X_I2C_INIT_H_
+#define SL_SI91X_I2C_INIT_H_
+
+#include "sl_si91x_i2c.h"
+// Include instance config {# Include instance config #}
+{% for inst in temp_i2c_instance %} 
+#include "sl_si91x_i2c_{{ inst }}_config.h"
+
+#if defined(SL_I2C_{{ inst | upper }}) // To verify UC inputs existance
+ulp_timer_config_t sl_i2c_handle_{{ inst }} = {
+		.mode =             SL_I2C_MODE,
+		.operating_mode =   SL_I2C_OPERATING_MODE,
+		.address =          SL_I2C_SLAVE_ADDRESS,
+		.is_10bit_addr =    SL_I2C_10_BIT_ADDRESS_IS_ENABLED,
+		.transfer_type =    SL-I2C_TRANSFER_TYPE
+};
+#endif // SL_I2C_INSTANCE
+{% endfor %}
+
+#endif // SL_I2C_INIT_H_

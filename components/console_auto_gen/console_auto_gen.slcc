@@ -1,8 +1,9 @@
 id: console_auto_gen
 package: wiseconnect3_sdk
 description: >
-  
-category: 
+  Console Auto-Generator
+label: Console Auto-Generator
+category: Service|Console
 quality: production
 component_root_path: ./components/console_auto_gen
 provides:
@@ -14,8 +15,3 @@ source:
 - path: src/sl_string.c
 include:
 - path: inc
-requires:
-- name: socket_utility
-- condition: ["si91x_internal_stack"]
-  name: iot_sockets
-

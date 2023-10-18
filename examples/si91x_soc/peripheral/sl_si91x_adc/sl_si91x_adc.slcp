@@ -32,7 +32,6 @@ component:
 - {from: wiseconnect3_sdk, id: si91x_debug}
 - {from: wiseconnect3_sdk, id: syscalls}
 define:
-  - name: __SYSTICK
   - name: GAIN_OFFSET_CAL_EN
   - name: RSI_M4_INTERFACE
 provides:

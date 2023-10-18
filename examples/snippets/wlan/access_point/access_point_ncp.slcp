@@ -27,14 +27,14 @@ requires:
 - name: sl_system
 - name: network_manager
 - name: basic_network_manager
-- name: si91x_support
+- name: wiseconnect3_common
 - name: wifi
-- name: si91x
-- name: si91x_basic_buffers
+- name: sl_si91x_wireless
+- name: sl_si91x_basic_buffers
 - name: wifi_resources
 - name: freertos
 - name: slist
-- name: si91x_internal_stack
+- name: sl_si91x_internal_stack
 - name: iostream_retarget_stdio
   condition: [device_has_devinfo]
 - name: iostream_recommended_stream
@@ -50,6 +50,7 @@ requires:
 toolchain_settings: []
 configuration:
 - {name: SL_BOARD_ENABLE_VCOM, value: '1'}
+- {name: configTOTAL_HEAP_SIZE, value: '51200'}
 readme:
   - path: readme.md
 other_file:

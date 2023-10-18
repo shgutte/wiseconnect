@@ -44,15 +44,8 @@
 #include "cmsis_os2.h"
 #include "app.h"
 #include <string.h>
-
-/*=======================================================================*/
-//   ! MACROS
-/*=======================================================================*/
-
-/*=======================================================================*/
-//! Powersave configurations
-/*=======================================================================*/
-#define ENABLE_POWER_SAVE 0 //! Set to 1 for powersave mode
+#include "ble_config.h"
+#include "ble_device_info.h"
 
 #if ENABLE_POWER_SAVE
 #define PSP_MODE RSI_SLEEP_MODE_2
@@ -162,7 +155,7 @@ const osThreadAttr_t thread_attributes = {
 /*==============================================*/
 /**
  * @fn         rsi_initiate_power_save
- * @brief      send power save command to RS9116 module
+ * @brief      send power save command to RS9117 module
  *
  * @param[out] none
  * @return     status of commands, success-> 0, failure ->-1
@@ -173,22 +166,52 @@ int32_t rsi_initiate_power_save(void)
 {
   int32_t status = RSI_SUCCESS;
 
-  LOG_PRINT("\r\n Keep module into power save \r\n");
-  //! initiating power save in BLE mode
+  LOG_PRINT("\r\n keep module in to power save \r\n");
   status = rsi_bt_power_save_profile(PSP_MODE, PSP_TYPE);
   if (status != RSI_SUCCESS) {
-    LOG_PRINT("\r\n Failed to initiate power save in BLE mode \r\n");
     return status;
   }
 
   //! initiating power save in wlan mode
-  status = sl_wifi_set_performance_profile(&wifi_profile);
+  wifi_profile.profile = ASSOCIATED_POWER_SAVE;
+  status               = sl_wifi_set_performance_profile(&wifi_profile);
   if (status != SL_STATUS_OK) {
-    LOG_PRINT("\r\n Failed to initiate power save in Wi-Fi mode :%ld\r\n", status);
+    LOG_PRINT("\r\n Failed to keep module in power save \r\n");
+    return status;
+  }
+  LOG_PRINT("\r\n Module is in power save \r\n");
+  return status;
+}
+
+/*==============================================*/
+/**
+ * @fn         rsi_initiate_power_awake
+ * @brief      send power save command to RS9117 module
+ *
+ * @param[out] none
+ * @return     status of commands, success-> 0, failure ->-1
+ * @section description
+ * This function sends command to keep module in active save
+ */
+int32_t rsi_initiate_power_awake(void)
+{
+  int32_t status = RSI_SUCCESS;
+  LOG_PRINT("\r\n keep module in to active state \r\n");
+  //! initiating Active mode in BT mode
+  status = rsi_bt_power_save_profile(RSI_ACTIVE, PSP_TYPE);
+  if (status != RSI_SUCCESS) {
+    LOG_PRINT("\r\n Failed to keep Module in ACTIVE mode \r\n");
     return status;
   }
 
-  LOG_PRINT("\r\n Module is in power save \r\n");
+  //! initiating power save in wlan mode
+  wifi_profile.profile = HIGH_PERFORMANCE;
+  status               = sl_wifi_set_performance_profile(&wifi_profile);
+  if (status != SL_STATUS_OK) {
+    LOG_PRINT("\r\n Failed to keep module in HIGH_PERFORMANCE mode \r\n");
+    return status;
+  }
+  LOG_PRINT("\r\n Module is in power awake \r\n");
   return status;
 }
 #endif // #if ENABLE_POWER_SAVE
@@ -349,7 +372,9 @@ void rsi_common_app_task(void)
   uint32_t status                  = RSI_SUCCESS;
   powersave_cmd_given              = false;
   sl_wifi_version_string_t version = { 0 };
-
+#ifdef RSI_M4_INTERFACE
+  sl_si91x_hardware_setup();
+#endif /* RSI_M4_INTERFACE */
   status = sl_wifi_init(&config, default_wifi_event_handler);
   if (status != SL_STATUS_OK) {
     LOG_PRINT("\r\n Wi-Fi Initialization Failed, Error Code : 0x%lX\r\n", status);

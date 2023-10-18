@@ -14,9 +14,9 @@ defines:
 
 requires:
   features:
-    - si91x_lwip_stack
+    - sl_si91x_lwip_stack
   components:
-    - si91x_lwip_stack
+    - sl_si91x_lwip_stack
     - si91x_debug
     - wifi
     - network_manager

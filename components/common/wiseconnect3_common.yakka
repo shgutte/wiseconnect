@@ -1,0 +1,22 @@
+name: WiSeConnect3 Common Library
+
+sources:
+  - src/sl_utility.c
+
+includes:
+  global:
+    - inc
+
+slc:
+  label: 'WiSeConnect3 Common Library'
+  description: 'WiSeConnect3 Common Library'
+  category: 'Common'
+  include:
+    - path: inc
+      file_list:
+        - sl_additional_status.h
+        - sl_cmsis_utility.h
+        - sl_constants.h
+        - sl_ieee802_types.h
+        - sl_ip_types.h
+        - sl_utility.h

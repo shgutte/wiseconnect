@@ -37,6 +37,10 @@
 #include <rsi_ble_apis.h>
 #include "rsi_ble_common_config.h"
 #include <rsi_common_apis.h>
+#ifdef RSI_M4_INTERFACE
+#include "sl_si91x_m4_ps.h"
+#endif
+#include "wifi_app.h"
 
 static const sl_wifi_device_configuration_t config = {
   .boot_option = LOAD_NWP_FW,
@@ -120,11 +124,15 @@ const osThreadAttr_t thread_attributes = {
   .reserved   = 0,
 };
 
+uint8_t volatile ble_connection_done = 0, wlan_connection_done = 0;
+int32_t no_ble_events = 0;
+extern wifi_app_cb_t wifi_app_cb;
 //! Function prototypes
 extern void rsi_wlan_app_task(void);
 extern void rsi_ble_app_init(void);
 extern void rsi_ble_app_task(void);
 sl_status_t wifi_app_event_handler(sl_wifi_event_t event, sl_wifi_buffer_t *buffer);
+extern int32_t rsi_ble_app_get_event(void);
 
 void rsi_wlan_ble_app(void *argument)
 {
@@ -150,6 +158,11 @@ void rsi_wlan_ble_app(void *argument)
 
   //! BLE initialization
   rsi_ble_app_init();
+#ifdef RSI_M4_INTERFACE
+#if ALARM_TIMER_BASED_WAKEUP
+  initialize_m4_alarm();
+#endif
+#endif
 
   while (1) {
     //! WLAN application tasks
@@ -157,6 +170,25 @@ void rsi_wlan_ble_app(void *argument)
 
     //! BLE application tasks
     rsi_ble_app_task();
+
+#ifdef RSI_M4_INTERFACE
+#if ENABLE_POWER_SAVE
+    if ((wlan_connection_done == 1) && (ble_connection_done == 1)) {
+      no_ble_events = rsi_ble_app_get_event();
+      if (!(wifi_app_cb.event_map & RSI_SEND_EVENT) && (no_ble_events == -1)) {
+        if ((!(P2P_STATUS_REG & TA_wakeup_M4))) {
+          P2P_STATUS_REG &= ~M4_wakeup_TA;
+          LOG_PRINT("M4 in Sleep\r\n");
+          sl_si91x_m4_sleep_wakeup();
+          LOG_PRINT("M4 wake up\r\n");
+#if (ALARM_TIMER_BASED_WAKEUP || BUTTON_BASED_WAKEUP)
+          wifi_ble_send_data();
+#endif
+        }
+      }
+    }
+#endif
+#endif
   }
 
   return;

@@ -38,10 +38,6 @@ volatile uint32_t transfer_done = 0;         // Transfer done flag
 uint32_t src0[SL_DMA_TRANSFER_SIZE];         // source buffer
 uint32_t dst0[SL_DMA_TRANSFER_SIZE] = { 0 }; // destination buffer
 
-#define RESERVED_IRQ_COUNT   16                                   // Reserved IRQ count
-#define EXT_IRQ_COUNT        98                                   // External IRQ count
-#define VECTOR_TABLE_ENTRIES (RESERVED_IRQ_COUNT + EXT_IRQ_COUNT) // Vector table entries
-
 /*******************************************************************************
  **********************  Local Function prototypes   ***************************
  ******************************************************************************/
@@ -65,7 +61,7 @@ void transfer_complete_callback_dmadrv(uint32_t channel, void *data)
   (void)data;
   transfer_done = 1;
 }
-uint32_t ramVector[VECTOR_TABLE_ENTRIES] __attribute__((aligned(256)));
+uint32_t ramVector[SI91X_VECTOR_TABLE_ENTRIES] __attribute__((aligned(256)));
 extern void hardware_setup(void);
 
 /*******************************************************************************
@@ -85,7 +81,7 @@ void dma_example_init(void)
    * startup_rs1xxxx.c file
    */
   // copying the vector table from flash to ram
-  memcpy(ramVector, (uint32_t *)SCB->VTOR, sizeof(uint32_t) * VECTOR_TABLE_ENTRIES);
+  memcpy(ramVector, (uint32_t *)SCB->VTOR, sizeof(uint32_t) * SI91X_VECTOR_TABLE_ENTRIES);
   // Assigning the ram vector address to VTOR register
   SCB->VTOR = (uint32_t)ramVector;
   // Switching MCU from PS4 to PS2 state(low power state)

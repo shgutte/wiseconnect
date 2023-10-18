@@ -1,0 +1,38 @@
+name: SL SI91X TRNG
+
+clang-format: true
+
+includes:
+  global:
+    - inc
+
+sources:
+  - src/sl_si91x_psa_trng.c
+  - src/sl_si91x_trng.c
+
+requires:
+  components:
+    - sl_si91x_wireless
+    - wiseconnect3_common
+    - sl_si91x_crypto
+
+defines:
+  global:
+    - SLI_TRNG_DEVICE_SI91X
+
+slc:
+  label: 'TRNG'
+  description: 'True Random Number Generator (TRNG) APIs'
+  category: 'Device|Si91x|Wireless|Crypto'
+  requires:
+    - name: sl_si91x_crypto
+  include:
+  - path: inc
+    file_list:
+      - sl_si91x_psa_trng.h
+      - sl_si91x_trng.h
+  template_contribution:
+    - name: psa_crypto_config
+      value: MBEDTLS_PSA_CRYPTO_EXTERNAL_RNG
+    - name: mbedtls_config
+      value: MBEDTLS_NO_PLATFORM_ENTROPY

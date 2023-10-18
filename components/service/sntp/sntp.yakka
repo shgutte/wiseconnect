@@ -4,6 +4,9 @@ includes:
   global:
     - inc
 
+sources:
+  - si91x/sl_sntp.c
+
 api:
   public:
     - service/sntp/inc
@@ -31,9 +34,11 @@ doxygen:
     - docs/doxygen_indexfile.md 
 
 slc:
-  label: 'SNTP Client Library'
-  description: 'SNTP Client Library'
-  category: 'Networking|Protocol'
+  label: 'SNTP Client'
+  description: 'The SNTP Client provides a simple, easy-to-use API to start a service that retrieves time from an SNTP server'
+  category: 'Service'
+  requires:
+    - name: sl_si91x_internal_stack
   include:
     - path: inc
       file_list:

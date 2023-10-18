@@ -76,37 +76,27 @@ The application can be configured to suit user requirements and development envi
 
 - Other STA instance configurations can be modified if required in `default_wifi_client_profile` configuration structure. 
 
-2. Configure the following parameters in **app.c** to test throughput app as per requirements
+2. Configure the following parameters in **app.c** to test calibration app as per requirements
 
-- To set TX power in dBm. The valid values are from 2dbm to 18dbm for WiSeConnectTM module.
+```c
+  sl_wifi_data_rate_t rate = SL_WIFI_DATA_RATE_1;
+  sl_si91x_request_tx_test_info_t tx_test_info = {
+    .enable      = 1,          // Enable/disable tx test mode
+    .power       = 18,         // Tx RF power in the range [2:18] dBm
+    .rate        = rate,      // WLAN data rate of 6Mbps
+    .length      = 30,        // Tx packet length in the range [24:1500] bytes in burst mode, 
+    .mode        = 0,         // Selects burst mode or continuous mode
+    .channel     = 1,         // Channel number in 2.4 or 5 GHz
+    // Other configurable parameters
+  }
+```
 
-  ```c
-  #define TX_TEST_POWER                         18
-  ```
-  
-- To set transmit data rate.
-
-  ```c
-  #define TX_TEST_RATE                          0
-  ```
-   
-- To configure length of the TX packet. Valid values are in the range of 24 to 1500 bytes in the burst mode and range of 24 to 260 bytes in the continuous mode.
-
-  ```c
-  #define TX_TEST_LENGTH                        30
-  ```
-   
-- To configure Burst mode or Continuous mode
-
-  ```c
-  #define TX_TEST_MODE                           BURST_MODE
-  ```
-   
-- To configure the channel number in 2.4 GHz or 5GHz. Here mention the channel number.
-
-  ```c
-  #define TEST_CHANNEL                       1
-  ```
+    The different values of mode:
+      0 - Burst Mode
+      1 - Continuous Mode
+      2 - Continuous wave Mode (non modulation) in DC mode
+      3 - Continuous wave Mode (non modulation) in single tone mode (center frequency -2.5MHz)
+      4 - Continuous wave Mode (non modulation) in single tone mode (center frequency +5MHz)
 
 ## Test the application
 
@@ -119,14 +109,19 @@ Refer to the instructions [here](https://docs.silabs.com/wiseconnect/latest/wise
 
 2. After the program gets executed, the SiWx91x device will start the transmit test with the given configuration.
 
-3. Refer the below image which shows when SiWx91x device transmits packets in Burst mode with different Tx power and different transmission rates in channel 1 with length 1000bytes.
+3. Refer the below image which shows when SiWx91x device transmits packets in Burst mode with different Tx power and different transmission rates in channel 1 with length 30bytes.
 
    ```sh 
-   #define TX_TEST_POWER   18
-   #define TX_TEST_RATE    0
-   #define TX_TEST_LENGTH  30
-   #define TX_TEST_MODE    BURST_MODE
-   #define TEST_CHANNEL    1
+    sl_wifi_data_rate_t rate = SL_WIFI_DATA_RATE_1;
+    sl_si91x_request_tx_test_info_t tx_test_info = {
+      .enable      = 1,          // Enable/disable tx test mode
+      .power       = 18,         // Tx RF power in the range [2:18] dBm
+      .rate        = rate,      // WLAN data rate of 6Mbps
+      .length      = 30,        // Tx packet length in the range [24:1500] bytes in burst mode, 
+      .mode        = 0,         // Selects burst mode or continuous mode
+      .channel     = 1,         // Channel number in 2.4 or 5 GHz
+      // Other configurable parameters
+  }
    ```
 
 4. Observe the Avg Freq Error (highlighted) on the screen and now try to adjust the frequency offset by using CLI commands with serial terminal (Docklight or Teraterm)

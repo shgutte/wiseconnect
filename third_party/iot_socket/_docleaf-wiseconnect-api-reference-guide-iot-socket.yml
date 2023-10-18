@@ -1,0 +1,17 @@
+objectType: docLeaf
+id: wiseconnect-api-reference-guide-iot-socket
+access: "public"
+status: "active"
+version: "3.1.0"
+authors:
+  - aji.gerdiman@silabs.com
+  - nik.vonhuben@silabs.com
+
+contentType: doxygen
+sourceDir: "doxygen-output/xml"
+title: "IOT socket"
+
+menu:
+  items:
+    - index
+    - iot_socket

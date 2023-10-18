@@ -32,6 +32,9 @@
 #include <string.h>
 #include <stdbool.h>
 #include "rsi_ble_apis.h"
+#ifdef RSI_M4_INTERFACE
+#include "sl_si91x_m4_ps.h"
+#endif
 
 /***********************************************************************************************************************************************/
 /***********************************************************************************************************************************************/
@@ -558,6 +561,7 @@ typedef struct rsi_parsed_conf_s {
 //   ! Function prototype declarations
 /*=======================================================================*/
 int32_t rsi_initiate_power_save(void);
+int32_t rsi_initiate_power_awake(void);
 void rsi_ble_main_app_task(void);
 void rsi_ble_task_on_conn(void *parameters);
 void rsi_ble_slave_app_task(void);

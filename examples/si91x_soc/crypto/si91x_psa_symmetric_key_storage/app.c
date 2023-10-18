@@ -117,13 +117,13 @@ static void application_start(void *argument)
   /* TRNG initialization */
   status = sl_si91x_psa_trng_init();
   if (status != SL_STATUS_OK) {
-    printf("\r\nTRNG Initialization Failed, Error Code : 0x%x\r\n", status);
+    printf("\r\nTRNG Initialization Failed, Error Code : 0x%lx\r\n", status);
   }
 
   /* nvm3 initialization */
   Ecode_t err;
   err = nvm3_initDefault();
-  printf("\r\n NVM3 init status %d \r\n", err);
+  printf("\r\n NVM3 init status %ld \r\n", err);
 
   app_process_action();
 }

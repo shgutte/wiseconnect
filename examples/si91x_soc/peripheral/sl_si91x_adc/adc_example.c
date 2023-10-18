@@ -57,7 +57,6 @@ void adc_example_init(void)
   sl_adc_version_t version;
   sl_status_t status;
   sl_adc_clock_config_t clock_config;
-  volatile float battery_status        = 0;
   clock_config.soc_pll_clock           = PS4_SOC_FREQ;
   clock_config.soc_pll_reference_clock = SOC_PLL_REF_FREQUENCY;
   clock_config.division_factor         = DVISION_FACTOR;
@@ -74,7 +73,6 @@ void adc_example_init(void)
     version = sl_si91x_adc_get_version();
     DEBUGOUT("ADC version is fetched successfully \n");
     DEBUGOUT("API version is %d.%d.%d\n", version.release, version.major, version.minor);
-    battery_status = sl_si91x_adc_get_chip_voltage();
     if (sl_adc_config.operation_mode == 0) {
       // Configure ADC clock
       status = sl_si91x_adc_configure_clock(&clock_config);
@@ -84,22 +82,17 @@ void adc_example_init(void)
       }
       DEBUGOUT("Clock configuration is successful \n");
     }
-    status = sl_si91x_adc_init(sl_adc_channel_config, sl_adc_config);
+    status = sl_si91x_adc_init(sl_adc_channel_config, sl_adc_config, vref_value);
+    //Due to calling trim_efuse API on ADC init in driver it will change the clock frequency,
+    // if we are not initialize the debug again it will print the garbage data in console output.
+    DEBUGINIT();
     if (status != SL_STATUS_OK) {
       DEBUGOUT("sl_si91x_adc_init: Error Code : %lu \n", status);
       break;
     }
-    DEBUGINIT();
     DEBUGOUT("ADC Initialization Success\n");
-    /* Configure reference voltage for analog peripheral ,here till 2.8V generate by using
-        AUX_LDO so more than 2.8V enable LDO bypass mode */
-    status = sl_si91x_adc_configure_reference_voltage(vref_value, battery_status);
-    if (status != SL_STATUS_OK) {
-      DEBUGOUT("sl_si91x_adc_reference_voltage_configuration: Error Code : %lu \n", status);
-      break;
-    }
-    DEBUGOUT("ADC reference voltage configured Success\n");
-    status = sl_si91x_adc_channel_set_configuration(sl_adc_channel_config, sl_adc_config);
+    // Configure ADC channel.
+    status = sl_si91x_adc_set_channel_configuration(sl_adc_channel_config, sl_adc_config);
     if (status != SL_STATUS_OK) {
       DEBUGOUT("sl_si91x_adc_channel_set_configuration: Error Code : %lu \n", status);
       break;

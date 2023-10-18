@@ -42,13 +42,13 @@ component:
     from: wiseconnect3_sdk
   - id: basic_network_manager
     from: wiseconnect3_sdk
-  - id: si91x_basic_buffers
+  - id: sl_si91x_basic_buffers
     from: wiseconnect3_sdk
-  - id: si91x_internal_stack
+  - id: sl_si91x_internal_stack
     from: wiseconnect3_sdk
-  - id: si91x
+  - id: sl_si91x_wireless
     from: wiseconnect3_sdk
-  - id: si91x_support
+  - id: wiseconnect3_common
     from: wiseconnect3_sdk
   - id: wifi
     from: wiseconnect3_sdk

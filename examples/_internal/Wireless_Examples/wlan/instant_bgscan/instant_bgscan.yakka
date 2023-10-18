@@ -16,7 +16,7 @@ requires:
     - wifi
     - network_manager
     - freertos
-    - si91x
+    - sl_si91x_wireless
     - clang-format
 
 flags:

@@ -129,6 +129,10 @@ sl_status_t sli_si91x_build_mqtt_sdk_context_if_async(sl_mqtt_client_event_t eve
 
   sl_si91x_mqtt_client_context_t *mqtt_client_sdk_context = calloc(sizeof(sl_si91x_mqtt_client_context_t), 1);
 
+  if (mqtt_client_sdk_context == NULL) {
+    return SL_STATUS_ALLOCATION_FAILED;
+  }
+
   mqtt_client_sdk_context->client       = client;
   mqtt_client_sdk_context->event        = event;
   mqtt_client_sdk_context->sdk_data     = sdk_data;
@@ -256,7 +260,7 @@ sl_status_t sl_mqtt_client_connect(sl_mqtt_client_t *client,
     if (credentials == NULL) {
       return SL_STATUS_ALLOCATION_FAILED;
     }
-
+    memset(credentials, 0, maximum_credential_size);
     sl_net_credential_type_t type;
 
     sl_status_t status =
@@ -427,6 +431,9 @@ sl_status_t sl_mqtt_client_publish(sl_mqtt_client_t *client,
   uint32_t publish_request_size               = sizeof(si91x_mqtt_client_publish_request_t) + message->content_length;
 
   si91x_mqtt_client_publish_request_t *si91x_publish_request = calloc(publish_request_size, 1);
+  if (si91x_publish_request == NULL) {
+    return SL_STATUS_ALLOCATION_FAILED;
+  }
   status = sli_si91x_build_mqtt_sdk_context_if_async(SL_MQTT_CLIENT_MESSAGE_PUBLISHED_EVENT,
                                                      client,
                                                      context,
@@ -434,10 +441,8 @@ sl_status_t sl_mqtt_client_publish(sl_mqtt_client_t *client,
                                                      timeout,
                                                      &sdk_context);
 
-  if (si91x_publish_request == NULL || status != SL_STATUS_OK) {
+  if (status != SL_STATUS_OK) {
     SL_CLEANUP_MALLOC(si91x_publish_request);
-    SL_CLEANUP_MALLOC(sdk_context);
-
     return SL_STATUS_ALLOCATION_FAILED;
   }
 

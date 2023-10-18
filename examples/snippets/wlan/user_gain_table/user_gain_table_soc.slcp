@@ -31,11 +31,11 @@ requires:
 - name: bsd_socket
 - name: network_manager
 - name: basic_network_manager
-- name: si91x_support
+- name: wiseconnect3_common
 - name: wifi
-- name: si91x
-- name: si91x_internal_stack
-- name: si91x_basic_buffers
+- name: sl_si91x_wireless
+- name: sl_si91x_internal_stack
+- name: sl_si91x_basic_buffers
 - name: wifi_resources
 - name: freertos
 - name: slist
@@ -67,7 +67,6 @@ other_file:
   - path: resources/readme/efr32.png
   - path: resources/readme/image217ncp.PNG
   - path: resources/readme/image217soc.PNG
-  - path: resources/readme/ncp_radio_front_end.png
   - path: resources/readme/port_selection_soc.png
   - path: resources/readme/port_selection.png
   - path: resources/readme/program_device.png
@@ -76,7 +75,6 @@ other_file:
   - path: resources/readme/serial_port_setup.png
   - path: resources/readme/serial_port.png
   - path: resources/readme/soc_board_detection.png
-  - path: resources/readme/soc_radio_front_end.png
   - path: resources/readme/usb_to_uart_1.png
   - path: resources/readme/usb_to_uart_2.png
   - path: resources/readme/user_gain_table_soc.png

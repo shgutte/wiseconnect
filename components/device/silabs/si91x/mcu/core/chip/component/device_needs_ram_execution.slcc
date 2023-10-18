@@ -1,0 +1,16 @@
+id: device_needs_ram_execution
+package: platform
+description: device needs ram execution component is used to execute few sources from the RAM.
+category: Device|Si91x|MCU|Core
+label: RAM Execution
+quality: production
+provides:
+  - name: device_needs_ram_execution
+define:
+  - name: RAM_EXECUTION
+template_contribution:
+  - name: ram_execution
+    value: true
+  - name: device_ram_addr
+    value: 1024
+    priority: -2

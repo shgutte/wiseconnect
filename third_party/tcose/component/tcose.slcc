@@ -1,9 +1,9 @@
 id: tcose
-label: TCOSE
+label: t_cose
 package: third_party
 description: >
-  QCBOR library 
-category: third_party
+  t_cose is a CBOR Object Signing and Encryption (COSE) library
+category: Third Party
 quality: production
 component_root_path: "third_party/tcose"
 source:

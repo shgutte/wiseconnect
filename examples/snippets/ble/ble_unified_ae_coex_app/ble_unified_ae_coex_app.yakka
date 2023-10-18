@@ -1,0 +1,47 @@
+name: BLE UNIFIED AE COEX APP 
+
+sources:
+  - app.c
+  - main.c
+  - root_auto_gen.c
+  - btc_auto_gen.c
+  - ble/ble_cmd_hdlr_auto_gen.c
+  - ble/ble_event_hdlr_auto_gen.c
+  - ble/ble_ui_cmd_hdlr.c
+  - ble/ble_user_cmd.c
+  - ble/ble_user_event_hdlrs.c
+  - user_input/rsi_user_input_DEMO_x.c
+  - utils/command_parser.c
+  - utils/event_loop.c
+  - utils/rsi_common_utils.c
+  
+includes:
+   global:
+    - .
+    - ble
+    - inc
+    - user_input
+    - utils
+    
+defines:
+  global:
+    - RSI_DEBUG_PRINTS
+
+requires:
+  components:
+    - si91x_debug
+    - si91x_support
+    - sl_device
+    - si91x
+    - wifi
+    - network_manager
+    - freertos
+    - clang-format
+    - ble
+
+clang-format: true
+
+flags:
+  c:
+    global:
+      - -Werror

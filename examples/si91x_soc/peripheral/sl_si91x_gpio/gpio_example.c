@@ -63,6 +63,7 @@
 #define PINS       0x0048 // Pins in a port to mask
 
 #define INT_CH       0 // GPIO Pin interrupt 0
+#define ULP_INT_CH   1 // ULP GPIO Pin interrupt 0
 #define OUTPUT_VALUE 1 // GPIO output value
 #define NPSS_INTR    4 // NPSS GPIO interrupt number
 
@@ -239,7 +240,7 @@ void gpio_example_init(void)
     // GPIO initialization function for ULP instance
     sl_gpio_ulp_initialization();
     // Configure ULP GPIO pin interrupts
-    sl_si91x_gpio_configure_ulp_pin_interrupt(INT_CH,
+    sl_si91x_gpio_configure_ulp_pin_interrupt(ULP_INT_CH,
                                               (sl_si91x_gpio_interrupt_config_flag_t)SL_GPIO_INTERRUPT_LEVEL_HIGH,
                                               ULP_PIN_4);
     NVIC_EnableIRQ(ULP_PININT0_NVIC_NAME);
@@ -252,10 +253,10 @@ void gpio_example_init(void)
     uint8_t ulp_group_pol[PIN_COUNT]  = { POLARITY, POLARITY };    // polarity selected for group interrupt
 
     // Configure ULP GPIO group parameters
-    config_grp_int.grp_interrupt     = ULP_GROUP_INT; // Set ULP group interrupt
-    config_grp_int.grp_interrupt_cnt = GRP_COUNT;     // Count of group interrupt pins
-    config_grp_int.and_or            = AND_EVENT;     // AND/OR of group interrupt
-    config_grp_int.level_edge        = LEVEL_EVENT;   // Level/Edge of group interrupt
+    config_grp_int.grp_interrupt     = ULP_GROUP_INTR_0; // Set ULP group interrupt
+    config_grp_int.grp_interrupt_cnt = GRP_COUNT;        // Count of group interrupt pins
+    config_grp_int.and_or            = AND_EVENT;        // AND/OR of group interrupt
+    config_grp_int.level_edge        = LEVEL_EVENT;      // Level/Edge of group interrupt
     memcpy(config_grp_int.grp_interrupt_pin, ulp_group_pins, PIN_COUNT);
     memcpy(config_grp_int.grp_interrupt_pol, ulp_group_pol, PIN_COUNT);
 
@@ -535,7 +536,7 @@ void UULP_PIN_IRQ_Handler(void)
  ******************************************************************************/
 void ULP_PIN_IRQ_Handler(void)
 {
-  sl_si91x_gpio_clear_ulp_interrupt(ULP_PIN_INT);
+  sl_si91x_gpio_clear_ulp_interrupt(ULP_PIN_INTR_0);
 }
 
 /*******************************************************************************
@@ -543,5 +544,5 @@ void ULP_PIN_IRQ_Handler(void)
  ******************************************************************************/
 void ULP_GROUP_IRQ_Handler(void)
 {
-  sl_si91x_gpio_clear_ulp_group_interrupt(ULP_GROUP_INT);
+  sl_si91x_gpio_clear_ulp_group_interrupt(ULP_GROUP_INTR_0);
 }

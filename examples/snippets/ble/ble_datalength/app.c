@@ -35,6 +35,9 @@
 #include "rsi_bt_common.h"
 #include "rsi_bt_common_apis.h"
 #include "rsi_common_apis.h"
+#ifdef RSI_M4_INTERFACE
+#include "sl_si91x_m4_ps.h"
+#endif
 
 //! Address type of the device to connect
 #define RSI_BLE_DEV_ADDR_TYPE LE_RANDOM_ADDRESS
@@ -363,7 +366,9 @@ void ble_central(void *argument)
   int32_t temp_event_map = 0;
   sl_status_t status;
   sl_wifi_version_string_t version = { 0 };
-
+#ifdef RSI_M4_INTERFACE
+  sl_si91x_hardware_setup();
+#endif /* RSI_M4_INTERFACE */
   //! Wi-Fi initialization
   status = sl_wifi_init(&config, default_wifi_event_handler);
   if (status != SL_STATUS_OK) {
@@ -461,9 +466,15 @@ void ble_central(void *argument)
     //! checking for received events
     temp_event_map = rsi_ble_app_get_event();
     if (temp_event_map == RSI_FAILURE) {
+#if RSI_M4_INTERFACE && ENABLE_POWER_SAVE
+      //! if events are not received loop will be continued.
+      if ((!(P2P_STATUS_REG & TA_wakeup_M4))) {
+        P2P_STATUS_REG &= ~M4_wakeup_TA;
+        sl_si91x_m4_sleep_wakeup();
+      }
+#else
       osSemaphoreAcquire(ble_main_task_sem, osWaitForever);
-
-      //! if events are not received, loop will be continued
+#endif
       continue;
     }
 

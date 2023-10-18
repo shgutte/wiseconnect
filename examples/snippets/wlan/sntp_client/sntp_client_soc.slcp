@@ -32,11 +32,11 @@ requires:
 - name: sntp
 - name: network_manager
 - name: basic_network_manager
-- name: si91x_support
+- name: wiseconnect3_common
 - name: wifi
-- name: si91x
-- name: si91x_internal_stack
-- name: si91x_basic_buffers
+- name: sl_si91x_wireless
+- name: sl_si91x_internal_stack
+- name: sl_si91x_basic_buffers
 - name: wifi_resources
 - name: freertos
 - name: slist

@@ -4,7 +4,7 @@ requires:
   components:
     - si91x_debug
     - wifi
-    - si91x
+    - sl_si91x_wireless
     - network_manager
 
 sources:
@@ -310,4 +310,10 @@ console:
         - 'string'
         - 'string'
         - i: 'wifi_interface'
+    wifi_configure_timeout:
+      handler: wifi_configure_timeout_command_handler
+      description: 'This API is used to set timeouts'
+      arguments:
+        - 'sl_wifi_timeout_type_t'
+        - 'uint16'
 clang-format: true

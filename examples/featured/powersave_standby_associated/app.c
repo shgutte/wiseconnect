@@ -143,13 +143,27 @@ static void application_start(void *argument)
   UNUSED_PARAMETER(argument);
   sl_status_t status;
   sl_wifi_performance_profile_t performance_profile = { .profile = ASSOCIATED_POWER_SAVE, .monitor_interval = 50 };
-
+  sl_wifi_version_string_t version                  = { 0 };
+  sl_mac_address_t mac_addr                         = { 0 };
   status = sl_net_init(SL_NET_WIFI_CLIENT_INTERFACE, &station_init_configuration, NULL, NULL);
   if (status != SL_STATUS_OK) {
     printf("Failed to start Wi-Fi Client interface: 0x%lx\r\n", status);
     return;
   }
-
+  status = sl_wifi_get_mac_address(SL_WIFI_CLIENT_INTERFACE, &mac_addr);
+  if (status == SL_STATUS_OK) {
+    printf("Device MAC address: %x:%x:%x:%x:%x:%x\r\n",
+           mac_addr.octet[0],
+           mac_addr.octet[1],
+           mac_addr.octet[2],
+           mac_addr.octet[3],
+           mac_addr.octet[4],
+           mac_addr.octet[5]);
+  } else {
+    printf("Failed to get mac address: 0x%x\r\n", status);
+  }
+  status = sl_wifi_get_firmware_version(&version);
+  printf("\r\nfirmware_version = %s\r\n", version.version);
   status = sl_si91x_set_join_configuration(SL_WIFI_CLIENT_INTERFACE, SI91X_JOIN_FEAT_LISTEN_INTERVAL_VALID);
   if (status != SL_STATUS_OK) {
     printf("Failed to start set join configuration: 0x%lx\r\n", status);

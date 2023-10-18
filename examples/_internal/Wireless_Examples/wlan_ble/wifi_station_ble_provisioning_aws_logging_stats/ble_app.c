@@ -710,7 +710,7 @@ void rsi_ble_configurator_task(void *argument)
     LOG_PRINT("Failed to allocate memory for scan result\n");
     return;
   }
-
+  memset(scanresult, 0, scanbuf_size);
   while (1) {
     // checking for events list
     event_id = rsi_ble_app_get_event();

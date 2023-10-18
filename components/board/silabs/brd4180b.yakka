@@ -1,0 +1,26 @@
+name: BRD4180B
+
+requires:
+  components:
+    - efr32mg21
+    - sl_peripheral
+  features:
+    - sleeptimer_rtcc
+  
+includes:
+  global:
+    - .
+    - config/brd4180b
+
+defines:
+  global:
+    - EFR32MG21A020F1024IM32
+
+supports:
+  features:
+    wifi:
+      requires:
+        features:
+          - wifi_spi_bus
+
+clang-format: true

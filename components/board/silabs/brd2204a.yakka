@@ -1,0 +1,27 @@
+name: BRD2204A
+
+requires:
+  components:
+    - efm32gg11b
+
+includes:
+  global:
+    - .
+    - config/brd2204a
+
+defines:
+  global:
+    - EFM32GG11B820F2048GL192
+    - EFM32GG11BxxxF2048
+    - EFM32GG11B
+    - _SILICON_LABS_32B_SERIES_1_CONFIG=1
+
+supports:
+  features:
+    wifi:
+      requires:
+        features:
+          - wifi_sdio_bus
+          - sdio
+
+clang-format: true

@@ -35,7 +35,9 @@
 //! Common include file
 #include "rsi_common_apis.h"
 #include <string.h>
-
+#ifdef RSI_M4_INTERFACE
+#include "sl_si91x_m4_ps.h"
+#endif
 //! [ble_gls] is a tag for every print
 #ifdef RSI_DEBUG_PRINTS
 #include <stdio.h>
@@ -1341,7 +1343,9 @@ void ble_hids_gatt_application(rsi_ble_hid_info_t *p_hid_info)
   rsi_ble_resp_char_services_t char_servs = { 0 };
   rsi_ble_resp_att_descs_t att_desc = { 0 };
 #endif
-
+#ifdef RSI_M4_INTERFACE
+  sl_si91x_hardware_setup();
+#endif /* RSI_M4_INTERFACE */
   status = sl_wifi_init(&config, default_wifi_event_handler);
   if (status != SL_STATUS_OK) {
     LOG_PRINT("\r\n Wi-Fi Initialization Failed, Error Code : 0x%lX\r\n", status);
@@ -1492,7 +1496,15 @@ void ble_hids_gatt_application(rsi_ble_hid_info_t *p_hid_info)
     //! checking for events list
     event_id = rsi_ble_app_get_event();
     if (event_id == -1) {
+#if RSI_M4_INTERFACE && ENABLE_POWER_SAVE
+      //! if events are not received loop will be continued.
+      if ((!(P2P_STATUS_REG & TA_wakeup_M4))) {
+        P2P_STATUS_REG &= ~M4_wakeup_TA;
+        sl_si91x_m4_sleep_wakeup();
+      }
+#else
       osSemaphoreAcquire(ble_main_task_sem, osWaitForever);
+#endif
       continue;
     }
     switch (event_id) {
@@ -1886,9 +1898,6 @@ scan:
         //! clear the served event
         if (app_state & BIT(CONNECTED)) {
           if (app_state & BIT(REPORT_IN_NOTIFY_ENABLE)) {
-#if RSI_M4_INTERFACE
-            osDelay(3000);
-#endif
             hid_data[2] = 0xb; // key 'h' pressed
             rsi_ble_set_local_att_value(rsi_ble_hid_in_report_val_hndl, HID_KDB_IN_RPT_DATA_LEN, hid_data);
             hid_data[2] = 0x0; // key released

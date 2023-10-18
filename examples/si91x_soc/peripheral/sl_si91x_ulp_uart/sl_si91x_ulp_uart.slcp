@@ -61,8 +61,7 @@ define:
 - name: SYSCALLS_WRITE
 - name: M4_PS2_STATE
 template_contribution:
-- {name: RAM_EXECUTION, priority: 0, value: 1}
-- {name: ULP_PLATFORM, priority: 0, value: 1}
+- {name: ulp_platform, priority: 0, value: 1}
 readme:
   - path: readme.md
 ui_hints:

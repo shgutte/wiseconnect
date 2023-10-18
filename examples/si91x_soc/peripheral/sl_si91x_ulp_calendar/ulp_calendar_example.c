@@ -50,10 +50,6 @@
 
 #define CAL_RC_CLOCK 2u
 
-#define RESERVED_IRQ_COUNT   16                                   // Reserved IRQ count
-#define EXT_IRQ_COUNT        98                                   // External IRQ count
-#define VECTOR_TABLE_ENTRIES (RESERVED_IRQ_COUNT + EXT_IRQ_COUNT) // Vector table entries
-
 /*******************************************************************************
  **********************  Local Function prototypes   ***************************
  ******************************************************************************/
@@ -71,7 +67,7 @@ static void on_msec_callback(void);
 boolean_t is_msec_callback_triggered = false;
 #endif
 
-uint32_t ramVector[VECTOR_TABLE_ENTRIES] __attribute__((aligned(256)));
+uint32_t ramVector[SI91X_VECTOR_TABLE_ENTRIES] __attribute__((aligned(256)));
 extern void hardware_setup(void);
 
 /*******************************************************************************
@@ -90,7 +86,7 @@ void calendar_example_init(void)
      * startup_rs1xxxx.c file
      */
   //copying the vector table from flash to ram
-  memcpy(ramVector, (uint32_t *)SCB->VTOR, sizeof(uint32_t) * VECTOR_TABLE_ENTRIES);
+  memcpy(ramVector, (uint32_t *)SCB->VTOR, sizeof(uint32_t) * SI91X_VECTOR_TABLE_ENTRIES);
   // Assigning the ram vector address to VTOR register
   SCB->VTOR = (uint32_t)ramVector;
   // Switching MCU from PS4 to PS2 state(low power state)

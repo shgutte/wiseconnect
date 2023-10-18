@@ -5,6 +5,10 @@ sources:
   - src/sl_net_basic_profiles.c
   
 slc:
-  label: 'Basic Data Manager'
-  description: 'Basic network data manager'
-  category: 'Networking|Data Management'
+  label: 'Basic Network Data Manager'
+  description: 'the Basic Network Data Manager provides a basic reference implementation for managing network credentials and profiles'
+  category: 'Service|Network Management'
+  provides:
+    - name: network_data_manager
+  conflicts:
+    - name: nvm3_network_manager

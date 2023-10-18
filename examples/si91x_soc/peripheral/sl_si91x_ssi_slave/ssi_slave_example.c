@@ -52,6 +52,7 @@ static sl_ssi_handle_t ssi_driver_handle = NULL;
 boolean_t transfer_complete              = false;
 boolean_t begin_transmission             = true;
 static uint16_t division_factor          = 1;
+static uint32_t slave_number             = SSI_SLAVE_0;
 
 /// @brief Enumeration for different transmission scenarios
 typedef enum {
@@ -79,7 +80,7 @@ void ssi_slave_example_init(void)
   // Configuring the user configuration structure
   sl_ssi_control_config_t config;
   config.bit_width   = SSI_BIT_WIDTH;
-  config.device_mode = SL_SSI_MASTER_ACTIVE;
+  config.device_mode = SL_SSI_SLAVE_ACTIVE;
   config.clock_mode  = SL_SSI_PERIPHERAL_CPOL0_CPHA0;
   config.master_ssm  = SL_SSI_MASTER_HW_OUTPUT;
   config.slave_ssm   = SL_SSI_SLAVE_HW;
@@ -115,7 +116,7 @@ void ssi_slave_example_init(void)
     }
     DEBUGOUT("SSI Initialization Success \n");
     // Configure the SSI to Master, 16-bit mode @10000 kBits/sec
-    sl_status = sl_si91x_ssi_set_configuration(ssi_driver_handle, &config);
+    sl_status = sl_si91x_ssi_set_configuration(ssi_driver_handle, &config, slave_number);
     if (sl_status != SL_STATUS_OK) {
       DEBUGOUT("Failed to Set Configuration Parameters to SSI, Error Code : %lu \n", sl_status);
       break;
@@ -239,6 +240,8 @@ void ssi_slave_example_process_action(void)
       if (transfer_complete) {
         // If DMA is enabled, it will wait untill transfer_complete flag is set.
         transfer_complete = false;
+        DEBUGOUT("SSI send completed \n");
+        compare_loopback_data();
         // At last current mode is set to completed.
         current_mode = SL_TRANSMISSION_COMPLETED;
       }

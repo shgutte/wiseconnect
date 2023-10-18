@@ -1,0 +1,37 @@
+name: SL SI91X PSA AEAD
+
+clang-format: true
+
+includes:
+  global:
+    - inc
+
+sources:
+  - src/sl_si91x_psa_aead.c
+
+requires:
+  components:
+    - sl_si91x_wireless
+    - wiseconnect3_common
+
+defines:
+  global:
+    - SLI_AEAD_DEVICE_SI91X
+
+slc:
+  label: 'PSA AEAD'
+  description: 'Implementation of mbedTls psa crypto AEAD API'
+  category: 'Device|Si91x|Wireless|PSA Crypto'
+  requires:
+    - name: sl_si91x_psa_crypto
+  include:
+    - path: inc
+      file_list:        
+        - sl_si91x_psa_aead.h
+  requires:
+    - name: 'sl_si91x_ccm'
+      condition: [psa_crypto_ccm]
+    - name: 'sl_si91x_gcm'
+      condition: [psa_crypto_gcm]
+    - name: 'sl_si91x_chachapoly'
+      condition: [psa_crypto_chachapoly]

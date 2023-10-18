@@ -1,0 +1,27 @@
+name: SL SI91X GCM
+
+clang-format: true
+
+includes:
+  global:
+    - inc
+
+sources:
+  - src/sl_si91x_gcm.c
+
+requires:
+  components:
+    - sl_si91x_wireless
+    - wiseconnect3_common
+    - sl_si91x_crypto
+
+slc:
+  label: 'GCM'
+  description: 'Implementation of the GCM API'
+  category: 'Device|Si91x|Wireless|Crypto'
+  requires:
+    - name: sl_si91x_crypto
+  include:
+    - path: inc
+      file_list:        
+        - sl_si91x_gcm.h

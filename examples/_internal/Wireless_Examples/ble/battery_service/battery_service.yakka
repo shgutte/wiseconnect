@@ -20,7 +20,7 @@ requires:
   components:
     - si91x_debug
     - sl_device
-    - si91x
+    - sl_si91x_wireless
     - wifi
     - network_manager
     - freertos

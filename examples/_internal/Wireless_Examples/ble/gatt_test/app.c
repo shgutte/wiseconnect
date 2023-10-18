@@ -696,7 +696,7 @@ adv:
         status = rsi_ble_get_char_services_async(conn_event_to_app.dev_addr,
                                                  *(uint16_t *)p_profile.start_handle,
                                                  *(uint16_t *)p_profile.end_handle,
-                                                 NULL /* &char_serv*/);
+                                                 NULL);
         if (status != RSI_SUCCESS) {
           LOG_PRINT("\n rsi_ble_get_char_services_async failed with %lx", status);
         } else {
@@ -707,7 +707,10 @@ adv:
       case RSI_BLE_GATT_CHAR_SERVICES: {
         rsi_ble_app_clear_event(RSI_BLE_GATT_CHAR_SERVICES);
         inc_query = 1;
-        status    = rsi_ble_get_inc_services_async(conn_event_to_app.dev_addr, 0, 0xFF, NULL);
+        status    = rsi_ble_get_inc_services_async(conn_event_to_app.dev_addr,
+                                                *(uint16_t *)p_profile.start_handle,
+                                                *(uint16_t *)p_profile.end_handle,
+                                                NULL);
         if (status != RSI_SUCCESS) {
           LOG_PRINT("\n rsi_ble_get_inc_services_async failed with %lx", status);
         }
@@ -717,6 +720,7 @@ adv:
       case RSI_BLE_GATT_INC_SERVICES: {
         rsi_ble_app_clear_event(RSI_BLE_GATT_INC_SERVICES);
         if (inc_query) {
+          inc_query = 0;
           rsi_ble_app_set_event(RSI_BLE_GATT_DESC_VAL);
         }
 
@@ -757,6 +761,8 @@ adv:
         rsi_ble_app_clear_event(RSI_BLE_GATT_ERROR);
         LOG_PRINT("get att descriptor value");
         if (inc_query) {
+          inc_query = 0;
+          rsi_ble_app_set_event(RSI_BLE_GATT_DESC_VAL);
         }
         break;
 

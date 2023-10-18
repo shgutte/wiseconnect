@@ -8,3 +8,8 @@ sources:
 requires:
   components:
     - console  
+
+slc:
+  label: 'Console Variables'
+  description: 'Console Variables'
+  category: 'Service|Console'

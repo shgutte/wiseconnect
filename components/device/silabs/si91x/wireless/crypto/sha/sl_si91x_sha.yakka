@@ -1,0 +1,27 @@
+name: SL SI91X SHA
+
+clang-format: true
+
+includes:
+  global:
+    - inc
+
+sources:
+  - src/sl_si91x_sha.c
+
+requires:
+  components:
+    - sl_si91x_wireless
+    - wiseconnect3_common
+    - sl_si91x_crypto
+
+slc:
+  label: 'SHA'
+  description: 'Implementation of the SHA API'
+  category: 'Device|Si91x|Wireless|Crypto'
+  requires:
+    - name: sl_si91x_crypto
+  include:
+    - path: inc
+      file_list:
+        - sl_si91x_sha.h

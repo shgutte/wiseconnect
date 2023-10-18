@@ -35,21 +35,22 @@ component:
 - {from: wiseconnect3_sdk, id: si917_memory_default_config}
 - {from: wiseconnect3_sdk, id: si91x_debug}
 - {from: wiseconnect3_sdk, id: syscalls}
-- {from: wiseconnect3_sdk, id: device_needs_ram_execution}
 requires:
 - name: sl_system
-- name: bsd_socket
 - name: network_manager
 - name: basic_network_manager
-- name: si91x_support
+- name: wiseconnect3_common
 - name: wifi
-- name: si91x
+- name: sl_si91x_wireless
 - name: si91x_networking_model
-- name: si91x_basic_buffers
+- name: sl_si91x_lwip_stack
+- name: sl_si91x_basic_buffers
 - name: wifi_resources
 - name: freertos
 - name: slist
-- name: si91x_lwip_stack
+- name: sl_si91x_lwip_stack
+- name: device_needs_ram_execution
+  condition: [si91x_common_flash]
 - name: iostream_retarget_stdio
   condition: [device_has_devinfo]
 - name: iostream_recommended_stream
@@ -62,8 +63,6 @@ requires:
   condition: [device_has_devinfo]
 - name: emlib_ldma
   condition: [device_has_devinfo]
-recommends:
-- id: si91x_lwip_stack
 toolchain_settings: []
 configuration:
 - {name: SL_BOARD_ENABLE_VCOM, value: '1'}

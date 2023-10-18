@@ -33,10 +33,10 @@ requires:
 - name: freertos
 - name: aws_sdk
 - name: basic_network_manager
-- name: si91x_support
-- name: si91x
-- name: si91x_internal_stack
-- name: si91x_basic_buffers
+- name: wiseconnect3_common
+- name: sl_si91x_wireless
+- name: sl_si91x_internal_stack
+- name: sl_si91x_basic_buffers
 - name: wifi_resources
 - name: slist
 - name: iostream_retarget_stdio

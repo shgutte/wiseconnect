@@ -22,12 +22,12 @@ requires:
   components:
     - si91x_debug
     - si91x_support
-    - si91x
+    - sl_si91x_wireless
     - wifi
     - network_manager
     - freertos
     - clang-format
-    - socket
+    - sl_si91x_asynchronous_socket
     - ble
     - bsd_socket
     - aws_sdk

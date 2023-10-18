@@ -17,32 +17,30 @@ This Application explains to the user how to:
 - Loop back the data came from the remote device
 - Read request to the remote device
 
-## **2 Prerequisites**
+## 2 Prerequisites / Setup Requirements
 
-For the application, you will need the following:
+Before running the application, the user will need the following things to setup.
 
-### **2.1 Hardware Requirements**
+### 2.1 Hardware Requirements
 
-- A Windows PC
-- **SoC Mode**: 
-  - Silicon Labs [BRD4325A, BRD4325B, BRD4325G](https://www.silabs.com/)
-- **NCP Mode**:
-  - Silicon Labs [(BRD4180A, BRD4280B)](https://www.silabs.com/) 
+- Windows PC with Host interface(UART/ SPI/ SDIO).
+  - SiWx91x Wi-Fi Evaluation Kit. The SiWx91x supports multiple operating modes. See [Operating Modes]() for details.
+  - **SoC Mode**:
+   - Silicon Labs [BRD4325A, BRD4325B, BRD4325C, BRD4325G, BRD4338A](https://www.silabs.com/)
+  - **NCP Mode**:
+   - Silicon Labs [BRD4180B](https://www.silabs.com/);
+   - Host MCU Eval Kit. This example has been tested with:
+     - Silicon Labs [WSTK + EFR32MG21](https://www.silabs.com/development-tools/wireless/efr32xg21-bluetooth-starter-kit)
 - BLE supported Smart phone with GATT client in case of our module as GATT server
 - BLE supported Smart phone with GATT server  in case of our module as GATT client (Bluetooth version 4.0 and above version).
-- USB TO UART converter / TTL cable.
 
-### **2.2 Software Requirements**
+### 2.2 Software Requirements
 
-- Simplicity Studio IDE
-  - To download and install the Simplicity Studio IDE, refer to the "Simplicity Studio IDE Set up" section in ***Getting started with SiWx91x*** guides.
+- Embedded Development Environment
+  - For Silicon Labs EFx32, use the latest version of [Simplicity Studio](https://www.silabs.com/developers/simplicity-studio)
 
-- SiWx917_WiSeConnect_SDK.X.X
+- Download and install the Silicon Labs [EFR Connect App](https://www.silabs.com/developers/efr-connect-mobile-app) in the android smart phones for testing BLE applications. Users can also use their choice of BLE apps available in Android/iOS smart phones.
   
-- [EFR connect Mobile APP](https://www.silabs.com/developers/efr-connect-mobile-app)
-
-- Tera Term software or any other serial terminal software - for viewing application prints
-
 ### 2.3 Setup Diagram
 - **SoC Mode :**
 
@@ -134,14 +132,25 @@ You can use either of the below USB to UART converters for application prints.
 
     **![serial_port](resources/readme/serial_port.png)**
 
+### 3.1 Project Setup
+
+- **SoC Mode**
+  - **Silicon Labs SiWx91x SoC**: Follow the [Getting Started with SiWx91x SoC](https://docs.silabs.com/) to setup the example to work with SiWx91x SoC and Simplicity Studio.
+- **NCP Mode**
+  - **Silicon Labs EFx32 Host** Follow the [Getting Started with EFx32](https://docs.silabs.com/rs9116-wiseconnect/latest/wifibt-wc-getting-started-with-efx32/) to setup the example to work with EFx32 and Simplicity Studio.
+
+### 3.2 NCP Mode - Host Interface
+
+By default, the application is configured to use the SPI bus for interfacing between Host platforms(EFR32MG21) and the SiWx91x EVK.
+
 ## 4 Application Build Environment
 
-### 4.1 Configure the Application
+## 4.1 Application Configuration Parameters
 
-The application can be configured to suit user requirements and development environment. Read through the following sections and make any changes if needed. 
+The application can be configured to suit your requirements and development environment. Read through the following sections and make any changes needed.
 
-1. In the Project explorer pane of the IDE, 
-Open **app.c** file. 
+**4.1.1** In the Project explorer pane of the IDE, expand the **ble_gatt_long_read** folder and open the **app.c** file.
+
 ![](resources/readme/blegattlrapplicationconfigurations.png)
 
    - **GATT_ROLE** refers the GATT role of the Silicon Labs device, 
@@ -152,7 +161,7 @@ Open **app.c** file.
    #define GATT_ROLE                                     SERVER
    ```
    
-### **4.2 BLE GATT_long_read application as a CLIENT**
+**4.1.2 BLE GATT_long_read application as a CLIENT**
 
    ```c
    //RSI_BLE_DEV_ADDR_TYPE refers address type of the remote device to connect.
@@ -162,12 +171,12 @@ Open **app.c** file.
    #define RSI_BLE_DEV_ADDR                        "F5:64:91:A2:F6:6F"
 
    //RSI_REMOTE_DEVICE_NAME refers the name of remote device to which Silicon Labs device has to connect
-   #define RSI_REMOTE_DEVICE_NAME                        "SILABS_DEV"
+   #define RSI_REMOTE_DEVICE_NAME                  "SILABS_DEV"
    ```
 
-   **Note:** User can configure either RSI_BLE_DEV_ADDR or RSI_REMOTE_DEVICE_NAME of the remote device.
+   **Note:** you are required to configure either the `RSI_BLE_DEV_ADDR` or `RSI_REMOTE_DEVICE_NAME` of the remote device.
 
-### **4.3 BLE GATT_long_read application as a SERVER** 
+**4.1.3 BLE GATT_long_read application as a SERVER**
 
 - **BLE GATT LONG READ Service and corresponding Characteristic Services**
 
@@ -212,7 +221,7 @@ Open **app.c** file.
       #define RSI_BLE_ATT_PROP_NOTIFY                          0x10
       ```
 
-2. Open `ble_config.h` file and update the below parameters.    
+**4.1.4** Open **ble_config.h** file and configure the Resolution.
 ![](resources/readme/blegattlrconfigurations.png)
 
 - **Opermode command parameters**
@@ -233,86 +242,116 @@ Open **app.c** file.
       #define RSI_BT_FEATURE_BITMAP (BT_RF_TYPE | ENABLE_BLE_PROTOCOL)
       ```
 
-   **Note:** `ble_config.h` files are already set with desired configuration in respective example folders you need not change for each example. 
+   **Note:** `ble_config.h` and `app.c` files are already set with desired configuration in respective example folders you need not change for each example. 
 
-## 5. Building and Testing the Application
+### 4.2 Build the application
 
-User has to follow the below steps for the successful execution of the application.
+- Follow the below steps for the successful execution of the application.
 
-### 5.1 Building the Application
+#### Build Project - SoC Mode
 
 - Once the project is created, click on the build icon (hammer) to build the project (or) right click on project and click on Build Project.
 
    ![build_project](resources/readme/build_example.png)
 
-### 5.2 Load the Applicatin Image
+- Successful build output will show as below.
+
+#### Build Project - NCP Mode
+
+   ![build_project](resources/readme/build_example.png)
+
+## 5. Testing the Application
+
+- Follow the below steps for the successful execution of the application.
+
+### 5.1 Loading the SiWx91x Firmware
+
+- Refer [Getting started with a PC](https://docs.silabs.com/rs9116/latest/wiseconnect-getting-started) to load the firmware into SiWx91x EVK. The firmware file is located in `<SDK>/connectivity_firmware/`
+
+#### 5.2 Load the Application Image
 
 1. Click on Tools and Simplicity Commander as shown below.
 
    ![](resources/readme/load_image1.png)
    
-2. Load the firmware image
+2. Load the application image
 
 - Select the board. 
 - Browse the application image (.hex) and click on Flash button.
 
    ![](resources/readme/load_image2.png)
-      
-## **6 Application Execution Flow**   
+
+### 5.3 Application Execution Flow
 
 Application has the feasibility to configure the GATT server (or) GATT client.     
 **Note:**      
-
 - The provided mobile screenshots are from the 2.5.2 version of the EFR Connect app, it is recommended to use the latest version.
 
-### **6.1  BLE GATT_long_read application as a SERVER**
+**5.3.1 Steps to be followed to verify BLE GATT_long_read application as a SERVER**
 
 1. After the program gets executed, If Silicon Labs device is configured as **SERVER** specified in the macro **GATT_ROLE**, Silicon Labs will be in Advertising state.
+
 2. Connect any serial console for prints.
+
 3. Open the EFR Connect App in the Smartphone and do the scan.
+
 4. In the App, Silicon Labs module device will appear with the name configured in the macro `RSI_BLE_APP_GATT_TEST (Ex: "LONG_READ_TEST")` or sometimes observed as Silicon Labs device as internal name "**SimpleBLEPeripheral**".    
+
 ![](resources/readme/blegattlrdeviceadvertising.png)
+
 5. Initiate connection from the App.
+
 6. After successful connection, EFR Connect APP displays the supported services of Silicon Labs module.     
 ![](resources/readme/blegattlrdeviceconnected.png)
-7. After connecting, mtu size will be updated. As per mtu size, write will be happen from Silicon Labs device
-8. If mtu size is of 100 bytes, module can read upto 98 bytes, write upto 97 bytes
+
+7. After connecting, mtu size will be updated. As per mtu size, write will be happen from Silicon Labs device.
+
+8. If mtu size is of 100 bytes, module can read upto 98 bytes, write upto 97 bytes.
+
 9. For the data more than 20 bytes, application has to store value and send using gatt_read_response function whenever remote device reads some handle's data.    
-![](resources/readme/blegattlrdatasent.png)     
+![](resources/readme/blegattlrdatasent.png)
+
 **Note:** 
-   - For read request event to be raised auth_read flag in rsi_ble_add_char_val_att function need to be set.
+- For read request event to be raised auth_read flag in rsi_ble_add_char_val_att function need to be set.
 
 - Based on GATT_ROLE configurable macro, this application will be act as a GATT server or GATT client device.   
 
- Prints can see as below in any Console terminal s
+ Prints can see as below in any Console terminals
 
 - **SOC** 
 ![](resources/readme/blegattlrsocserverprints.png)
 - **NCP** 
 ![](resources/readme/blegattlrncpserverprints.png)
 
-### **6.2  BLE GATT_long_read application as a CLIENT** 
+**5.3.2 Steps to be followed to verify BLE GATT_long_read application as a CLIENT**
 
 1. After the program gets executed, If Silicon Labs device is configured as **CLIENT** specified in the macro **GATT_ROLE**, Silicon Labs will be in Advertising state.
+
 2. Connect any serial console for prints.
+
 3. Open the EFR Connect APP and Create the **Battery service** to configure the Remote device as a GATT server.
    - Name: Battery service
    - UUID: 0x180F
    **Note:** Refer the [Adding Services](https://docs.silabs.com/bluetooth/5.0/miscellaneous/mobile/efr-connect-mobile-app) for creating the GATT server the EFR connect mobile APP as advertiser.
+
 4. Add the characteristic services and their coresponding properties as shown below
    - Name: Battey level
    - UUID: 0x2A19
    - Property: Read & Write  
    **Note:** Refer the [Adding Characteristics and Descriptors](https://docs.silabs.com/bluetooth/5.0/miscellaneous/mobile/efr-connect-mobile-app) for creating the GATT server in the EFR connect mobile APP.    
    ![](resources/readme/blegattleconfigurator.png)
+
 5. Configure the advertiser.
    **Note:** Refer the [Creating New Advertisement Sets](https://docs.silabs.com/bluetooth/5.0/miscellaneous/mobile/efr-connect-mobile-app) for configuring the EFR connect mobile APP as advertiser.    
    ![](resources/readme/blegattlradvertiser.png)
 6. In Client mode, the Silicon Labs module will trying to connect with remote device as specified by `RSI_BLE_DEV_ADDR` or `RSI_REMOTE_DEVICE_NAME`.
+
 7. Get all GATT profiles of remote device and Search for profile specified in the macro `RSI_BLE_NEW_CLIENT_SERVICE_UUID`. And get all characteristics of the battery service.
+
 8. After connecting, mtu size will be updated. As per mtu(maximum transmit unit) size, read requests will be happen from Silicon Labs device.    
-![](resources/readme/blegattleclient.png)    
-9.Prints can see as below in any Console terminal 
+![](resources/readme/blegattleclient.png)
+
+9. Prints can see as below in any Console terminal.
 
 - **SOC** 
 ![](resources/readme/blegattlrsocclientprints.png)

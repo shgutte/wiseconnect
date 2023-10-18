@@ -1,3 +1,4 @@
+# Silicon Labs Project Configuration Tools: slcp, v0, Component selection file.
 project_name: psram_blinky
 label: SI91x - SoC Peripheral PSRAM Blinky
 description: > 
@@ -11,9 +12,19 @@ sdk_extension:
   - id: wiseconnect3_sdk
     version: 3.1.1
 source:
+  - path: app.c
   - path: main.c
+  - path: blinky.c
+include:
+  - path:
+    file_list:
+    - path: app.h
+    - path: blinky.h
 toolchain_settings: []
 component:
+  - id: cmsis_common
+  - id: sl_system
+  - id: component_catalog
   - id: si917_memory_default_config
     from: wiseconnect3_sdk
   - id: rsilib_userconfig

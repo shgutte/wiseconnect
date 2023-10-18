@@ -88,11 +88,12 @@ static const sl_net_wifi_client_profile_t wifi_client_enterprise_eap_profile = {
 };
 
 static const sl_net_wifi_eap_credential_entry_t wifi_client_enterprise_eap_credential = {
-  .type                = SL_NET_WIFI_PSK,
-  .data_length         = sizeof(sl_wifi_eap_credential_t),
-  .data.username       = "user1",
-  .data.password       = "12345678",
-  .data.certificate_id = WIFI_CLIENT_CERTIFICATE_ID
+  .type                 = SL_NET_WIFI_PSK,
+  .data_length          = sizeof(sl_wifi_eap_credential_t),
+  .data.username        = "user1",
+  .data.password        = "12345678",
+  .data.certificate_key = {},
+  .data.certificate_id  = WIFI_CLIENT_CERTIFICATE_ID
 };
 
 /******************************************************

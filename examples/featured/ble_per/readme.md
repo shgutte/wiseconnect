@@ -26,11 +26,13 @@ Before running the application, the user will need the following things to setup
 - A Windows PC.
 - SiWx91x Wi-Fi Evaluation Kit. The SiWx91x supports multiple operating modes. See [Operating Modes](https://www.silabs.com) for details.
   - **SoC Mode**:
-    - Silicon Labs [BRD4325A, BRD4325B, BRD4325C, BRD4325G, BRD4338A, BRD4340A](https://www.silabs.com/)
+    - Silicon Labs [BRD4325A, BRD4325B, BRD4325C, BRD4338A ](https://www.silabs.com/)
   - **NCP Mode**:
     - Silicon Labs [BRD4180B](https://www.silabs.com/)
     - Host MCU Eval Kit. This example has been tested with:
       - Silicon Labs [WSTK + EFR32MG21](https://www.silabs.com/development-tools/wireless/efr32xg21-bluetooth-starter-kit)
+  - **PSRAM Mode**:
+    - Silicon Labs [BRD4340A](https://www.silabs.com/)
 
 - Spectrum Analyzer and/or Power Analyzer
 
@@ -196,7 +198,7 @@ Update or modify following macros
 
 Refer to the instructions [here](https://docs.silabs.com/wiseconnect/latest/wiseconnect-getting-started/) to:
 
-- Build the BLE - PER (SOC) or BLE - PER (NCP) example in Studio depending on your mode (SoC / NCP).
+- Build the BLE - PER (SOC) or BLE - PER (NCP) or BLE - PER (PSRAM) example in Studio depending on your mode (SoC / NCP / PSRAM).
 - Flash, run and debug the application.
 
 Follow the steps as mentioned for the successful execution of the application:

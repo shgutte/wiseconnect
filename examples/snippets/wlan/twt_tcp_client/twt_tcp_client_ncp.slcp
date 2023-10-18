@@ -31,11 +31,11 @@ requires:
 - name: bsd_socket
 - name: network_manager
 - name: basic_network_manager
-- name: si91x_support
+- name: wiseconnect3_common
 - name: wifi
-- name: si91x
-- name: si91x_internal_stack
-- name: si91x_basic_buffers
+- name: sl_si91x_wireless
+- name: sl_si91x_internal_stack
+- name: sl_si91x_basic_buffers
 - name: wifi_resources
 - name: freertos
 - name: slist
@@ -54,6 +54,7 @@ requires:
 toolchain_settings: []
 configuration:
 - {name: SL_BOARD_ENABLE_VCOM, value: '1'}
+- {name: configTOTAL_HEAP_SIZE, value: '51200'}
 readme:
   - path: readme.md
 other_file:
@@ -61,6 +62,7 @@ other_file:
   - path: resources/readme/build_project_ncp.png
   - path: resources/readme/build_twt_tcp_client.png
   - path: resources/readme/create_project_soc.png
+  - path: resources/readme/create_project_ncp.png
   - path: resources/readme/create_project.png
   - path: resources/readme/efr32.png
   - path: resources/readme/energy_profiler_step_1.png
@@ -80,6 +82,7 @@ other_file:
   - path: resources/readme/program_device.png
   - path: resources/readme/run.png
   - path: resources/readme/sdk_edit_warning.png
+  - path: resources/readme/select_project_ncp.png
   - path: resources/readme/serial_port.png
   - path: resources/readme/serial_port_setup.png
   - path: resources/readme/setup_ncp.png

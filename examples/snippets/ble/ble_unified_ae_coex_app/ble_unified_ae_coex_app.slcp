@@ -1,0 +1,97 @@
+project_name: ble_unified_ae_coex_app
+package: ble
+quality: alpha
+label: Unified AE app for Bluetooth
+category: Example|BLE
+description: >
+  Bluetooth Low energy Extended Advertising features(Central/Peripheral).
+filter:
+  - name: "Wireless Technology"
+    value: ["BLE"]
+  - name: "Project Difficulty"
+    value: ["Advanced"]
+sdk: {id: gecko_sdk, version: 4.3.2}
+sdk_extension: 
+- {id: wiseconnect3_sdk, version: 3.1.1}
+source:
+  - path: app.c
+  - path: main.c
+  - path: root_auto_gen.c
+  - path: btc_auto_gen.c
+  - path: ble/ble_cmd_hdlr_auto_gen.c
+  - path: ble/ble_event_hdlr_auto_gen.c
+  - path: ble/ble_ui_cmd_hdlr.c
+  - path: ble/ble_user_cmd.c
+  - path: ble/ble_user_event_hdlrs.c
+  - path: user_input/rsi_user_input_DEMO_x.c
+  - path: utils/command_parser.c
+  - path: utils/event_loop.c
+  - path: utils/rsi_common_utils.c
+include:
+  - path: .
+    file_list:
+      - path: app.h
+      - path: ble_config.h
+  - path: ble
+    file_list:
+      - path: ble_cmd_hdlr_auto_gen.h
+      - path: ble_event_hdlr_auto_gen.h
+      - path: ble_private.h	  
+  - path: inc
+    file_list:
+      - path: rsi_ble_config.h
+      - path: rsi_common_app.h
+  - path: user_input
+    file_list:
+      - path: rsi_user_input_DEMO_x.h
+  - path: utils
+    file_list:
+      - path: generic_command_handling.h
+      - path: rsi_common_utils.h
+      - path: event_loop.h
+define:
+  - name: RSI_DEBUG_PRINTS 
+component:
+- {from: wiseconnect3_sdk, id: si917_memory_default_config}
+- {from: wiseconnect3_sdk, id: si91x_debug}
+- {from: wiseconnect3_sdk, id: syscalls}
+requires:
+- name: sl_system
+- name: network_manager
+- name: basic_network_manager
+- name: wiseconnect3_common
+- name: wifi
+- name: sl_si91x_wireless
+- name: ble
+- name: sl_si91x_internal_stack
+- name: sl_si91x_basic_buffers
+- name: wifi_resources
+- name: freertos
+- name: slist
+- name: iostream_retarget_stdio
+  condition: [device_has_devinfo]
+- name: iostream_recommended_stream
+  condition: [device_has_devinfo]
+- name: iostream_stdlib_config
+  condition: [device_has_devinfo]
+- name: device_init
+  condition: [device_has_devinfo]
+- name: emlib_common
+  condition: [device_has_devinfo]
+- name: emlib_ldma
+  condition: [device_has_devinfo]
+toolchain_settings: []
+configuration:
+- {name: SL_BOARD_ENABLE_VCOM, value: '1'}
+readme:
+  - path: readme.md
+other_file:
+  - path: resources/readme/ble_unified_ae_coex_app_logs.png
+  - path: resources/readme/ble_unified_ae_coex_app_ncp.png
+  - path: resources/readme/ble_unified_ae_coex_app_soc.png
+ui_hints:
+  highlight:
+    - path: readme.md
+      focus: true
+post_build:
+  path: ../../../../utilities/postbuild_profile/wiseconnect_soc.slpb

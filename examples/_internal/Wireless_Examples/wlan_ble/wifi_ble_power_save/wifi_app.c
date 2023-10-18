@@ -32,23 +32,21 @@
 #include "cmsis_os2.h"
 #include "rsi_common_apis.h"
 #include <string.h>
-
+#include "sl_si91x_socket_constants.h"
+#include "wifi_app.h"
+#include "ble_config.h"
 //! Include SSL CA certificate
 #include "cacert.pem.h"
-
-#define APP_BUF_SIZE 256
-
-//! SEND event number used in the application
-#define RSI_SEND_EVENT BIT(0)
+#include "sl_si91x_socket.h"
 
 //! Access point SSID to connect
-#define SSID "AndroidAP5655"
+#define SSID "YOUR_AP_SSID"
 
 //! Security type
 #define SECURITY_TYPE SL_WIFI_WPA2
 
 //! Password
-#define PSK "12345678"
+#define PSK "YOUR_AP_PASSPHRASE"
 
 //! Connection Type
 #define CONNECT_WITH_PMK 0
@@ -57,7 +55,7 @@
 #define SERVER_PORT 5001
 
 //! Server IP address.
-#define SERVER_IP_ADDRESS "192.168.43.99"
+#define SERVER_IP_ADDRESS "192.168.0.156"
 
 //! Load certificate to device flash for SSL client:
 //! Certificate could be loaded once and need not be loaded for every boot up
@@ -65,33 +63,6 @@
 
 #define DHCP_HOST_NAME NULL
 #define TIMEOUT_MS     15000
-
-//! Enumeration for states in applcation
-typedef enum wifi_app_state_e {
-  SL_WIFI_APP_INITIAL_STATE          = 0,
-  SL_WIFI_APP_UNCONNECTED_STATE      = 1,
-  SL_WIFI_APP_CONNECTED_STATE        = 2,
-  SL_WIFI_APP_IPCONFIG_DONE_STATE    = 3,
-  SL_WIFI_APP_SOCKET_CONNECTED_STATE = 4
-} wifi_app_state_t;
-
-//! wifi application control block
-typedef struct wifi_app_cb_s {
-  //! WiFi application state
-  wifi_app_state_t state;
-
-  //! length of buffer to copy
-  uint32_t length;
-
-  //! application buffer
-  uint8_t buffer[APP_BUF_SIZE];
-
-  //! to check application buffer availability
-  uint8_t buf_in_use;
-
-  //! application events bit map
-  uint32_t event_map;
-} wifi_app_cb_t;
 
 //! application control block
 wifi_app_cb_t wifi_app_cb;
@@ -105,12 +76,32 @@ static int client_socket                          = -1;
 osThreadId_t wifi_recv_thread                     = 0;
 uint8_t recv_buffer[100];
 uint8_t pairwise_master_key[32] = { 0 };
-
+uint32_t bytes_read             = 0;
+uint8_t data[]                  = "Data from Si917\r\n";
+extern uint8_t volatile ble_connection_done, wlan_connection_done;
+extern uint16_t rsi_ble_att2_val_hndl;
 //! Function prototypes
 extern void rsi_wlan_app_task(void);
 extern int32_t rsi_ble_app_send_to_wlan(uint8_t msg_type, uint8_t *buffer, uint32_t length);
 extern void rsi_wlan_app_send_to_ble(uint16_t msg_type, uint8_t *data, uint16_t data_len);
 
+void wifi_ble_send_data(void)
+{
+  int32_t status = RSI_SUCCESS;
+
+  if (!(wifi_app_cb.event_map & RSI_SEND_EVENT) && rsi_ble_app_get_event() == -1) {
+    //! send packet to wifi
+    status = send(client_socket, data, sizeof(data), 0);
+    if (status < 0) {
+      LOG_PRINT("\r\nSend failed with BSD error:%d\r\n", errno);
+      close(client_socket);
+      wifi_app_cb.state = SL_WIFI_APP_IPCONFIG_DONE_STATE;
+    }
+    //! send packet to ble
+    //! set the local attribute value.
+    rsi_ble_set_local_att_value(rsi_ble_att2_val_hndl, sizeof(data), data);
+  }
+}
 void wifi_client_send_data(void)
 {
   int32_t status = RSI_SUCCESS;
@@ -131,32 +122,12 @@ void wifi_client_send_data(void)
   return;
 }
 
-void wifi_client_receive_data(void)
+void data_callback(uint32_t sock_no, uint8_t *buffer, uint32_t length)
 {
-  int32_t status = RSI_SUCCESS;
-
-  fd_set read_fds;
-  int read_bytes         = 0;
-  struct timeval timeout = { 0 };
-  timeout.tv_sec         = 1;
-
-  FD_ZERO(&read_fds);
-  FD_SET(client_socket, &read_fds);
-
-  status = select(client_socket + 1, &read_fds, NULL, NULL, &timeout);
-  if (status > 0) {
-    //Receive data on socket
-    read_bytes = recv(client_socket, recv_buffer, sizeof(recv_buffer), 0);
-    if (read_bytes) {
-      //! send packet to ble
-      rsi_wlan_app_send_to_ble(RSI_DATA, recv_buffer, read_bytes);
-    }
-  } else if (status < 0) {
-    LOG_PRINT("\r\nSocket receive failed with BSD error : %d\r\n", errno);
-    close(client_socket);
-    wifi_app_cb.state = SL_WIFI_APP_IPCONFIG_DONE_STATE;
-  }
-  return;
+  bytes_read += length;
+  //! send packet to ble
+  rsi_wlan_app_send_to_ble(RSI_DATA, buffer, bytes_read);
+  bytes_read = 0;
 }
 
 sl_status_t join_callback_handler(sl_wifi_event_t event, char *result, uint32_t result_length, void *arg)
@@ -253,6 +224,12 @@ void rsi_wlan_app_task(void)
         access_point.encryption    = SL_WIFI_CCMP_ENCRYPTION;
         access_point.credential_id = id;
 
+        status = sl_si91x_set_join_configuration(SL_WIFI_CLIENT_INTERFACE, SI91X_JOIN_FEAT_LISTEN_INTERVAL_VALID);
+        if (status != SL_STATUS_OK) {
+          printf("Failed to start set join configuration: 0x%lx\r\n", status);
+          return;
+        }
+
         LOG_PRINT("SSID %s\n", access_point.ssid.value);
         status = sl_wifi_connect(SL_WIFI_CLIENT_2_4GHZ_INTERFACE, &access_point, TIMEOUT_MS);
         if (status != RSI_SUCCESS) {
@@ -277,11 +254,13 @@ void rsi_wlan_app_task(void)
         LOG_PRINT("\r\nConfigured IP\r\n");
         wifi_app_cb.state = SL_WIFI_APP_IPCONFIG_DONE_STATE;
       }
+#if ENABLE_POWER_SAVE
 
-      //! initiating power save in wlan mode
-      status = sl_wifi_set_performance_profile(&wifi_profile);
-      if (status != SL_STATUS_OK) {
-        LOG_PRINT("\r\n Failed to initiate power save in Wi-Fi mode :%lX\r\n", status);
+      LOG_PRINT("\r\nInitiating PowerSave\r\n");
+      status = rsi_initiate_power_save();
+      if (status != RSI_SUCCESS) {
+        LOG_PRINT("\r\n Failed to initiate power save in BLE mode \r\n");
+        return;
       }
 
       // Enable Broadcast data filter
@@ -289,6 +268,8 @@ void rsi_wlan_app_task(void)
       if (status == RSI_SUCCESS) {
         LOG_PRINT("\r\nEnabled Broadcast Data Filter\n");
       }
+
+#endif
       break;
     }
     case SL_WIFI_APP_IPCONFIG_DONE_STATE: {
@@ -301,24 +282,25 @@ void rsi_wlan_app_task(void)
       server_address.sin_family      = AF_INET;
       server_address.sin_port        = SERVER_PORT;
       server_address.sin_addr.s_addr = ip.value;
+      wlan_connection_done           = 0;
 
       //!Create socket
-      client_socket = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
+      client_socket = sl_si91x_socket_async(AF_INET, SOCK_STREAM, IPPROTO_TCP, &data_callback);
       if (client_socket < 0) {
         printf("\r\nSocket creation failed with bsd error: %d\r\n", errno);
         return;
       }
-      printf("\r\nTCP Socket Create Success\r\n");
+      printf("\r\nSocket ID : %d\r\n", client_socket);
 
-#if SSL_CLIENT
-      //! Setting SSL socket option
+#ifdef SSL_CLIENT
       status = setsockopt(client_socket, SOL_TCP, TCP_ULP, TLS, sizeof(TLS));
       if (status < 0) {
-        printf("\r\nSet socket failed with bsd error: %d\r\n", errno);
+        printf("\r\nSet Socket option failed with bsd error: %d\r\n", errno);
         close(client_socket);
         return;
       }
 #endif
+
       //! Socket connect
       return_value = connect(client_socket, (struct sockaddr *)&server_address, sizeof(struct sockaddr_in));
       if (return_value < 0) {
@@ -328,11 +310,12 @@ void rsi_wlan_app_task(void)
       } else {
         wifi_app_cb.state = SL_WIFI_APP_SOCKET_CONNECTED_STATE;
         LOG_PRINT("\r\nTCP Socket Connect Success\r\n");
+        wlan_connection_done = 1;
       }
+
     } break;
     case SL_WIFI_APP_SOCKET_CONNECTED_STATE: {
       wifi_client_send_data();
-      wifi_client_receive_data();
     } break;
     default:
       break;

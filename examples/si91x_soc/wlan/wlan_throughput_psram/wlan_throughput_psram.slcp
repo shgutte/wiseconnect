@@ -23,6 +23,8 @@ include:
 define:
   - name: RSI_M4_INTERFACE
   - name: RSI_DEBUG_PRINTS
+provides:
+  - name: si91x_soc
 component:
   - id: si917_memory_default_config
     from: wiseconnect3_sdk
@@ -30,13 +32,19 @@ component:
     from: wiseconnect3_sdk
   - id: rsilib_chip
     from: wiseconnect3_sdk
-  - id: siwx917_soc
+  - id: sl_si91x_mcu
     from: wiseconnect3_sdk
   - id: si91x_debug
     from: wiseconnect3_sdk
   - id: syscalls
     from: wiseconnect3_sdk
-  - id: device_needs_ram_execution
+  - id: stack_segment_in_psram
+    from: wiseconnect3_sdk
+  - id: text_segment_in_psram
+    from: wiseconnect3_sdk
+  - id: data_segment_in_psram
+    from: wiseconnect3_sdk
+  - id: udma_linker_config
     from: wiseconnect3_sdk
   
 requires:
@@ -44,12 +52,12 @@ requires:
 - name: bsd_socket
 - name: network_manager
 - name: basic_network_manager
-- name: si91x_support
+- name: wiseconnect3_common
 - name: wifi
-- name: si91x
-- name: socket
-- name: si91x_internal_stack
-- name: si91x_basic_buffers
+- name: sl_si91x_wireless
+- name: sl_si91x_asynchronous_socket
+- name: sl_si91x_internal_stack
+- name: sl_si91x_basic_buffers
 - name: wifi_resources
 - name: freertos
 - name: slist

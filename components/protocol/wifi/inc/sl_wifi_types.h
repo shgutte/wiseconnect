@@ -15,6 +15,11 @@
 #include "sl_ip_types.h"
 #include <stdint.h>
 
+// Default Timeout Configuration
+#define SL_WIFI_DEFAULT_AUTH_ASSOCIATION_TIMEOUT 0xFFFF
+#define SL_WIFI_DEFAULT_ACTIVE_CHANNEL_SCAN_TIME 0xFFFF
+#define SL_WIFI_DEFAULT_KEEP_ALIVE_TIMEOUT       0xFFFF
+
 /** @addtogroup SL_WIFI_TYPES Types
   * @{ */
 
@@ -79,7 +84,8 @@ typedef struct {
 typedef struct {
   int32_t trigger_level;         ///< RSSI level to trigger advanced scan.
   uint32_t trigger_level_change; ///< RSSI level to trigger advanced scan.
-  uint16_t active_channel_time;  ///< Time spent on each channel when performing active scan (milliseconds).
+  uint16_t
+    active_channel_time; ///< Time spent on each channel when performing active scan (milliseconds). Default value of 100 millisecs is used when SL_WIFI_DEFAULT_ACTIVE_CHANNEL_SCAN_TIME is passed.
   uint16_t passive_channel_time; ///< Time spent on each channel when performing passive scan (milliseconds).
   uint8_t enable_instant_scan;   ///< Flag to start advanced scan immediately.
   uint8_t
@@ -145,6 +151,10 @@ typedef struct {
   uint32_t scan_interval;           ///< Scan interval between each retry
   uint32_t beacon_missed_count;     ///< Number of missed beacons that will trigger rejoin
   uint32_t first_time_retry_enable; ///< Retry enable or disable for first time joining
+  uint16_t
+    auth_assoc_timeout; ///< Authentication and association timeout value. Default value of 300 millisecs is used when SL_WIFI_DEFAULT_AUTH_ASSOCIATION_TIMEOUT is passed.
+  uint16_t
+    keep_alive_timeout; ///< Keep Alive Timeout value. Default value of 30 secs is used when SL_WIFI_DEFAULT_KEEP_ALIVE_TIMEOUT is passed
 } sl_wifi_advanced_client_configuration_t;
 
 /// Wi-Fi PSK security credentials
@@ -165,10 +175,15 @@ typedef struct {
 
 /// Wi-Fi Enterprise security credentials
 typedef struct {
-  uint8_t username[SL_EAP_USER_NAME_LENGTH]; ///< Enterprise User Name
-  uint8_t password[SL_EAP_PASSWORD_LENGTH];  ///< Enterprise password
-  uint32_t certificate_id;                   ///< Certificate Id for Enterprise authentication
+  uint8_t username[SL_EAP_USER_NAME_LENGTH];              ///< Enterprise User Name
+  uint8_t password[SL_EAP_PASSWORD_LENGTH];               ///< Enterprise password
+  uint8_t certificate_key[SL_EAP_CERTIFICATE_KEY_LENGTH]; ///< Certificate password
+  uint32_t certificate_id;                                ///< Certificate Id for Enterprise authentication
 } sl_wifi_eap_credential_t;
+
+#if defined(__Keil)
+#pragma anon_unions
+#endif
 
 /// Wi-Fi security credentials
 typedef struct {

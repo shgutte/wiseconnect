@@ -1,0 +1,49 @@
+name: SL SI91X CRYPTO
+
+clang-format: true
+
+includes:
+  global:
+    - inc
+
+
+requires:
+  components:
+    - sl_si91x_wireless
+    - wiseconnect3_common
+
+slc:
+  label: 'Crypto - Common'
+  description: 'Common folder for crypto APIs'
+  category: 'Device|Si91x|Wireless|Crypto'
+  requires:
+    - name: sl_si91x_wireless
+  include:
+  - path: inc
+    file_list:
+      - sl_si91x_crypto.h
+
+suds:
+  wiseconnect-api-reference-guide-crypto:
+    version: "3.0.0"
+    authors:
+      - aji.gerdiman@silabs.com
+      - nik.vonhuben@silabs.com
+    contentType: doxygen
+    title: "Crypto"
+    description: "Crypto"
+
+doxygen:
+  project_name: "Crypto"
+  inputs:
+    - inc
+    - aes/inc
+    - ecdh/inc
+    - hmac/inc
+    - aead/inc
+    - trng/inc
+    - wrap/inc
+    - sha/inc
+    - attestation/inc
+    - docs/doxygen_template.h 
+    - docs/doxygen_indexfile.md 

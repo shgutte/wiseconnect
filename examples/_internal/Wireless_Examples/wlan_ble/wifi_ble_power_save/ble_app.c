@@ -3,7 +3,7 @@
 * @brief 
 *******************************************************************************
 * # License
-* <b>Copyright 2020 Silicon Laboratories Inc. www.silabs.com</b>
+* <b>Copyright 2023 Silicon Laboratories Inc. www.silabs.com</b>
 *******************************************************************************
 *
 * The licensor of this software is Silicon Laboratories Inc. Your use of this
@@ -73,13 +73,49 @@ static rsi_ble_event_disconnect_t disconn_event_to_app;
 static uint8_t rsi_ble_app_data[100];
 static uint8_t rsi_ble_app_data_len;
 static uint8_t rsi_ble_att1_val_hndl;
-static uint16_t rsi_ble_att2_val_hndl;
+uint16_t rsi_ble_att2_val_hndl;
 uint8_t power_save_given = 0;
+extern uint8_t volatile ble_connection_done;
 
 extern void rsi_wlan_app_send_to_ble(uint16_t msg_type, uint8_t *data, uint16_t data_len);
 extern int32_t rsi_ble_app_send_to_wlan(uint8_t msg_type, uint8_t *buffer, uint32_t length);
+int32_t rsi_ble_app_get_event(void);
 
 sl_wifi_performance_profile_t wifi_profile = { ASSOCIATED_POWER_SAVE, 0, 0, 1000, { 0 } };
+#if ENABLE_POWER_SAVE
+/*==============================================*/
+/**
+ * @fn         rsi_initiate_power_save
+ * @brief      send power save command to RS9116 module
+ *
+ * @param[out] none
+ * @return     status of commands, success-> 0, failure ->-1
+ * @section description
+ * This function sends command to keep module in power save
+ */
+int32_t rsi_initiate_power_save(void)
+{
+  int32_t status = RSI_SUCCESS;
+
+  LOG_PRINT("\r\n keep module in to power save \r\n");
+
+  //! initiating power save in BLE mode
+  status = rsi_bt_power_save_profile(PSP_MODE, PSP_TYPE);
+  if (status != RSI_SUCCESS) {
+    LOG_PRINT("\r\n Failed to initiate power save in BLE mode \r\n");
+    return status;
+  }
+
+  //! initiating power save in wlan mode
+  status = sl_wifi_set_performance_profile(&wifi_profile);
+  if (status != SL_STATUS_OK) {
+    LOG_PRINT("\r\n Failed to initiate power save in Wi-Fi mode :%ld\r\n", status);
+    return status;
+  }
+  LOG_PRINT("\r\n Module is in power save \r\n");
+  return status;
+}
+#endif
 
 /*==============================================*/
 /**
@@ -298,7 +334,7 @@ static void rsi_ble_app_clear_event(uint32_t event_num)
  * @section description
  * This function returns the highest priority event among all the set events
  */
-static int32_t rsi_ble_app_get_event(void)
+int32_t rsi_ble_app_get_event(void)
 {
   uint32_t ix;
 
@@ -497,25 +533,7 @@ int32_t rsi_ble_app_task(void)
       //! clear the served event
       rsi_ble_app_clear_event(RSI_BLE_CONN_EVENT);
       LOG_PRINT("\r\nModule connected\r\n");
-
-#if (ENABLE_POWER_SAVE)
-      if (!power_save_given) {
-        //! initiating power save in BLE mode
-        status = rsi_bt_power_save_profile(PSP_MODE, PSP_TYPE);
-        if (status != RSI_SUCCESS) {
-          LOG_PRINT("\r\n Failed to initiate power save in BLE mode \r\n");
-        }
-
-        //! initiating power save in wlan mode
-        status = sl_wifi_set_performance_profile(&wifi_profile);
-        if (status != SL_STATUS_OK) {
-          LOG_PRINT("\r\n Failed to initiate power save in Wi-Fi mode :%lX\r\n", status);
-        }
-
-        LOG_PRINT("\r\nPower save config Success\r\n");
-        power_save_given = 1;
-      }
-#endif
+      ble_connection_done = 1;
     } break;
 
     case RSI_BLE_DISCONN_EVENT: {
@@ -525,7 +543,7 @@ int32_t rsi_ble_app_task(void)
 
       //! clear the served event
       rsi_ble_app_clear_event(RSI_BLE_DISCONN_EVENT);
-
+      ble_connection_done = 0;
       //! set device in advertising mode.
 adv:
       status = rsi_ble_start_advertising();

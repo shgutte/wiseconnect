@@ -46,6 +46,9 @@
 
 //! Common include file
 #include "rsi_common_apis.h"
+#ifdef RSI_M4_INTERFACE
+#include "sl_si91x_m4_ps.h"
+#endif
 
 //! local device name
 #define RSI_BLE_DEVICE_NAME "BLE_SMP_SC"
@@ -479,6 +482,9 @@ void ble_smp_test_app(void *argument)
   sl_status_t status;
   sl_wifi_version_string_t version = { 0 };
 
+#ifdef RSI_M4_INTERFACE
+  sl_si91x_hardware_setup();
+#endif /* RSI_M4_INTERFACE */
   //! Wi-Fi initialization
   status = sl_wifi_init(&config, default_wifi_event_handler);
   if (status != SL_STATUS_OK) {
@@ -578,7 +584,15 @@ void ble_smp_test_app(void *argument)
     event_id = rsi_ble_app_get_event();
 
     if (event_id == -1) {
+#if RSI_M4_INTERFACE && ENABLE_POWER_SAVE
+      //! if events are not received loop will be continued.
+      if ((!(P2P_STATUS_REG & TA_wakeup_M4))) {
+        P2P_STATUS_REG &= ~M4_wakeup_TA;
+        sl_si91x_m4_sleep_wakeup();
+      }
+#else
       osSemaphoreAcquire(ble_main_task_sem, osWaitForever);
+#endif
       continue;
     }
 

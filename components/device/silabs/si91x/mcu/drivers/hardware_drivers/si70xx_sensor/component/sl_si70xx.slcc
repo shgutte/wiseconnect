@@ -1,0 +1,16 @@
+id: sl_si70xx
+label: SL SI70xx
+package: platform
+description: >
+  SI70xx API's
+category: Device|Si91x|MCU|Drivers
+quality: production
+component_root_path: "components/device/silabs/si91x/mcu/drivers/hardware_drivers/si70xx_sensor"
+source:
+  - path: "src/sl_si91x_si70xx.c"
+include:
+  - path: "inc"
+    file_list:
+    - path: "sl_si91x_si70xx.h"
+provides:
+  - name: sl_si70xx

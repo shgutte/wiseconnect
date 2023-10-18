@@ -175,7 +175,7 @@ static void application_start(void *argument)
   /* TRNG initialization */
   status = sl_si91x_psa_trng_init();
   if (status != SL_STATUS_OK) {
-    printf("\r\nTRNG Initialization Failed, Error Code : 0x%x\r\n", status);
+    printf("\r\nTRNG Initialization Failed, Error Code : 0x%lx\r\n", status);
   }
 
   app_process_action();
@@ -202,7 +202,7 @@ void app_process_action(void)
   psa_status_t ret;
   ret = psa_crypto_init();
   if (ret != PSA_SUCCESS) {
-    printf("PSA Crypto Init failed with status : %d\n", ret);
+    printf("PSA Crypto Init failed with status : %ld\n", ret);
   } else {
     printf("PSA Crypto Init Success\n");
   }

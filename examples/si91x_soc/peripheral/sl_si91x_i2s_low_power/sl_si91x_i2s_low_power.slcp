@@ -50,10 +50,10 @@ define:
   - name: SYSCALLS_WRITE
   - name: SL_SI91X_I2S
 template_contribution:
-  - name: RAM_EXECUTION
+  - name: ram_execution
     value: 1
     priority: 0
-  - name: ULP_PLATFORM
+  - name: ulp_platform
     value: 1
     priority: 0
 provides:

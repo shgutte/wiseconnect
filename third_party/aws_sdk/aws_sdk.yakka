@@ -21,26 +21,26 @@ sources:
   - src/aws_iot_mqtt_client_yield.c
   - src/aws_iot_mqtt_client.c   
   - src/aws_iot_shadow_actions.c
-  - src/aws_iot_shadow_json.c    
-  - src/aws_iot_shadow_records.c                                 
+  - src/aws_iot_shadow_json.c 
+  - src/aws_iot_shadow_records.c
   - src/aws_iot_shadow.c
   - src/jsmn.c
   - platform/silabs/src/network_sl_api_wrapper.c
   - platform/silabs/src/timer.c
 
 requires:
-  features:  
-    - sockets
+  features:
+    - bsd_socket
 
 slc:
-  label: 'AWS IoT Library'
-  description: 'AWS IoT Library'
+  label: 'AWS IoT Device SDK'
+  description: 'AWS IoT Device SDK for Embedded C'
   category: 'Third Party'
   requires:
     - name: bsd_socket
   include:
     - path: include
-      file_list:        
+      file_list:
         - aws_iot_error.h
         - aws_iot_jobs_interface.h 
         - aws_iot_jobs_json.h 
@@ -60,7 +60,7 @@ slc:
         - aws_iot_version.h
         - jsmn.h
     - path: platform/silabs/inc
-      file_list:        
+      file_list:
         - timer_platform.h 
         - timer_interface.h 
         - network_interface.h

@@ -1,0 +1,20 @@
+name: BSD Socket API
+
+includes:
+  global:
+    - inc
+
+slc:
+  label: 'BSD Socket API'
+  description: 'The BSD Socket API provides a BSD socket API prototypes'
+  category: 'Common'
+  include:
+    - path: inc
+      file_list:
+        - errno.h
+        - netdb.h
+        - netinet_in.h
+        - netinet6_in6.h
+        - select.h
+        - socket.h
+        - uio.h

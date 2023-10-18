@@ -17,7 +17,7 @@
 
 #include "sl_net.h"
 #include "sl_net_constants.h"
-#include "sl_board_configuration.h"
+#include "sl_wifi_device.h"
 
 #ifndef NETWORK_INTERFACE_VALID
 #error Need to define NETWORK_INTERFACE_VALID in sl_board_configuration.h
@@ -146,4 +146,54 @@ sl_status_t sl_net_down(sl_net_interface_t interface)
     default:
       return SL_STATUS_NOT_SUPPORTED;
   }
+}
+
+// Convert a string IP address to a 32-bit integer
+sl_status_t sl_net_inet_addr(const char *addr, uint32_t *value)
+{
+  uint8_t ip_bytes[4] = { 0 };
+  int i, j, digits;
+
+  if ((NULL == addr) || (NULL == value)) {
+    return SL_STATUS_INVALID_PARAMETER;
+  }
+
+  i      = 0;
+  j      = 0;
+  digits = 0;
+
+  // Iterate through the characters in the IP address string
+  for (i = 0, j = 0; 0 != addr[i]; i++) {
+    if ('.' == addr[i]) {
+      ++j;
+      digits = 0;
+      continue;
+    }
+
+    // Check if the character is a digit (0-9)
+    if ((addr[i] < '0') || (addr[i] > '9')) {
+      return SL_STATUS_INVALID_PARAMETER;
+    }
+
+    // Convert character to numeric value and update IP bytes
+    ip_bytes[j] = (ip_bytes[j] * 10) + (uint8_t)(addr[i] - '0');
+
+    digits++;
+    if (digits > 3) {
+      return SL_STATUS_INVALID_PARAMETER;
+    }
+  }
+
+  // Ensure that there are exactly three '.' separators in the IP address
+  if (j != 3) {
+    return SL_STATUS_INVALID_PARAMETER;
+  }
+
+  // Calculate the 32-bit integer value of the IP address
+  *value = (uint32_t)ip_bytes[0];
+  *value |= (uint32_t)(ip_bytes[1] << 8);
+  *value |= (uint32_t)(ip_bytes[2] << 16);
+  *value |= (uint32_t)(ip_bytes[3] << 24);
+
+  return SL_STATUS_OK;
 }

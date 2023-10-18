@@ -2039,6 +2039,16 @@ void rsi_ble_main_app_task()
         LOG_PRINT("\r\n In dis-conn evt \r\n");
         //! clear the served event
         rsi_ble_app_clear_event(RSI_BLE_DISCONN_EVENT);
+#if ENABLE_POWER_SAVE
+        LOG_PRINT("\r\n keep module in to active state \r\n");
+        if (!powersave_cmd_given) {
+          status = rsi_initiate_power_awake();
+          if (status != RSI_SUCCESS) {
+            LOG_PRINT("\r\n Failed to keep Module in ACTIVE mode \r\n");
+            return status;
+          }
+        }
+#endif
       } break;
       case RSI_BLE_GATT_WRITE_EVENT: {
         //! event invokes when write/notification events received

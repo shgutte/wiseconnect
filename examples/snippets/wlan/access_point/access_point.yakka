@@ -29,7 +29,7 @@ project:
     - wifi
     - network_manager
     - sl_lib
-    - si91x_internal_stack
+    - sl_si91x_internal_stack
     - wifi_malloc_buffer
   technology: ["Wi-Fi"]
   difficulty: ["Beginner"]

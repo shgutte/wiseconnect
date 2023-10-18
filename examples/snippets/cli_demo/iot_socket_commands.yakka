@@ -7,10 +7,10 @@ sources:
 
 supports:
   features:
-    si91x_internal_stack:
+    sl_si91x_internal_stack:
       requires:
         components:
-          - iot_sockets
+          - iot_socket
 
 console:
   enums:
@@ -120,6 +120,6 @@ console:
 
 slc:
   requires:
-  - name: 'iot_sockets'
+  - name: 'iot_socket'
     condition:
-      - si91x_internal_stack
+      - sl_si91x_internal_stack

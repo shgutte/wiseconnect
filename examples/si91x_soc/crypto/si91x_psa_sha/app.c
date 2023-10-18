@@ -30,7 +30,7 @@
 
 #include "app.h"
 #include "sl_si91x_psa_trng.h"
-
+#include "psa_sha_app.h"
 #include <string.h>
 #include "sl_status.h"
 #include "cmsis_os2.h"
@@ -115,7 +115,7 @@ static void application_start(void *argument)
   /* TRNG initialization */
   status = sl_si91x_psa_trng_init();
   if (status != SL_STATUS_OK) {
-    printf("\r\nTRNG Initialization Failed, Error Code : 0x%x\r\n", status);
+    printf("\r\nTRNG Initialization Failed, Error Code : 0x%lx\r\n", status);
   }
 
   app_process_action();

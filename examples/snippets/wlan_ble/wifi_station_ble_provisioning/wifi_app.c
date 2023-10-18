@@ -223,7 +223,7 @@ void sl_wifi_app_task()
     LOG_PRINT("Failed to allocate memory for scan result\n");
     return;
   }
-
+  memset(scan_result, 0, scanbuf_size);
   while (1) {
     // checking for events list
     event_id = sl_wifi_app_get_event();

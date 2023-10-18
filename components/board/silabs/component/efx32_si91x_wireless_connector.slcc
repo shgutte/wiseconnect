@@ -1,0 +1,19 @@
+id: efx32_si91x_wireless_connector
+label: EFx32 - Si91x Wireless Connection Configurator
+package: platform
+description: >
+  Configures EFx32 and Si91x Wireless Connection
+category: Board|Configuration
+quality: production
+component_root_path: "components/board/silabs"
+provides:
+  - name: efx32_si91x_wireless_connector
+include:
+  - path: "config/brd2204a"
+    condition: [brd2204a]
+  - path: "config/brd4180a"
+    condition: [brd4180a]
+  - path: "config/brd4180b"
+    condition: [brd4180b]
+  - path: "config/brd8036a"
+    condition: [brd8036a]

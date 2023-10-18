@@ -271,6 +271,8 @@ static void application_start(void *argument)
 {
   UNUSED_PARAMETER(argument);
   sl_status_t status;
+  sl_wifi_version_string_t version = { 0 };
+  sl_mac_address_t mac_addr        = { 0 };
 
   status = sl_net_init(SL_NET_WIFI_CLIENT_INTERFACE, &sl_wifi_throughput_configuration, NULL, NULL);
   if (status != SL_STATUS_OK) {
@@ -279,6 +281,20 @@ static void application_start(void *argument)
   }
   printf("\r\nWi-Fi client interface init success\r\n");
 
+  status = sl_wifi_get_mac_address(SL_WIFI_CLIENT_INTERFACE, &mac_addr);
+  if (status == SL_STATUS_OK) {
+    printf("Device MAC address: %x:%x:%x:%x:%x:%x\r\n",
+           mac_addr.octet[0],
+           mac_addr.octet[1],
+           mac_addr.octet[2],
+           mac_addr.octet[3],
+           mac_addr.octet[4],
+           mac_addr.octet[5]);
+  } else {
+    printf("Failed to get mac address: 0x%x\r\n", status);
+  }
+  status = sl_wifi_get_firmware_version(&version);
+  printf("\r\nfirmware_version = %s\r\n", version.version);
   status = sl_net_up(SL_NET_WIFI_CLIENT_INTERFACE, SL_NET_DEFAULT_WIFI_CLIENT_PROFILE_ID);
   if (status != SL_STATUS_OK) {
     printf("\r\nFailed to connect to AP: 0x%lx\r\n", status);

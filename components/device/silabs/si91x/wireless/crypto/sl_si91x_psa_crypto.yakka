@@ -1,0 +1,27 @@
+name: SL SI91X PSA CRYPTO
+
+clang-format: true
+
+includes:
+  global:
+    - inc
+
+sources:
+  - src/sli_si91x_crypto_driver_functions.c
+
+requires:
+  components:
+    - sl_si91x_wireless
+    - wiseconnect3_common
+    - sl_si91x_crypto
+
+slc:
+  label: 'PSA Crypto - Utility'
+  description: 'Common utility folder for PSA crypto APIs'
+  category: 'Device|Si91x|Wireless|PSA Crypto'
+  include:
+  - path: inc
+    file_list:
+      - sli_si91x_crypto_driver_functions.h
+  requires:
+    - name: sl_si91x_crypto

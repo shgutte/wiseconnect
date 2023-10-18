@@ -35,6 +35,7 @@
 #define AND_EVENT        0      // AND for group interrupt
 #define LEVEL_EVENT      0      // level for group interrupt
 #define INT_CH           0      // GPIO Pin interrupt 0
+#define ULP_INT_CH       1      // ULP GPIO Pin interrupt 0
 #define MODE_0           0      // Initializing GPIO MODE_0 value
 #define PORT1            1      // PORT 1
 #define EDGE_EVENT       1      // Edge for group interrupt
@@ -91,11 +92,11 @@ static void delay(uint32_t idelay);
 static void sl_gpio_driver_initialization(void);
 static void sl_gpio_driver_ulp_initialization(void);
 static void sl_gpio_driver_uulp_initialization(void);
-static void gpio_pin_interrupt0_callback(void);
-static void gpio_group_interrupt0_callback(void);
-static void gpio_uulp_pin_interrupt_callback(void);
-static void gpio_ulp_pin_interrupt_callback(void);
-static void gpio_ulp_group_interrupt_callback(void);
+static void gpio_pin_interrupt0_callback(uint32_t pin_intr);
+static void gpio_group_interrupt0_callback(uint32_t grp_intr);
+static void gpio_uulp_pin_interrupt_callback(uint32_t pin_intr);
+static void gpio_ulp_pin_interrupt_callback(uint32_t pin_intr);
+static void gpio_ulp_group_interrupt_callback(uint32_t pin_intr);
 
 /*******************************************************************************
  **************************   GLOBAL FUNCTIONS   *******************************
@@ -172,7 +173,7 @@ void gpio_example_init(void)
       status = sl_gpio_driver_configure_interrupt(&gpio_port_pin,
                                                   INT_CH,
                                                   (sl_gpio_interrupt_flag_t)SL_GPIO_INTERRUPT_RISE_EDGE,
-                                                  &gpio_pin_interrupt0_callback,
+                                                  (void *)&gpio_pin_interrupt0_callback,
                                                   AVL_INTR_NO);
       if (status != SL_STATUS_OK) {
         DEBUGOUT("sl_gpio_driver_configure_interrupt, Error code: %lu", status);
@@ -252,7 +253,7 @@ void gpio_example_init(void)
       // GPIO initialization function for HP instance
       sl_gpio_driver_initialization();
       // Configure group interrupt for grp_config_int structure
-      status = sl_si91x_gpio_driver_configure_group_interrupt(&config_grp_int, &gpio_group_interrupt0_callback);
+      status = sl_si91x_gpio_driver_configure_group_interrupt(&config_grp_int, (void *)&gpio_group_interrupt0_callback);
       if (status != SL_STATUS_OK) {
         DEBUGOUT("sl_si91x_gpio_driver_configure_group_interrupt, Error code: %lu", status);
         break;
@@ -296,10 +297,10 @@ void gpio_example_init(void)
       sl_gpio_driver_ulp_initialization();
       // Configure ULP GPIO pin interrupts
       status = sl_si91x_gpio_driver_configure_ulp_pin_interrupt(
-        INT_CH,
+        ULP_INT_CH,
         (sl_si91x_gpio_interrupt_config_flag_t)SL_GPIO_INTERRUPT_FALL_EDGE,
         SL_SI91X_ULP_GPIO_8_PIN,
-        &gpio_ulp_pin_interrupt_callback);
+        (void *)&gpio_ulp_pin_interrupt_callback);
       if (status != SL_STATUS_OK) {
         DEBUGOUT("sl_si91x_gpio_driver_configure_ulp_pin_interrupt, Error code: %lu", status);
         break;
@@ -314,17 +315,18 @@ void gpio_example_init(void)
       uint8_t ulp_group_pol[PIN_COUNT]  = { POLARITY, POLARITY };       // polarity selected for group interrupt
 
       // Configure ULP GPIO group parameters
-      config_grp_int.grp_interrupt     = ULP_GROUP_INT; // Set ULP group interrupt
-      config_grp_int.grp_interrupt_cnt = GRP_COUNT;     // Count of group interrupt pins
-      config_grp_int.and_or            = AND_EVENT;     // AND/OR of group interrupt
-      config_grp_int.level_edge        = LEVEL_EVENT;   // Level/Edge of group interrupt
+      config_grp_int.grp_interrupt     = ULP_GROUP_INTR_0; // Set ULP group interrupt
+      config_grp_int.grp_interrupt_cnt = GRP_COUNT;        // Count of group interrupt pins
+      config_grp_int.and_or            = AND_EVENT;        // AND/OR of group interrupt
+      config_grp_int.level_edge        = LEVEL_EVENT;      // Level/Edge of group interrupt
       memcpy(config_grp_int.grp_interrupt_pin, ulp_group_pins, PIN_COUNT);
       memcpy(config_grp_int.grp_interrupt_pol, ulp_group_pol, PIN_COUNT);
 
       // GPIO initialization function for ULP instance
       sl_gpio_driver_ulp_initialization();
       // Configure group interrupt for grp_config_int structure
-      status = sl_si91x_gpio_driver_configure_ulp_group_interrupt(&config_grp_int, &gpio_ulp_group_interrupt_callback);
+      status =
+        sl_si91x_gpio_driver_configure_ulp_group_interrupt(&config_grp_int, (void *)&gpio_ulp_group_interrupt_callback);
       if (status != SL_STATUS_OK) {
         DEBUGOUT("sl_si91x_gpio_driver_configure_ulp_group_interrupt, Error code: %lu", status);
         break;
@@ -368,7 +370,7 @@ void gpio_example_init(void)
       status = sl_si91x_gpio_driver_configure_uulp_interrupt(
         (sl_si91x_gpio_interrupt_config_flag_t)SL_GPIO_INTERRUPT_FALL_EDGE,
         UULP_GPIO_INTR_3,
-        &gpio_uulp_pin_interrupt_callback);
+        (void *)&gpio_uulp_pin_interrupt_callback);
       if (status != SL_STATUS_OK) {
         DEBUGOUT("sl_si91x_gpio_driver_configure_uulp_interrupt, Error code: %lu", status);
         break;
@@ -779,34 +781,44 @@ static void sl_gpio_driver_uulp_initialization(void)
 /*******************************************************************************
  *   This API handles GPIO pin interrupt 0 request
  ******************************************************************************/
-static void gpio_pin_interrupt0_callback(void)
+static void gpio_pin_interrupt0_callback(uint32_t pin_intr)
 {
+  if (pin_intr == PIN_INTR_0) {
+  }
 }
 
 /*******************************************************************************
  *  This API handles GPIO Group interrupt 0 request
  ******************************************************************************/
-static void gpio_group_interrupt0_callback(void)
+static void gpio_group_interrupt0_callback(uint32_t grp_intr)
 {
+  if (grp_intr == GROUP_INT_1) {
+  }
 }
 
 /*******************************************************************************
  *  This API handles UULP GPIO pin interrupt 0 request
  ******************************************************************************/
-static void gpio_uulp_pin_interrupt_callback(void)
+static void gpio_uulp_pin_interrupt_callback(uint32_t pin_intr)
 {
+  if (pin_intr == UULP_INTR_3) {
+  }
 }
 
 /*******************************************************************************
  *  This API handles ULP GPIO OR'ed pin interrupt request
  ******************************************************************************/
-static void gpio_ulp_pin_interrupt_callback(void)
+static void gpio_ulp_pin_interrupt_callback(uint32_t pin_intr)
 {
+  if (pin_intr == ULP_PIN_INTR_0) {
+  }
 }
 
 /*******************************************************************************
  *  This API handles ULP GPIO group interrupt request
  ******************************************************************************/
-static void gpio_ulp_group_interrupt_callback(void)
+static void gpio_ulp_group_interrupt_callback(uint32_t pin_intr)
 {
+  if (pin_intr == ULP_GROUP_INTR_0) {
+  }
 }

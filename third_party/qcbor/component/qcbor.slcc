@@ -2,8 +2,8 @@ id: qcbor
 label: QCBOR
 package: third_party
 description: >
-  QCBOR library 
-category: third_party
+  QCBOR is a Concise Binary Object Representation (CBOR) encoder/decoder library
+category: Third Party
 quality: production
 component_root_path: "third_party/qcbor"
 source:

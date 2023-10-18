@@ -17,7 +17,7 @@ defines:
 requires:
   components:
     - wifi
-    - socket
+    - sl_si91x_asynchronous_socket
     - bsd_socket
     - network_manager
     - freertos

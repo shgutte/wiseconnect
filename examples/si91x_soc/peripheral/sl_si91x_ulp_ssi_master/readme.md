@@ -26,6 +26,7 @@
 - It can generates interrupts for different events like transfer complete, data lost, mode fault.
 - It supports upto 32K bytes of read data from a SSI device in a single read operation.
 - It has support for DMA (Dynamic Memory Access).
+- The ULP_SSI_MST in the MCU ULP peripherals supports Single-bit mode and can be connected to only one slave.
 
 ## About Example Code
 
@@ -135,7 +136,7 @@
 | GPIO pin           | Description              |
 | ------------------ | ------------------------ |
 | ULP_GPIO_8  [P15]  |RTE_SSI_ULP_MASTER_SCK_PIN|
-| ULP_GPIO_10 [F17]  |RTE_SSI_ULP_MASTER_CS0_PIN|
+| ULP_GPIO_10 [P17]  |RTE_SSI_ULP_MASTER_CS0_PIN|
 | ULP_GPIO_1  [P16]  | ULP_SSI_MASTER_MOSI_PIN  |
 | ULP_GPIO_2  [F10]  | ULP_SSI_MASTER_MISO_PIN  |
 
@@ -158,6 +159,7 @@
  - In this application while changing the MCU mode from PS4 to PS2, M4 flash will be turned off.
  - The debug feature of Simplicity Studio will not work after M4 flash is turned off.
  - Enable the ULP_MASTER in UC before running/flashing the code. 
+ - If CS Control (Master) configured as software control, then in example.c #line39 ENABLE_SW_CS macro should be 1, by default it is 0.
 
 ## Expected Scenario:
  - After Flashing ULP examples as M4 flash will be turned off,flash erase does not work.

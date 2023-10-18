@@ -1,0 +1,97 @@
+project_name: ble_per_psram
+package: ble
+quality: production
+label: ble_per_psram
+category: Example|BLE
+description: >
+  This application demonstrates how to configure the necessary parameters to
+  start transmitting or receiving BLE PER packets.
+filter:
+  - name: "Wireless Technology"
+    value: ["BLE"]
+  - name: "Project Difficulty"
+    value: ["Beginner"]
+sdk: {id: gecko_sdk, version: 4.3.2}
+sdk_extension: 
+- {id: wiseconnect3_sdk, version: 3.1.1}
+source:
+  - path: app.c
+  - path: main.c
+include:
+  - path: .
+    file_list:
+      - path: app.h
+      - path: ble_config.h
+define:
+  - name: RSI_DEBUG_PRINTS
+  - name: ALARM_TIMER_BASED_WAKEUP
+  - name: PSRAM_IN_USE
+  - name: WIRELESS_BASED_WAKEUP_TO_USE
+template_contribution:
+- name: psram_powersave_handle
+  value: true
+- name: event_handler
+  condition: [rsi_m4_interface]
+  value:
+    event: platform_init
+    include: rsi_wisemcu_hardware_setup.h
+    handler: sl_si91x_hardware_setup
+  priority: -9995
+component:
+- {from: wiseconnect3_sdk, id: si917_memory_default_config}
+- {from: wiseconnect3_sdk, id: si91x_debug}
+- {from: wiseconnect3_sdk, id: syscalls}
+- {from: wiseconnect3_sdk, id: sllib_m4_power_save}
+- {from: wiseconnect3_sdk, id: rsilib_userconfig}
+- {from: wiseconnect3_sdk, id: rsilib_chip}
+- {from: wiseconnect3_sdk, id: sl_si91x_mcu}
+- {from: wiseconnect3_sdk, id: psram_core}
+- {from: wiseconnect3_sdk, id: psram_aps6404l_sqh}
+- {from: wiseconnect3_sdk, id: data_segment_in_psram}
+- {from: wiseconnect3_sdk, id: stack_segment_in_psram}
+- {from: wiseconnect3_sdk, id: text_segment_in_psram}
+- {from: wiseconnect3_sdk, id: udma_linker_config}
+
+requires:
+- name: sl_system
+- name: network_manager
+- name: basic_network_manager
+- name: wiseconnect3_common
+- name: wifi
+- name: sl_si91x_wireless
+- name: ble
+- name: sl_si91x_internal_stack
+- name: sl_si91x_basic_buffers
+- name: wifi_resources
+- name: freertos
+- name: slist
+- name: iostream_retarget_stdio
+  condition: [device_has_devinfo]
+- name: iostream_recommended_stream
+  condition: [device_has_devinfo]
+- name: iostream_stdlib_config
+  condition: [device_has_devinfo]
+- name: device_init
+  condition: [device_has_devinfo]
+- name: emlib_common
+  condition: [device_has_devinfo]
+- name: emlib_ldma
+  condition: [device_has_devinfo]
+provides:
+  - name: si91x_soc
+toolchain_settings: []
+configuration:
+- {name: SL_BOARD_ENABLE_VCOM, value: '1'}
+readme:
+  - path: readme.md
+other_file:
+  - path: resources/readme/output_1.png
+  - path: resources/readme/output_2.png
+  - path: resources/readme/ble_per_soc_ncp.png
+  - path: resources/readme/bleperspectrum.png
+ui_hints:
+  highlight:
+    - path: readme.md
+      focus: true
+post_build:
+  path: ../../../utilities/postbuild_profile/wiseconnect_soc.slpb

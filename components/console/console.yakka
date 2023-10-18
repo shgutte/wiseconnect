@@ -98,3 +98,9 @@ blueprints:
 make:
   files:
     - console.mk
+
+slc:
+  label: 'Console'
+  description: 'Console'
+  category: 'Service|Console'
+    

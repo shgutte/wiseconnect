@@ -49,11 +49,6 @@
  ******************************************************/
 #define BURST_MODE      0
 #define CONTINUOUS_MODE 1
-#define TX_TEST_POWER   18
-#define TX_TEST_RATE    0
-#define TX_TEST_LENGTH  30
-#define TX_TEST_MODE    BURST_MODE
-#define TEST_CHANNEL    1
 
 #define MAX_CALIB_COMMAND_LENGTH 200
 #define MIN_CALIB_COMMAND_LENGTH (strlen("rsi_evm_write=") + 2 /*atleast one char of input data and CR/LF */)
@@ -96,6 +91,41 @@ const osThreadAttr_t thread_attributes = {
   .priority   = osPriorityLow,
   .tz_module  = 0,
   .reserved   = 0,
+};
+
+const sl_wifi_data_rate_t rate               = SL_WIFI_DATA_RATE_1;
+sl_si91x_request_tx_test_info_t tx_test_info = {
+  .enable      = 1,
+  .power       = 18,
+  .rate        = rate,
+  .length      = 30,
+  .mode        = BURST_MODE,
+  .channel     = 1,
+  .aggr_enable = 0,
+#ifdef CHIP_917
+  .enable_11ax            = 0,
+  .coding_type            = 0,
+  .nominal_pe             = 0,
+  .UL_DL                  = 0,
+  .he_ppdu_type           = 0,
+  .beam_change            = 0,
+  .BW                     = 0,
+  .STBC                   = 0,
+  .Tx_BF                  = 0,
+  .GI_LTF                 = 0,
+  .DCM                    = 0,
+  .NSTS_MIDAMBLE          = 0,
+  .spatial_reuse          = 0,
+  .BSS_color              = 0,
+  .HE_SIGA2_RESERVED      = 0,
+  .RU_ALLOCATION          = 0,
+  .N_HELTF_TOT            = 0,
+  .SIGB_DCM               = 0,
+  .SIGB_MCS               = 0,
+  .USER_STA_ID            = 0,
+  .USER_IDX               = 0,
+  .SIGB_COMPRESSION_FIELD = 0,
+#endif
 };
 
 /*******************************************************************************
@@ -198,7 +228,7 @@ static void application_start(void *argument)
     printf("Wi-Fi initialization successful\r\n");
   }
 
-  status = sl_si91x_transmit_test_start(TX_TEST_POWER, TX_TEST_RATE, TX_TEST_LENGTH, TX_TEST_MODE, TEST_CHANNEL);
+  status = sl_si91x_transmit_test_start(&tx_test_info);
   if (status != SL_STATUS_OK) {
     printf("Transmit test start failed: 0x%lx\r\n", status);
     return;

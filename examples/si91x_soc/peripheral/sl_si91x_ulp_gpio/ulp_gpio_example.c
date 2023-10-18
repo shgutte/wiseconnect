@@ -28,10 +28,8 @@
 /*******************************************************************************
  ***************************  Defines / Macros  ********************************
  ******************************************************************************/
-#define RESERVED_IRQ_COUNT   16                                   // Reserved IRQ count
-#define EXT_IRQ_COUNT        98                                   // External IRQ count
-#define VECTOR_TABLE_ENTRIES (RESERVED_IRQ_COUNT + EXT_IRQ_COUNT) // Vector table entries
-#define PORT0                0                                    // GPIO Port number(0 to 4)
+
+#define PORT0 0 // GPIO Port number(0 to 4)
 
 #define ULP_PIN_0  0  // ULP GPIO Pin number 0
 #define ULP_PIN_1  1  // ULP GPIO Pin number 1
@@ -56,6 +54,7 @@
 #define PINS       0x0c40 // Pins in a port to mask
 
 #define INT_CH       0 // GPIO Pin interrupt 0
+#define ULP_INT_CH   1 // ULP GPIO Pin interrupt 0
 #define OUTPUT_VALUE 1 // GPIO output value
 #define NPSS_INTR    4 // NPSS GPIO interrupt number
 
@@ -65,7 +64,7 @@
 
 #define UULP_MASK 0x00
 
-uint32_t ramVector[VECTOR_TABLE_ENTRIES] __attribute__((aligned(256)));
+uint32_t ramVector[SI91X_VECTOR_TABLE_ENTRIES] __attribute__((aligned(256)));
 extern void hardware_setup(void);
 /*******************************************************************************
  ********************************   ENUMS   ************************************
@@ -123,7 +122,7 @@ void gpio_example_init(void)
      * startup_rs1xxxx.c file
      */
   //copying the vector table from flash to ram
-  memcpy(ramVector, (uint32_t *)SCB->VTOR, sizeof(uint32_t) * VECTOR_TABLE_ENTRIES);
+  memcpy(ramVector, (uint32_t *)SCB->VTOR, sizeof(uint32_t) * SI91X_VECTOR_TABLE_ENTRIES);
   // Assigning the ram vector address to VTOR register
   SCB->VTOR = (uint32_t)ramVector;
   // Switching MCU from PS4 to PS2 state(low power state)
@@ -163,7 +162,7 @@ void gpio_example_init(void)
     // GPIO initialization function for ULP instance
     sl_gpio_ulp_initialization();
     // Configure ULP GPIO pin interrupts
-    sl_si91x_gpio_configure_ulp_pin_interrupt(INT_CH,
+    sl_si91x_gpio_configure_ulp_pin_interrupt(ULP_INT_CH,
                                               (sl_si91x_gpio_interrupt_config_flag_t)SL_GPIO_INTERRUPT_LEVEL_HIGH,
                                               ULP_PIN_4);
     NVIC_EnableIRQ(ULP_PININT0_NVIC_NAME);
@@ -176,10 +175,10 @@ void gpio_example_init(void)
     uint8_t ulp_group_pol[PIN_COUNT]  = { POLARITY, POLARITY };    // polarity selected for group interrupt
 
     // Configure ULP GPIO group parameters
-    config_grp_int.grp_interrupt     = ULP_GROUP_INT; // Set ULP group interrupt
-    config_grp_int.grp_interrupt_cnt = GRP_COUNT;     // Count of group interrupt pins
-    config_grp_int.and_or            = AND_EVENT;     // AND/OR of group interrupt
-    config_grp_int.level_edge        = LEVEL_EVENT;   // Level/Edge of group interrupt
+    config_grp_int.grp_interrupt     = ULP_GROUP_INTR_0; // Set ULP group interrupt
+    config_grp_int.grp_interrupt_cnt = GRP_COUNT;        // Count of group interrupt pins
+    config_grp_int.and_or            = AND_EVENT;        // AND/OR of group interrupt
+    config_grp_int.level_edge        = LEVEL_EVENT;      // Level/Edge of group interrupt
     memcpy(config_grp_int.grp_interrupt_pin, ulp_group_pins, PIN_COUNT);
     memcpy(config_grp_int.grp_interrupt_pol, ulp_group_pol, PIN_COUNT);
 
@@ -332,7 +331,7 @@ void UULP_PIN_IRQ_Handler(void)
  ******************************************************************************/
 void ULP_PIN_IRQ_Handler(void)
 {
-  sl_si91x_gpio_clear_ulp_interrupt(ULP_PIN_INT);
+  sl_si91x_gpio_clear_ulp_interrupt(ULP_PIN_INTR_0);
 }
 
 /*******************************************************************************
@@ -340,5 +339,5 @@ void ULP_PIN_IRQ_Handler(void)
  ******************************************************************************/
 void ULP_GROUP_IRQ_Handler(void)
 {
-  sl_si91x_gpio_clear_ulp_group_interrupt(ULP_GROUP_INT);
+  sl_si91x_gpio_clear_ulp_group_interrupt(ULP_GROUP_INTR_0);
 }

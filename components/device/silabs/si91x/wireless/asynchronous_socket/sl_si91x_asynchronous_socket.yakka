@@ -1,0 +1,30 @@
+name: Si91x Asynchronous Socket
+
+includes:
+  global:
+    - inc
+
+sources:
+  - src/sl_si91x_socket.c
+
+requires:
+  components:
+    - sl_si91x_socket
+
+flags:
+  c:
+    local:
+      - -Wno-error=array-bounds
+
+clang-format: true 
+
+slc:
+  label: 'Si91x Asynchronous Socket'
+  description: 'Si91x Asynchronous Socket'
+  category: 'Device|Si91x|Wireless'
+  requires:
+    - name: sl_si91x_socket
+  include: 
+    - path: inc
+      file_list:
+        - sl_si91x_socket.h

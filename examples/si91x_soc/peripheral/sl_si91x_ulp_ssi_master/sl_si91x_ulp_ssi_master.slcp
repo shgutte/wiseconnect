@@ -45,8 +45,7 @@ define:
 - {name: SPI_MULTI_SLAVE}
 - {name: SSI_CONFIG}
 template_contribution:
-- {name: RAM_EXECUTION, priority: 0, value: 1}
-- {name: ULP_PLATFORM, priority: 0, value: 1}
+- {name: ulp_platform, priority: 0, value: 1}
 provides:
   - {name: si91x_soc}
 readme:

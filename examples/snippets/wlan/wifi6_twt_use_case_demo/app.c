@@ -80,6 +80,11 @@
 #define BUF_SIZE 1470
 #endif
 
+// Timeout Configuration
+#define AUTH_ASSOCIATION_TIMEOUT    SL_WIFI_DEFAULT_AUTH_ASSOCIATION_TIMEOUT
+#define ACTIVE_CHANNEL_SCAN_TIMEOUT SL_WIFI_DEFAULT_ACTIVE_CHANNEL_SCAN_TIME
+#define KEEP_ALIVE_TIMEOUT          SL_WIFI_DEFAULT_KEEP_ALIVE_TIMEOUT
+
 // Use case based TWT selection params
 #define DEVICE_AVG_THROUGHPUT                20000
 #define ESTIMATE_EXTRA_WAKE_DURATION_PERCENT 0
@@ -235,10 +240,11 @@ void app_init(const void *unused)
 void application_start()
 {
   sl_status_t status;
-  sl_wifi_performance_profile_t performance_profile = { 0 };
-  sl_wifi_version_string_t version                  = { 0 };
-  sl_mac_address_t mac_addr                         = { 0 };
-  data_semaphore                                    = osSemaphoreNew(1, 0, NULL);
+  sl_wifi_performance_profile_t performance_profile                     = { 0 };
+  sl_wifi_version_string_t version                                      = { 0 };
+  sl_mac_address_t mac_addr                                             = { 0 };
+  sl_wifi_advanced_client_configuration_t advanced_client_configuration = { 0 };
+  data_semaphore                                                        = osSemaphoreNew(1, 0, NULL);
 
   status = sl_net_init(SL_NET_WIFI_CLIENT_INTERFACE, &sl_wifi_twt_client_configuration, NULL, NULL);
   if (status != SL_STATUS_OK) {
@@ -263,6 +269,10 @@ void application_start()
     return;
   }
   printf("Firmware version before update: %s\r\n", version.version);
+
+  advanced_client_configuration.auth_assoc_timeout = AUTH_ASSOCIATION_TIMEOUT;
+  advanced_client_configuration.keep_alive_timeout = KEEP_ALIVE_TIMEOUT;
+  status = sl_wifi_set_advanced_client_configuration(SL_WIFI_CLIENT_INTERFACE, &advanced_client_configuration);
 
   status = sl_net_up(SL_NET_WIFI_CLIENT_INTERFACE, 0);
   if (status != SL_STATUS_OK) {

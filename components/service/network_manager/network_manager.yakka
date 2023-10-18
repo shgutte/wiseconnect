@@ -12,9 +12,9 @@ requires:
   components:
     - resources
     - platform_common
-    - si91x_support
+    - wiseconnect3_common
     - wifi
-    - si91x
+    - sl_si91x_wireless
 
 provides:
   features:
@@ -38,12 +38,15 @@ supports:
       sources:
         - src/sl_net_ethernet.c
   components:
-    si91x_lwip_stack:
+    sl_si91x_lwip_stack:
       includes:
         files:
           - inc/sl_net_for_lwip.h
       sources:
         - src/sl_net_for_lwip.c
+    sl_si91x_internal_stack:
+      sources:
+        - si91x/sl_net_si91x.c
      # requires:
       #  components:
         #  - nvm3
@@ -94,11 +97,14 @@ clang-format: true
 
 slc:
   label: 'Network Manager'
-  description: 'Network management API'
-  category: 'Networking|Core'
+  description: 'The Network Manager (SL Net) provides an API to manage network interfaces and their behaviour'
+  category: 'Service|Network Management'
   define:
     - name: __STATIC_INLINE
       value: 'static inline'
+  requires:
+    - name: wifi
+    - name: network_data_manager
   include:
     - path: inc
       file_list:
@@ -112,4 +118,4 @@ slc:
       file_list:
         - sl_net_for_lwip.h
       condition:
-        - si91x_lwip_stack
+        - sl_si91x_lwip_stack

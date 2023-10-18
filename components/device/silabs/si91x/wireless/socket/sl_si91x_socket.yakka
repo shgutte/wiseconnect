@@ -1,0 +1,38 @@
+name: Si91x Socket
+
+includes:
+  global:
+    - inc
+
+sources:
+  - src/sl_si91x_socket_utility.c
+
+requires:
+  components:
+    - sl_si91x_internal_stack
+
+defines:
+  global:
+    - SI91X_SOCKET_FEATURE
+
+clang-format: true
+
+console:
+  include_headers:
+    - 'socket.h'
+    - 'netinet_in.h'
+
+slc:
+  label: 'Si91x Socket'
+  description: 'The Si91x Socket provides an API to manage Si91x internal sockets'
+  category: 'Device|Si91x|Wireless'
+  requires:
+    - name: sl_si91x_internal_stack
+  include: 
+    - path: inc
+      file_list:
+        - sl_bsd_utility.h 
+        - sl_si91x_socket_callback_framework.h 
+        - sl_si91x_socket_constants.h 
+        - sl_si91x_socket_types.h 
+        - sl_si91x_socket_utility.h 

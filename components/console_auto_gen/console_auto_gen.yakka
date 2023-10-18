@@ -14,7 +14,12 @@ sources:
 
 slc: 
   requires:
-    - name: 'socket_utility'
-    - name: 'iot_sockets'
+    - name: 'sl_si91x_socket'
+    - name: 'iot_socket'
       condition: 
-        - si91x_internal_stack
+        - sl_si91x_internal_stack
+
+slc:
+  label: 'Console Auto-Generator'
+  description: 'Console Auto-Generator'
+  category: 'Service|Console'

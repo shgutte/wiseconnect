@@ -11,11 +11,13 @@ This application demonstrates how to configure SiWx91x in power save profile in 
 - Windows PC.
 - SiWx91x Wi-Fi Evaluation Kit. The SiWx91x supports multiple operating modes. See [Operating Modes]() for details.
 - **SoC Mode**:
-  - Silicon Labs [BRD4325A, BRD4325B, BRD4325C, BRD4325G, BRD4338A, BRD4340A](https://www.silabs.com/)
+  - Silicon Labs [BRD4325A, BRD4325B, BRD4325C, BRD4338A ](https://www.silabs.com/)
 - **NCP Mode**:
   - Silicon Labs [BRD4180B](https://www.silabs.com/); **AND**
   - Host MCU Eval Kit. This example has been tested with:
   - Silicon Labs [WSTK + EFR32MG21](https://www.silabs.com/development-tools/wireless/efr32xg21-bluetooth-starter-kit)
+- **PSRAM Mode**:
+    - Silicon Labs [BRD4340A](https://www.silabs.com/)
 - Agilent power analyzer
 
 ### 2.2 Software Requirements
@@ -30,7 +32,7 @@ This application demonstrates how to configure SiWx91x in power save profile in 
 
 ### 2.3 Setup Diagram
 
-**SoC Mode :**
+**SoC Mode / PSRAM Mode :**
 
 ![Figure: Setup Diagram SoC Mode for BLE Powersave SoC example](resources/readme/blepowersavesoc.png)
 
@@ -66,6 +68,16 @@ Follow the [Getting Started with Wiseconnect3 SDK](https://docs.silabs.com/wisec
 - In the Simplicity Studio IDE, the EFR32 board will be detected under **Debug Adapters** pane as shown below.
 
   **![EFR32 Board detection](resources/readme/efr32.png)**
+
+#### 3.1.3 PSRAM mode
+
+- Ensure the SiWx91x set up is connected to your PC.
+
+- In the Simplicity Studio IDE, the SiWx91x PSRAM board will be detected under **Debug Adapters** pane as shown below.
+
+  **![PSRAM Board detection](resources/readme/psram_boarddetection.png)**
+
+
 
 ### 3.2 Importing the project
 
@@ -188,7 +200,7 @@ Configure "ENABLE_POWER_SAVE" parameter to enable power save mode.
 
 - Follow the below steps for the successful execution of the application.
 
-#### Build Project - SoC Mode
+#### Build Project - SoC Mode / PSRAM Mode 
 
 - Once the project is created, click on the build icon (hammer) to build the project (or) right click on project and click on Build Project.
 
@@ -263,6 +275,11 @@ It will vary based on the traffic.
 
    - Refer [AEM measurement](https://docs.silabs.com/) section in ***Getting Started with SiWx91x SoC*** guide for measuring current consumption of SiWx91x SoC module.    
    ![SoC current consumption measured using energy profiler](resources/readme/blepwsocadv.png) 
+
+- **PSRAM**
+
+   - Refer [AEM measurement](https://docs.silabs.com/) section in ***Getting Started with SiWx91x PSRAM*** guide for measuring current consumption of SiWx91x PSRAM module.    
+   ![PSRAM current consumption measured using energy profiler](resources/readme/blepwsocadv.png) 
  
 **NOTE:** 
 - The measured current may vary if the scenario is performed in open environment. 

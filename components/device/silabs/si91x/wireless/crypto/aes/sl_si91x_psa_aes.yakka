@@ -1,0 +1,31 @@
+name: SL SI91X PSA AES
+
+clang-format: true
+
+includes:
+  global:
+    - inc
+
+sources:
+  - src/sl_si91x_psa_aes.c
+
+requires:
+  components:
+    - sl_si91x_wireless
+    - wiseconnect3_common
+    - sl_si91x_aes
+
+defines:
+  global:
+    - SLI_CIPHER_DEVICE_SI91X
+
+slc:
+  label: 'PSA AES'
+  description: 'Implementation of mbedTls psa crypto AES API'
+  category: 'Device|Si91x|Wireless|PSA Crypto'
+  include:
+    - path: inc
+      file_list:        
+        - sl_si91x_psa_aes.h
+  requires:
+    - name: 'sl_si91x_aes'

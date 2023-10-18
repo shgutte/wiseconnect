@@ -13,7 +13,6 @@
  */
 
 #include "console.h"
-#include "sl_uart.h"
 #include "sl_board_configuration.h"
 #include <stdint.h>
 #include <string.h>
@@ -22,7 +21,9 @@
 /******************************************************
  *                      Macros
  ******************************************************/
-
+#ifndef RSI_M4_INTERFACE
+#define sl_uart_print(a, b) printf(b)
+#endif
 /******************************************************
  *                    Constants
  ******************************************************/

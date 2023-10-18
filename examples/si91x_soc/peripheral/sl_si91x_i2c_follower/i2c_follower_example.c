@@ -25,27 +25,27 @@
 /*******************************************************************************
  ***************************  Defines / Macros  ********************************
  ******************************************************************************/
-#define SIZE_BUFFERS    15           // Size of buffer
-#define OWN_I2C_ADDR    0x50         // Own I2C address
-#define RX_LENGTH       SIZE_BUFFERS // Number of bytes to receive
-#define TX_LENGTH       SIZE_BUFFERS // Number of bytes to send
-#define OFFSET_LENGTH   1            // Offset length
-#define FIFO_THRESHOLD  0x0          // FIFO threshold
-#define ZERO_FLAG       0            // Zero flag, No argument
-#define PINMUX_MODE     6            // I2C pinmux mode
-#define PORT_ZERO       0            // Port zero
-#define HP_MAX_GPIO     64           // High Power GPIO Maximum number
-#define LAST_DATA_COUNT 0            // Last read-write count
-#define DATA_COUNT      1            // Last second data count for verification
-#define BIT_SET         1            // Set bit
-#define STOP_BIT        9            // Bit to send stop command
-#define RW_MASK_BIT     8            // Bit to mask read and write
-#define ULP_GPIO_SDA    10           // SDA ULP GPIO Pin number
-#define ULP_GPIO_SCL    11           // SCL ULP GPIO Pin number
-#define INTERNAL_PULLUP 1            // Internal Pull-up enable
-#define I2C_INSTANCE    0            // I2C Instance for Pin configuration
-#define I2C             I2C0         // I2C Instance
-
+#define SIZE_BUFFERS     15           // Size of buffer
+#define OWN_I2C_ADDR     0x50         // Own I2C address
+#define RX_LENGTH        SIZE_BUFFERS // Number of bytes to receive
+#define TX_LENGTH        SIZE_BUFFERS // Number of bytes to send
+#define OFFSET_LENGTH    1            // Offset length
+#define FIFO_THRESHOLD   0x0          // FIFO threshold
+#define ZERO_FLAG        0            // Zero flag, No argument
+#define PINMUX_MODE      6            // I2C pinmux mode
+#define PORT_ZERO        0            // Port zero
+#define HP_MAX_GPIO      64           // High Power GPIO Maximum number
+#define LAST_DATA_COUNT  0            // Last read-write count
+#define DATA_COUNT       1            // Last second data count for verification
+#define BIT_SET          1            // Set bit
+#define STOP_BIT         9            // Bit to send stop command
+#define RW_MASK_BIT      8            // Bit to mask read and write
+#define ULP_GPIO_SDA     10           // SDA ULP GPIO Pin number
+#define ULP_GPIO_SCL     11           // SCL ULP GPIO Pin number
+#define INTERNAL_PULLUP  1            // Internal Pull-up enable
+#define I2C_INSTANCE     0            // I2C Instance for Pin configuration
+#define I2C              I2C0         // I2C Instance
+#define MAX_7BIT_ADDRESS 127          // Maximum 7-bit address
 /*******************************************************************************
  ******************************  Data Types  ***********************************
  ******************************************************************************/
@@ -108,8 +108,8 @@ static uint8_t read_buffer[SIZE_BUFFERS + OFFSET_LENGTH];
  **********************  Local Function prototypes   ***************************
  ******************************************************************************/
 static void pin_configurations(void);
-static void i2c_send_data(const uint8_t *data, uint32_t data_length);
-static void i2c_receive_data(uint8_t *data, uint32_t data_length);
+static void i2c_send_data(const uint8_t *data, uint32_t data_length, uint16_t follower_address);
+static void i2c_receive_data(uint8_t *data, uint32_t data_length, uint16_t follower_address);
 static void i2c_clock_init(I2C_TypeDef *i2c);
 static void compare_data(void);
 static void handle_follower_transmit_irq(void);
@@ -124,24 +124,17 @@ static void handle_follower_receive_irq(void);
 void i2c_follower_example_init(void)
 {
   i2c_clock_init(I2C);
-  // For aborting, I2C instance should be enabled.
-  sl_si91x_i2c_enable(I2C);
-  // It aborts if any existing activity is there.
-  sl_si91x_i2c_abort_transfer(I2C);
-  sl_si91x_i2c_disable(I2C);
   sl_i2c_init_params_t config;
   // Filling the structure with default values.
-  config.clhr          = SL_I2C_STANDARD_BUS_SPEED;
-  config.freq          = sl_si91x_i2c_get_frequency(I2C);
-  config.is_10bit_addr = false;
-  config.mode          = SL_I2C_FOLLOWER_MODE;
-  config.address       = OWN_I2C_ADDR;
+  config.clhr = SL_I2C_STANDARD_BUS_SPEED;
+  config.freq = sl_si91x_i2c_get_frequency(I2C);
+  config.mode = SL_I2C_FOLLOWER_MODE;
   // Passing the structure and i2c instance for the initialization.
   sl_si91x_i2c_init(I2C, &config);
-  DEBUGOUT("I2C is initialized successfully \n");
+  DEBUGOUT("I2C follower is initialized successfully \n");
   // Pin is configured here.
   pin_configurations();
-  DEBUGOUT("Pin is configured successfully \n");
+  DEBUGOUT("Pins are configured successfully \n");
   // Generating a buffer with values that needs to be sent.
   for (uint32_t loop = 0; loop < SIZE_BUFFERS; loop++) {
     write_buffer[loop] = (loop + 0x1);
@@ -163,12 +156,11 @@ void i2c_follower_example_process_action(void)
     case RECEIVE_DATA:
       if (receive_data_flag) {
         // Validation for executing the API only once.
-        i2c_receive_data(read_buffer, RX_LENGTH + OFFSET_LENGTH);
+        i2c_receive_data(read_buffer, RX_LENGTH + OFFSET_LENGTH, OWN_I2C_ADDR);
         receive_data_flag = false;
       }
       if (i2c_receive_complete) {
         // It waits till i2c_receive_complete is true in IRQ handler.
-        DEBUGOUT("Data is received from Leader successfully \n");
         current_mode         = SEND_DATA;
         i2c_receive_complete = false;
         send_data_flag       = true;
@@ -177,12 +169,11 @@ void i2c_follower_example_process_action(void)
     case SEND_DATA:
       if (send_data_flag) {
         // Validation for executing the API only once.
-        i2c_send_data(write_buffer, TX_LENGTH + OFFSET_LENGTH);
+        i2c_send_data(write_buffer, TX_LENGTH + OFFSET_LENGTH, OWN_I2C_ADDR);
         send_data_flag = false;
       }
       if (i2c_send_complete) {
         // It waits till i2c_send_complete is true in IRQ handler.
-        DEBUGOUT("Data is transferred to Leader successfully \n");
         current_mode      = TRANSMISSION_COMPLETED;
         send_data_flag    = true;
         i2c_send_complete = false;
@@ -204,9 +195,10 @@ void i2c_follower_example_process_action(void)
  * 
  * @param[in] data (uint8_t) Constant pointer to the data which needs to be transferred.
  * @param[in] data_length (uint32_t) Length of the data that needs to be received.
+ * @param[in] I2C device own address
  * @return none
  ******************************************************************************/
-static void i2c_send_data(const uint8_t *data, uint32_t data_length)
+static void i2c_send_data(const uint8_t *data, uint32_t data_length, uint16_t follower_address)
 {
   // Disables the interrupts.
   sl_si91x_i2c_disable_interrupts(I2C, ZERO_FLAG);
@@ -216,13 +208,14 @@ static void i2c_send_data(const uint8_t *data, uint32_t data_length)
   write_number = data_length;
   // Disables the I2C peripheral.
   sl_si91x_i2c_disable(I2C);
+  // Setting the follower mask address, here leader behaves like follower.
+  sl_si91x_i2c_set_follower_mask_address(I2C, follower_address);
   // Configures the FIFO threshold.
   sl_si91x_i2c_set_tx_threshold(I2C, FIFO_THRESHOLD);
   // Enables the I2C peripheral.
   sl_si91x_i2c_enable(I2C);
   // Configures the transmit empty interrupt.
   sl_si91x_i2c_set_interrupts(I2C, SL_I2C_EVENT_TRANSMIT_EMPTY);
-  DEBUGOUT("Tx Interrupts configured successfully \n");
   // Enables the interrupt.
   sl_si91x_i2c_enable_interrupts(I2C, ZERO_FLAG);
 }
@@ -233,9 +226,10 @@ static void i2c_send_data(const uint8_t *data, uint32_t data_length)
  * 
  * @param[in] data (uint8_t) Constant pointer to the data which needs to be received.
  * @param[in] data_length (uint32_t) Length of the data that needs to be received.
+ * @param[in] I2C device own address
  * @return none
  ******************************************************************************/
-static void i2c_receive_data(uint8_t *data, uint32_t data_length)
+static void i2c_receive_data(uint8_t *data, uint32_t data_length, uint16_t follower_address)
 {
   // Disables the interrupts.
   sl_si91x_i2c_disable_interrupts(I2C, ZERO_FLAG);
@@ -245,6 +239,8 @@ static void i2c_receive_data(uint8_t *data, uint32_t data_length)
   read_number = data_length;
   // Disables the I2C peripheral.
   sl_si91x_i2c_disable(I2C);
+  // Setting the follower mask address, here leader behaves like follower.
+  sl_si91x_i2c_set_follower_mask_address(I2C, follower_address);
   // Configures the FIFO threshold.
   sl_si91x_i2c_set_rx_threshold(I2C, FIFO_THRESHOLD);
   // Enables the I2C peripheral.
@@ -253,7 +249,6 @@ static void i2c_receive_data(uint8_t *data, uint32_t data_length)
   sl_si91x_i2c_control_direction(I2C, SL_I2C_READ_MASK);
   // Configures the receive full interrupt.
   sl_si91x_i2c_set_interrupts(I2C, SL_I2C_EVENT_RECEIVE_FULL);
-  DEBUGOUT("Rx Interrupts configured successfully\n");
   // Enables the interrupt.
   sl_si91x_i2c_enable_interrupts(I2C, ZERO_FLAG);
 }
@@ -415,6 +410,9 @@ static void handle_follower_transmit_irq(void)
     if (write_number == DATA_COUNT) {
       I2C->IC_DATA_CMD = (uint32_t)write_data[write_count] | (BIT_SET << STOP_BIT);
     } else {
+      // waiting for Slave to release SCL
+      while (!I2C->IC_STATUS_b.SLV_HOLD_TX_FIFO_EMPTY)
+        ;
       sl_si91x_i2c_tx(I2C, write_data[write_count]);
     }
     write_count++;
@@ -454,12 +452,109 @@ static void handle_follower_receive_irq(void)
 void I2C0_IRQHandler(void)
 {
   uint32_t status = 0;
-  status          = I2C0->IC_INTR_STAT;
+  // Checking interrupt status
+  status = I2C0->IC_INTR_STAT;
+  if (status & SL_I2C_EVENT_TRANSMIT_ABORT) {
+    uint32_t tx_abrt = I2C0->IC_TX_ABRT_SOURCE;
+    if (tx_abrt & SL_I2C_ABORT_GENERAL_CALL_NOACK) {
+      // Clearing interrupt by reading the respective bit
+      uint32_t clear = I2C0->IC_CLR_GEN_CALL_b.CLR_GEN_CALL;
+    }
+    if (tx_abrt & SL_I2C_ABORT_GENERAL_CALL_READ) {
+      // Clearing interrupt by reading the respective bit
+      uint32_t clear = I2C0->IC_CLR_GEN_CALL_b.CLR_GEN_CALL;
+    }
+    if (tx_abrt & SL_I2C_ABORT_HIGH_SPEED_ACK) {
+    }
+    if (tx_abrt & SL_I2C_ABORT_START_BYTE_ACK) {
+    }
+    if (tx_abrt & SL_I2C_ABORT_HIGH_SPEED_NO_RESTART) {
+    }
+    if (tx_abrt & SL_I2C_ABORT_START_BYTE_NO_RESTART) {
+    }
+    if (tx_abrt & SL_I2C_ABORT_10B_READ_NO_RESTART) {
+    }
+    if (tx_abrt & SL_I2C_ABORT_MASTER_DISABLED) {
+    }
+    if (tx_abrt & SL_I2C_ABORT_MASTER_ARBITRATION_LOST) {
+    }
+    if (tx_abrt & SL_I2C_ABORT_SLAVE_ARBITRATION_LOST) {
+    }
+    if (tx_abrt & SL_I2C_ABORT_SLAVE_FLUSH_TX_FIFO) {
+    }
+    if (tx_abrt & SL_I2C_ABORT_SLAVE_READ_INTX) {
+    }
+    if (tx_abrt & SL_I2C_TX_TX_FLUSH_CNT) {
+    }
+    if (tx_abrt & SL_I2C_ABORT_USER_ABORT) {
+    }
+    if (tx_abrt & SL_I2C_ABORT_SDA_STUCK_AT_LOW) {
+      I2C0->IC_ENABLE_b.SDA_STUCK_RECOVERY_ENABLE = 0x1;
+    }
+    // Clearing all interrupts
+    uint32_t clear = I2C0->IC_CLR_INTR;
+    // Disables the interrupts.
+    sl_si91x_i2c_disable_interrupts(I2C0, SL_I2C_EVENT_TRANSMIT_EMPTY);
+  }
+  if (status & (SL_I2C_EVENT_SCL_STUCK_AT_LOW)) {
+    // Clearing interrupt by reading the respective bit
+    uint32_t clear       = I2C0->IC_CLR_INTR;
+    I2C0->IC_ENABLE_b.EN = 0;
+    return;
+  }
+  if (status & (SL_I2C_EVENT_MST_ON_HOLD)) {
+    // Clearing interrupt by reading the respective bit
+    uint32_t clear = I2C0->IC_CLR_INTR;
+    return;
+  }
+  if (status & (SL_I2C_EVENT_START_DETECT)) {
+    // Clearing interrupt by reading the respective bit
+    uint32_t clear = I2C0->IC_CLR_START_DET_b.CLR_START_DET;
+    return;
+  }
+  if (status & (SL_I2C_EVENT_STOP_DETECT)) {
+    // Clearing interrupt by reading the respective bit
+    uint32_t clear     = I2C0->IC_CLR_STOP_DET_b.CLR_STOP_DET;
+    uint32_t maskReg   = 0;
+    maskReg            = I2C0->IC_INTR_MASK;
+    I2C0->IC_INTR_MASK = (maskReg & (~SL_I2C_EVENT_RECEIVE_FULL));
+    return;
+  }
+  if (status & (SL_I2C_EVENT_ACTIVITY_ON_BUS)) {
+    // Clearing interrupt by reading the respective bit
+    uint32_t clear = I2C0->IC_CLR_ACTIVITY_b.CLR_ACTIVITY;
+    return;
+  }
+  if (status & (SL_I2C_EVENT_READ_REQ)) {
+    // Clearing interrupt by reading the respective bit
+    uint32_t clear = I2C0->IC_CLR_RD_REQ_b.CLR_RD_REQ;
+    return;
+  }
   if (status & SL_I2C_EVENT_TRANSMIT_EMPTY) {
     handle_follower_transmit_irq();
   }
   if (status & SL_I2C_EVENT_RECEIVE_FULL) {
     handle_follower_receive_irq();
+  }
+  if (status & (SL_I2C_EVENT_RECEIVE_UNDER)) {
+    uint32_t clear = I2C0->IC_CLR_RX_UNDER_b.CLR_RX_UNDER;
+    return;
+  }
+  if (status & (SL_I2C_EVENT_RECEIVE_OVER)) {
+    uint32_t clear = I2C0->IC_CLR_RX_OVER_b.CLR_RX_OVER;
+    return;
+  }
+  if (status & (SL_I2C_EVENT_RECEIVE_DONE)) {
+    sl_si91x_i2c_clear_interrupts(I2C0, SL_I2C_EVENT_RECEIVE_DONE);
+    return;
+  }
+  if (status & (SL_I2C_EVENT_GENERAL_CALL)) {
+    sl_si91x_i2c_clear_interrupts(I2C0, SL_I2C_EVENT_GENERAL_CALL);
+    return;
+  }
+  if (status & (SL_I2C_EVENT_RESTART_DET)) {
+    sl_si91x_i2c_clear_interrupts(I2C0, SL_I2C_EVENT_RESTART_DET);
+    return;
   }
 }
 
@@ -469,12 +564,109 @@ void I2C0_IRQHandler(void)
 void I2C1_IRQHandler(void)
 {
   uint32_t status = 0;
-  status          = I2C1->IC_INTR_STAT;
+  // Checking interrupt status
+  status = I2C1->IC_INTR_STAT;
+  if (status & SL_I2C_EVENT_TRANSMIT_ABORT) {
+    uint32_t tx_abrt = I2C1->IC_TX_ABRT_SOURCE;
+    if (tx_abrt & SL_I2C_ABORT_GENERAL_CALL_NOACK) {
+      // Clearing interrupt by reading the respective bit
+      uint32_t clear = I2C1->IC_CLR_GEN_CALL_b.CLR_GEN_CALL;
+    }
+    if (tx_abrt & SL_I2C_ABORT_GENERAL_CALL_READ) {
+      // Clearing interrupt by reading the respective bit
+      uint32_t clear = I2C1->IC_CLR_GEN_CALL_b.CLR_GEN_CALL;
+    }
+    if (tx_abrt & SL_I2C_ABORT_HIGH_SPEED_ACK) {
+    }
+    if (tx_abrt & SL_I2C_ABORT_START_BYTE_ACK) {
+    }
+    if (tx_abrt & SL_I2C_ABORT_HIGH_SPEED_NO_RESTART) {
+    }
+    if (tx_abrt & SL_I2C_ABORT_START_BYTE_NO_RESTART) {
+    }
+    if (tx_abrt & SL_I2C_ABORT_10B_READ_NO_RESTART) {
+    }
+    if (tx_abrt & SL_I2C_ABORT_MASTER_DISABLED) {
+    }
+    if (tx_abrt & SL_I2C_ABORT_MASTER_ARBITRATION_LOST) {
+    }
+    if (tx_abrt & SL_I2C_ABORT_SLAVE_ARBITRATION_LOST) {
+    }
+    if (tx_abrt & SL_I2C_ABORT_SLAVE_FLUSH_TX_FIFO) {
+    }
+    if (tx_abrt & SL_I2C_ABORT_SLAVE_READ_INTX) {
+    }
+    if (tx_abrt & SL_I2C_TX_TX_FLUSH_CNT) {
+    }
+    if (tx_abrt & SL_I2C_ABORT_USER_ABORT) {
+    }
+    if (tx_abrt & SL_I2C_ABORT_SDA_STUCK_AT_LOW) {
+      I2C1->IC_ENABLE_b.SDA_STUCK_RECOVERY_ENABLE = 0x1;
+    }
+    // Clearing all interrupts
+    uint32_t clear = I2C1->IC_CLR_INTR;
+    // Disables the interrupts.
+    sl_si91x_i2c_disable_interrupts(I2C1, SL_I2C_EVENT_TRANSMIT_EMPTY);
+  }
+  if (status & (SL_I2C_EVENT_SCL_STUCK_AT_LOW)) {
+    // Clearing interrupt by reading the respective bit
+    uint32_t clear       = I2C1->IC_CLR_INTR;
+    I2C1->IC_ENABLE_b.EN = 0;
+    return;
+  }
+  if (status & (SL_I2C_EVENT_MST_ON_HOLD)) {
+    // Clearing interrupt by reading the respective bit
+    uint32_t clear = I2C1->IC_CLR_INTR;
+    return;
+  }
+  if (status & (SL_I2C_EVENT_START_DETECT)) {
+    // Clearing interrupt by reading the respective bit
+    uint32_t clear = I2C1->IC_CLR_START_DET_b.CLR_START_DET;
+    return;
+  }
+  if (status & (SL_I2C_EVENT_STOP_DETECT)) {
+    // Clearing interrupt by reading the respective bit
+    uint32_t clear     = I2C1->IC_CLR_STOP_DET_b.CLR_STOP_DET;
+    uint32_t maskReg   = 0;
+    maskReg            = I2C1->IC_INTR_MASK;
+    I2C0->IC_INTR_MASK = (maskReg & (~SL_I2C_EVENT_RECEIVE_FULL));
+    return;
+  }
+  if (status & (SL_I2C_EVENT_ACTIVITY_ON_BUS)) {
+    // Clearing interrupt by reading the respective bit
+    uint32_t clear = I2C1->IC_CLR_ACTIVITY_b.CLR_ACTIVITY;
+    return;
+  }
+  if (status & (SL_I2C_EVENT_READ_REQ)) {
+    // Clearing interrupt by reading the respective bit
+    uint32_t clear = I2C1->IC_CLR_RD_REQ_b.CLR_RD_REQ;
+    return;
+  }
   if (status & SL_I2C_EVENT_TRANSMIT_EMPTY) {
     handle_follower_transmit_irq();
   }
   if (status & SL_I2C_EVENT_RECEIVE_FULL) {
     handle_follower_receive_irq();
+  }
+  if (status & (SL_I2C_EVENT_RECEIVE_UNDER)) {
+    uint32_t clear = I2C1->IC_CLR_RX_UNDER_b.CLR_RX_UNDER;
+    return;
+  }
+  if (status & (SL_I2C_EVENT_RECEIVE_OVER)) {
+    uint32_t clear = I2C1->IC_CLR_RX_OVER_b.CLR_RX_OVER;
+    return;
+  }
+  if (status & (SL_I2C_EVENT_RECEIVE_DONE)) {
+    sl_si91x_i2c_clear_interrupts(I2C1, SL_I2C_EVENT_RECEIVE_DONE);
+    return;
+  }
+  if (status & (SL_I2C_EVENT_GENERAL_CALL)) {
+    sl_si91x_i2c_clear_interrupts(I2C1, SL_I2C_EVENT_GENERAL_CALL);
+    return;
+  }
+  if (status & (SL_I2C_EVENT_RESTART_DET)) {
+    sl_si91x_i2c_clear_interrupts(I2C1, SL_I2C_EVENT_RESTART_DET);
+    return;
   }
 }
 
@@ -484,11 +676,108 @@ void I2C1_IRQHandler(void)
 void I2C2_IRQHandler(void)
 {
   uint32_t status = 0;
-  status          = I2C2->IC_INTR_STAT;
+  // Checking interrupt status
+  status = I2C2->IC_INTR_STAT;
+  if (status & SL_I2C_EVENT_TRANSMIT_ABORT) {
+    uint32_t tx_abrt = I2C2->IC_TX_ABRT_SOURCE;
+    if (tx_abrt & SL_I2C_ABORT_GENERAL_CALL_NOACK) {
+      // Clearing interrupt by reading the respective bit
+      uint32_t clear = I2C2->IC_CLR_GEN_CALL_b.CLR_GEN_CALL;
+    }
+    if (tx_abrt & SL_I2C_ABORT_GENERAL_CALL_READ) {
+      // Clearing interrupt by reading the respective bit
+      uint32_t clear = I2C2->IC_CLR_GEN_CALL_b.CLR_GEN_CALL;
+    }
+    if (tx_abrt & SL_I2C_ABORT_HIGH_SPEED_ACK) {
+    }
+    if (tx_abrt & SL_I2C_ABORT_START_BYTE_ACK) {
+    }
+    if (tx_abrt & SL_I2C_ABORT_HIGH_SPEED_NO_RESTART) {
+    }
+    if (tx_abrt & SL_I2C_ABORT_START_BYTE_NO_RESTART) {
+    }
+    if (tx_abrt & SL_I2C_ABORT_10B_READ_NO_RESTART) {
+    }
+    if (tx_abrt & SL_I2C_ABORT_MASTER_DISABLED) {
+    }
+    if (tx_abrt & SL_I2C_ABORT_MASTER_ARBITRATION_LOST) {
+    }
+    if (tx_abrt & SL_I2C_ABORT_SLAVE_ARBITRATION_LOST) {
+    }
+    if (tx_abrt & SL_I2C_ABORT_SLAVE_FLUSH_TX_FIFO) {
+    }
+    if (tx_abrt & SL_I2C_ABORT_SLAVE_READ_INTX) {
+    }
+    if (tx_abrt & SL_I2C_TX_TX_FLUSH_CNT) {
+    }
+    if (tx_abrt & SL_I2C_ABORT_USER_ABORT) {
+    }
+    if (tx_abrt & SL_I2C_ABORT_SDA_STUCK_AT_LOW) {
+      I2C2->IC_ENABLE_b.SDA_STUCK_RECOVERY_ENABLE = 0x1;
+    }
+    // Clearing all interrupts
+    uint32_t clear = I2C2->IC_CLR_INTR;
+    // Disables the interrupts.
+    sl_si91x_i2c_disable_interrupts(I2C2, SL_I2C_EVENT_TRANSMIT_EMPTY);
+  }
+  if (status & (SL_I2C_EVENT_SCL_STUCK_AT_LOW)) {
+    // Clearing interrupt by reading the respective bit
+    uint32_t clear       = I2C2->IC_CLR_INTR;
+    I2C2->IC_ENABLE_b.EN = 0;
+    return;
+  }
+  if (status & (SL_I2C_EVENT_MST_ON_HOLD)) {
+    // Clearing interrupt by reading the respective bit
+    uint32_t clear = I2C2->IC_CLR_INTR;
+    return;
+  }
+  if (status & (SL_I2C_EVENT_START_DETECT)) {
+    // Clearing interrupt by reading the respective bit
+    uint32_t clear = I2C2->IC_CLR_START_DET_b.CLR_START_DET;
+    return;
+  }
+  if (status & (SL_I2C_EVENT_STOP_DETECT)) {
+    // Clearing interrupt by reading the respective bit
+    uint32_t clear     = I2C2->IC_CLR_STOP_DET_b.CLR_STOP_DET;
+    uint32_t maskReg   = 0;
+    maskReg            = I2C2->IC_INTR_MASK;
+    I2C0->IC_INTR_MASK = (maskReg & (~SL_I2C_EVENT_RECEIVE_FULL));
+    return;
+  }
+  if (status & (SL_I2C_EVENT_ACTIVITY_ON_BUS)) {
+    // Clearing interrupt by reading the respective bit
+    uint32_t clear = I2C2->IC_CLR_ACTIVITY_b.CLR_ACTIVITY;
+    return;
+  }
+  if (status & (SL_I2C_EVENT_READ_REQ)) {
+    // Clearing interrupt by reading the respective bit
+    uint32_t clear = I2C2->IC_CLR_RD_REQ_b.CLR_RD_REQ;
+    return;
+  }
   if (status & SL_I2C_EVENT_TRANSMIT_EMPTY) {
     handle_follower_transmit_irq();
   }
   if (status & SL_I2C_EVENT_RECEIVE_FULL) {
     handle_follower_receive_irq();
+  }
+  if (status & (SL_I2C_EVENT_RECEIVE_UNDER)) {
+    uint32_t clear = I2C2->IC_CLR_RX_UNDER_b.CLR_RX_UNDER;
+    return;
+  }
+  if (status & (SL_I2C_EVENT_RECEIVE_OVER)) {
+    uint32_t clear = I2C2->IC_CLR_RX_OVER_b.CLR_RX_OVER;
+    return;
+  }
+  if (status & (SL_I2C_EVENT_RECEIVE_DONE)) {
+    sl_si91x_i2c_clear_interrupts(I2C2, SL_I2C_EVENT_RECEIVE_DONE);
+    return;
+  }
+  if (status & (SL_I2C_EVENT_GENERAL_CALL)) {
+    sl_si91x_i2c_clear_interrupts(I2C2, SL_I2C_EVENT_GENERAL_CALL);
+    return;
+  }
+  if (status & (SL_I2C_EVENT_RESTART_DET)) {
+    sl_si91x_i2c_clear_interrupts(I2C2, SL_I2C_EVENT_RESTART_DET);
+    return;
   }
 }

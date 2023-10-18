@@ -1,0 +1,27 @@
+name: SL SI91X CHACHAPOLY
+
+clang-format: true
+
+includes:
+  global:
+    - inc
+
+sources:
+  - src/sl_si91x_chachapoly.c
+
+requires:
+  components:
+    - sl_si91x_wireless
+    - wiseconnect3_common
+    - sl_si91x_crypto
+
+slc:
+  label: 'CHACHAPOLY'
+  description: 'Implementation of the CHACHAPOLY API'
+  category: 'Device|Si91x|Wireless|Crypto'
+  requires:
+    - name: sl_si91x_crypto
+  include:
+    - path: inc
+      file_list:        
+        - sl_si91x_chachapoly.h

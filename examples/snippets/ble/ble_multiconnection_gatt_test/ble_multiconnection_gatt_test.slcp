@@ -28,20 +28,22 @@ include:
       - path: ble_config.h
 define:
   - name: RSI_DEBUG_PRINTS
+  - name: WIRELESS_BASED_WAKEUP_TO_USE
 component:
 - {from: wiseconnect3_sdk, id: si917_memory_default_config}
+- {from: wiseconnect3_sdk, id: sllib_m4_power_save}
 - {from: wiseconnect3_sdk, id: si91x_debug}
 - {from: wiseconnect3_sdk, id: syscalls}
 requires:
 - name: sl_system
 - name: network_manager
 - name: basic_network_manager
-- name: si91x_support
+- name: wiseconnect3_common
 - name: wifi
-- name: si91x
+- name: sl_si91x_wireless
 - name: ble
-- name: si91x_internal_stack
-- name: si91x_basic_buffers
+- name: sl_si91x_internal_stack
+- name: sl_si91x_basic_buffers
 - name: wifi_resources
 - name: freertos
 - name: slist

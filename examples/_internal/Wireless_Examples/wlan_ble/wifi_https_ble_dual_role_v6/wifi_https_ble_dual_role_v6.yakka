@@ -28,7 +28,7 @@ requires:
     - ipv6
   components:
     - si91x_support
-    - si91x
+    - sl_si91x_wireless
     - wifi
     - network_manager
     - freertos

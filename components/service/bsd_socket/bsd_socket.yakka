@@ -1,0 +1,51 @@
+name: BSD Socket
+
+includes:
+  global:
+    - inc
+
+requires:
+  components:
+    - wiseconnect3_common
+    - bsd_socket_api
+
+supports:
+  components:
+    sl_si91x_socket:
+      sources:
+        - si91x_socket/sl_si91x_bsd_socket.c
+
+flags:
+  c:
+    local:
+      - -Wno-error=array-bounds
+
+slc:
+  label: 'BSD Socket'
+  description: 'The BSD Socket provides an BSD-style TCP/IP communications API'
+  category: 'Service'
+  requires:
+    - name: bsd_socket_api
+    - name: sl_si91x_socket
+  include:
+    - path: si91x_socket
+      file_list:
+        - sl_si91x_socket_support.h
+        - socket.h
+
+suds:
+  wiseconnect-api-reference-guide-bsd-socket:
+    version: "3.0.0"
+    authors:
+      - aji.gerdiman@silabs.com
+      - nik.vonhuben@silabs.com
+    contentType: doxygen
+    title: "BSD Socket"
+    description: "BSD Socket"
+
+doxygen:
+  project_name: "BSD Socket"
+  inputs:
+    - inc
+    - docs/doxygen_template.h 
+    - docs/doxygen_indexfile.md 

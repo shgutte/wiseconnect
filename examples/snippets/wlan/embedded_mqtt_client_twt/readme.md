@@ -102,127 +102,127 @@ The application can be configured to suit user requirements and development envi
 Note:
  > ENABLE_MQTT_SUBSCRIBE_PUBLISH is disabled by default because the purpose of this application is to demonstrate power performance with TWT and without MQTT connection loss.
  
-- MQTT_BROKER_PORT port refers to the port number on which the remote MQTT broker/server is running.
+ - MQTT_BROKER_PORT port refers to the port number on which the remote MQTT broker/server is running.
 
       ```c
       #define MQTT_BROKER_PORT                                8886
       ```
 
-- MQTT_BROKER_IP refers remote peer IP address (Windows PC1) on which MQTT server is running. This needs to be configured at mqtt_broker_configuration variable declaration.
+ - MQTT_BROKER_IP refers remote peer IP address (Windows PC1) on which MQTT server is running. This needs to be configured at mqtt_broker_configuration variable declaration.
 
       ```c
       .ip         = SL_IPV4_ADDRESS(192, 168, 1, 0)
       ```
 
-- CLIENT_PORT port refers to the device MQTT client port number.
+ - CLIENT_PORT port refers to the device MQTT client port number.
 
       ```c
       #define CLIENT_PORT                                1
       ```
 
-- CLIENT_ID refers to the unique ID with which the MQTT client connects to MQTT broker/server.
+ - CLIENT_ID refers to the unique ID with which the MQTT client connects to MQTT broker/server.
 
       ```c
       #define clientID "WIFI-SDK-MQTT-CLIENT"
       ```
 
-- TOPIC_TO_BE_SUBSCRIBED refers to the topic to which MQTT client is supposed to subscribe to.
+ - TOPIC_TO_BE_SUBSCRIBED refers to the topic to which MQTT client is supposed to subscribe to.
 
       ```c
       #define TOPIC_TO_BE_SUBSCRIBED  "THERMOSTAT-DATA"
       ```
 
-- PUBLISH_TOPIC refers to the topic to which MQTT client is supposed to publish on.
+ - PUBLISH_TOPIC refers to the topic to which MQTT client is supposed to publish on.
 
       ```c
       #define PUBLISH_TOPIC  "THERMOSTAT-DATA"
       ```
 
-- PUBLISH_MESSAGE refers to message that would be published by MQTT client.
+ - PUBLISH_MESSAGE refers to message that would be published by MQTT client.
 
       ```c
       #define PUBLISH_MESSAGE    "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do"
       ```
 
-- QOS_OF_PUBLISH_MESSAGE indicates quality of service using which MQTT client publishes message.
+ - QOS_OF_PUBLISH_MESSAGE indicates quality of service using which MQTT client publishes message.
 
       ```c
       #define QOS_OF_PUBLISH_MESSAGE 0
       ```
 
-- IS_DUPLICATE_MESSAGE indicates whether message sent by MQTT client is a duplicated message.
+ - IS_DUPLICATE_MESSAGE indicates whether message sent by MQTT client is a duplicated message.
 
       ```c
       #define IS_DUPLICATE_MESSAGE 0
       ```
 
-- IS_MESSAGE_RETAINED whether broker need to retain message published by MQTT client.
+ - IS_MESSAGE_RETAINED whether broker need to retain message published by MQTT client.
 
       ```c
       #define IS_MESSAGE_RETAINED 0
       ```
 
-- IS_CLEAN_SESSION indicates whether this connection is new one or continuation of last session
+ - IS_CLEAN_SESSION indicates whether this connection is new one or continuation of last session
 
       ```c
       #define IS_CLEAN_SESSION 0
       ```
 
-- LAST_WILL_TOPIC Topic of last will message
+ - LAST_WILL_TOPIC Topic of last will message
 
       ```c
       #define LAST_WILL_TOPIC  "WiFiSDK-MQTT-CLIENT-LAST-WILL"
       ```
 
-- LAST_WILL_MESSAGE Message that would be published by broker if MQTT client disconnect abruptly.
+ - LAST_WILL_MESSAGE Message that would be published by broker if MQTT client disconnect abruptly.
 
       ```c
       #define LAST_WILL_MESSAGE  "WiFiSDK-MQTT-CLIENT has been disconnect from network"
       ```
 
-- QOS_OF_LAST_WILL Quality of service for last will message
+ - QOS_OF_LAST_WILL Quality of service for last will message
 
       ```c
       #define QOS_OF_LAST_WILL  1
       ```
 
-- IS_LAST_WILL_RETAINED Whether broker needs to retail last will message of client
+ - IS_LAST_WILL_RETAINED Whether broker needs to retail last will message of client
 
       ```c
       #define IS_LAST_WILL_RETAINED 1
       ```
 
-- ENCRYPT_CONNECTION Whether the connection between client and broker should be encrypted using SSL. 
+ - ENCRYPT_CONNECTION Whether the connection between client and broker should be encrypted using SSL. 
 
       ```c
       #define ENCRYPT_CONNECTION  0
       ```
 
-- KEEP_ALIVE_INTERVAL client keep alive period in milliseconds
+ - KEEP_ALIVE_INTERVAL client keep alive period in milliseconds
 
       ```c
       #define KEEP_ALIVE_INTERVAL                       100
       ```
 
-- MQTT_CONNECT_TIMEOUT Timeout for broker connection in milliseconds
+ - MQTT_CONNECT_TIMEOUT Timeout for broker connection in milliseconds
 
       ```c
       #define MQTT_CONNECT_TIMEOUT                      5000
       ```
 
-- SEND_CREDENTIALS Whether to send username and password in connect request.
+ - SEND_CREDENTIALS Whether to send username and password in connect request.
 
       ```c
       #define SEND_CREDENTIALS 0
       ```
 
-- USERNAME for login credentials
+ - USERNAME for login credentials
 
       ```c
       #define USERNAME "WIFISDK"
       ```
 
-- PASSWORD for login credentials
+ - PASSWORD for login credentials
 
       ```c
       #define PASSWORD "password"
@@ -230,13 +230,13 @@ Note:
 
 **Power save configuration**
 
-- By default, the application is configured without power save.
+ - By default, the application is configured without power save.
 
       ```c
       #define ENABLE_POWER_SAVE 0
       ```
 
-- If user wants to run the application in power save, modify the below macro.
+ - If user wants to run the application in power save, modify the below macro.
 
       ```c
       #define ENABLE_POWER_SAVE 1

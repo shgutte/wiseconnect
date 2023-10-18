@@ -1,0 +1,34 @@
+name: SL SI91X PSA HMAC
+
+clang-format: true
+
+includes:
+  global:
+    - inc
+
+sources:
+  - src/sl_si91x_psa_hmac.c
+
+requires:
+  components:
+    - sl_si91x_wireless
+    - wiseconnect3_common
+    - sl_si91x_hmac
+    - sl_si91x_psa_crypto
+
+defines:
+  global:
+    - SLI_MAC_DEVICE_SI91X
+
+slc:
+  label: 'PSA HMAC'
+  description: 'Implementation of mbedTls PSA crypto HMAC API'
+  category: 'Device|Si91x|Wireless|PSA Crypto'
+  requires:
+    - name: sl_si91x_psa_crypto
+  include:
+    - path: inc
+      file_list:        
+        - sl_si91x_psa_hmac.h
+  requires:
+    - name: 'sl_si91x_hmac'

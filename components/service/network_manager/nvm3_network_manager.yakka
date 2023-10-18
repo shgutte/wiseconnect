@@ -5,6 +5,10 @@ sources:
   - src/sl_net_nvm_profiles.c
   
 slc:
-  label: 'NVM3 Data Manager'
-  description: 'NVM3 network data manager'
-  category: 'Networking|Data Management'
+  label: 'NVM3 Network Data Manager'
+  description: 'NVM3 Network Data Manager provides an API to manage network credentials and profiles stored in NVM3'
+  category: 'Service|Network Management'
+  provides:
+    - name: network_data_manager
+  conflicts:
+    - name: basic_network_manager

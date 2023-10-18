@@ -267,9 +267,15 @@ void rsi_ble_task_on_conn(void *parameters)
     //! checking for events list
     event_id = rsi_ble_get_event_based_on_conn(l_conn_id);
     if (event_id == -1) {
-
-      //! wait on connection specific semaphore
+#if RSI_M4_INTERFACE && ENABLE_POWER_SAVE
+      //! if events are not received loop will be continued.
+      if ((!(P2P_STATUS_REG & TA_wakeup_M4))) {
+        P2P_STATUS_REG &= ~M4_wakeup_TA;
+        sl_si91x_m4_sleep_wakeup();
+      }
+#else
       osSemaphoreAcquire(ble_conn_sem[l_conn_id], osWaitForever);
+#endif
       continue;
     }
 
@@ -633,6 +639,8 @@ void rsi_ble_task_on_conn(void *parameters)
             if (rsi_ble_profile_list_by_conn.profile_desc == NULL) {
               rsi_ble_profile_list_by_conn.profile_desc =
                 (profile_descriptors_t *)malloc(sizeof(profile_descriptors_t) * no_of_profiles);
+              if (rsi_ble_profile_list_by_conn.profile_desc == NULL)
+                return;
               memset(rsi_ble_profile_list_by_conn.profile_desc, 0, sizeof(profile_descriptors_t) * no_of_profiles);
             } else {
               void *temp = NULL;
@@ -1217,6 +1225,13 @@ void rsi_ble_task_on_conn(void *parameters)
               continue;
             }
             LOG_PRINT("\r\n Advertising started - conn%d\n", l_conn_id);
+#if ENABLE_POWER_SAVE
+            LOG_PRINT("\r\n Initiate module in to power save \r\n");
+            status = rsi_initiate_power_save();
+            if (status != RSI_SUCCESS) {
+              LOG_PRINT("\n Failed to keep module in power save \r\n");
+            }
+#endif
           }
         } else {
           LOG_PRINT("\r\n Peripheral is disconnected, reason : 0x%x - conn%d\r\n",

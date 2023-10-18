@@ -4,7 +4,7 @@ quality: production
 label: wifi_si91x_tcp_async_server
 category: Example|Wi-Fi
 description: >
-  Si91x Async socket example.
+  Si91x Async sl_si91x_asynchronous_socket example.
 filter:
   - name: "Wireless Technology"
     value: ["Wi-Fi"]
@@ -32,13 +32,13 @@ requires:
 - name: bsd_socket
 - name: network_manager
 - name: basic_network_manager
-- name: si91x_support
+- name: wiseconnect3_common
 - name: wifi
-- name: si91x
-- name: socket
-- name: socket_utility
-- name: si91x_internal_stack
-- name: si91x_basic_buffers
+- name: sl_si91x_wireless
+- name: sl_si91x_asynchronous_socket
+- name: sl_si91x_socket
+- name: sl_si91x_internal_stack
+- name: sl_si91x_basic_buffers
 - name: wifi_resources
 - name: freertos
 - name: slist

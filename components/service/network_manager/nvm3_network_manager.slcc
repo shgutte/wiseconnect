@@ -1,14 +1,18 @@
 id: nvm3_network_manager
 package: wiseconnect3_sdk
 description: >
-  NVM3 network data manager
-label: NVM3 Data Manager
-category: Networking|Data Management
+  NVM3 Network Data Manager provides an API to manage network credentials and profiles stored in NVM3
+label: NVM3 Network Data Manager
+category: Service|Network Management
 quality: production
 component_root_path: ./components/service/network_manager
 provides:
 - name: nvm3_network_manager
+- name: network_data_manager
 source:
 - path: src/sl_net_nvm_credentials.c
 - path: src/sl_net_nvm_profiles.c
 include:
+conflicts:
+- name: basic_network_manager
+

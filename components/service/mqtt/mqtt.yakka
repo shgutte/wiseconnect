@@ -35,9 +35,11 @@ doxygen:
     - docs/doxygen_indexfile.md 
 
 slc:
-  label: 'MQTT Client Library'
-  description: 'MQTT Client Library'
-  category: 'Networking|Protocol'
+  label: 'MQTT Client'
+  description: 'The MQTT Client provides an API to start an MQTT client service'
+  category: 'Service'
+  requires:
+    - name: sl_si91x_internal_stack
   include:
     - path: inc
       file_list:

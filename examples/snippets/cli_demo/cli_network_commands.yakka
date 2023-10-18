@@ -3,7 +3,7 @@ name: CLI network commands
 requires:
   components:
     - si91x_debug
-    - si91x
+    - sl_si91x_wireless
     - network_manager
 #    - nvm3
 

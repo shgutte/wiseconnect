@@ -1,0 +1,35 @@
+name: BRD4340A
+
+includes:
+  global:
+    - inc
+    - config/brd4340a
+
+sources:
+  - src/rsi_board.c
+
+defines:
+  global:
+    - SI917_RADIO_BOARD_V2=1
+    - SI917_RADIO_BOARD=1
+    - COMMON_FLASH_EN=1
+    - FLASH_BASED_EXECUTION_ENABLE=1
+
+requires:
+  features:
+    - wifi_internal_bus
+  components:
+    - sl_si91x_mcu
+
+flags:
+  ld:
+    global:
+      - -Wl,--defsym=SI91X_SOC_ROM_START_ADDRESS=0x8202000
+      - -Wl,--defsym=SI91X_SOC_RAM_START_ADDRESS=0x400
+
+clang-format: true
+
+silicon_labs:
+  device:
+    flash_addr: 136323072
+    ram_size: 194560

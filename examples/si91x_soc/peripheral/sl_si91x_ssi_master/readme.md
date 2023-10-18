@@ -37,7 +37,6 @@
 - A static function is called to fill in the \ref sl_ssi_clock_config_t structure, which is passed in \ref sl_si91x_ssi_configure_clock API to configure the clock.
 - \ref sl_si91x_ssi_init is used to initialize the peripheral, that includes pin configuration and it powers up the module.
 - SSI instance must be passed in init to get the instance handle \ref sl_ssi_instance_t, which is used in other APIs.
-- After initialization \ref sl_si91x_ssi_configure_power_mode is called to set the power mode \ref sl_ssi_power_state_t.
 - All the necessary parameters are configured using \ref sl_si91x_ssi_set_configuration API, it expects a structure with required parameters \ref sl_ssi_control_config_t.
 - After configuration, a callback register API is called to register the callback at the time of events \ref sl_si91x_ssi_register_event_callback.
 - The State machine code is implemented for transfer, send and receive data, the current mode is determined by ssi_mode_enum_t which is declared in ssi_master_example.c file.
@@ -106,7 +105,7 @@
   - Mode: SSI mode can be configured, i.e. Mode 0: Clock Polarity is zero and Clock Phase is zero, Mode 1: Clock Polarity is zero, Clock Phase is one, Mode 2: Clock Polarity is one and Clock Phase is zero, Mode 3: Clock Polarity is one and Clock Phase is one, Mode-4 (TI SSI) and Mode-5 (Microwire).
   - SSI Baudrate: The speed of transfer can be configured, i.e. bits/second.
   - Data Width: The size of data packet, it can be configured between 4 to 32.
-  - CS Control (Master): When device is in slave mode, it can be configured as H/w control or S/w control.
+  - CS Control (Master): When device is in master mode, it can be configured as H/w control or S/w control.
   - CS Control (Slave): When device is in slave mode, it can be configured as H/w control or S/w control.
   - **DMA Configuration**
   - Enable/Disable the DMA configuration.
@@ -157,6 +156,9 @@
 
 4. When the application runs, It sends and receives data in loopback if USE_TRANSFER is enabled.
 5. If USE_RECEIVE or USE_SEND is enabled, SSI slave will receive and send data respectively.
+
+## Note
+ - If CS Control (Master) configured as software control, then in example.c #line39 ENABLE_SW_CS macro should be 1, by default it is 0. 
 
 ## Expected Results
 

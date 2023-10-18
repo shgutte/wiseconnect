@@ -1,0 +1,59 @@
+name: IoT Socket API
+
+includes:
+  files:
+    - include/iot_socket.h
+    - silabs/iot_socket_types.h
+  global:
+    - include
+    - silabs
+
+sources:
+
+supports:
+  components:
+    lwip:
+      sources:
+        - source/lwip/iot_socket.c
+      includes:
+        files:
+          - silabs/RTE_Components.h
+    bsd_socket:
+      sources:
+        - source/bsd_socket/iot_socket.c
+
+api:
+  public:
+    - include/iot_socket.h
+    - silabs/iot_socket_types.h
+
+slc:
+  label: 'IoT Socket'
+  description: 'ARM IoT Socket provides a simple, BSD-like IP socket API'
+  category: 'Third Party'
+  requires:
+    - name: bsd_socket
+  include:
+    - path: include
+      file_list:
+        - iot_socket.h
+    - path: silabs
+      file_list:
+        - iot_socket_types.h 
+
+suds:
+  wiseconnect-api-reference-guide-iot-socket:
+    version: "3.0.0"
+    authors:
+      - aji.gerdiman@silabs.com
+      - nik.vonhuben@silabs.com
+    contentType: doxygen
+    title: "IOT Socket"
+    description: "IOT Socket"
+
+doxygen:
+  project_name: "IOT Socket"
+  inputs:
+    - include
+    - docs/doxygen_template.h 
+    - docs/doxygen_indexfile.md 

@@ -14,7 +14,7 @@ requires:
   components:
     - wifi
     - network_manager
-    - socket
+    - sl_si91x_asynchronous_socket
     - bsd_socket
     - freertos
     - http_client

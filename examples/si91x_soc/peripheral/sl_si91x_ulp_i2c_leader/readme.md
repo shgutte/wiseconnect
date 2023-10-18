@@ -21,26 +21,22 @@
 
 - This example code demonstrates I2C data transfer between leader and follower
 - In example code, firstly clock is initialized using static function.
-- After that I2C abort is called to clear any pending transfer using \ref sl_si91x_i2c_abort_transfer. Note: I2C should be enabled for aborting.
 - \ref sl_si91x_i2c_init API is called to configure various parameters of \ref sl_i2c_init_params_t structure. This structure includes:
   - \ref sl_i2c_clock_hlr_t bus speed, Standard, Fast, Fast plus or High speed.
   - Frequency which needs to be configured.
-  - is_10bit_addr flag is set according to the address, here it is set as false.
   - \ref sl_i2c_mode_t mode, either leader or follower, here leader is selected.
-  - Address of the slave.
 - After initialization of the parameters, pin configuration is performed using static function.
 - Now write_buffer is filled with some data which needs to be sent to the follower.
 - Current_mode enum is set to SEND_DATA, so here send_data is called which is a static function, that internally calls the APIs which needs to be configured before sending data.
   - Disable the interrupt using \ref sl_si91x_i2c_disable_interrupts API, fill the write_data variable with the data.
-  - Disable I2C, set the tx thresholds using \ref sl_si91x_i2c_set_tx_threshold API and enable the I2C.
-  - Set the direction of transfer using \ref sl_si91x_i2c_control_direction.
+  - Disable I2C, sets slave address and tx thresholds using \ref sl_si91x_i2c_set_tx_threshold API and enable the I2C.
   - Set the \ref SL_I2C_EVENT_TRANSMIT_EMPTY interrupt using \ref sl_si91x_i2c_set_interrupts API.
   - Enable the interrupt using \ref sl_si91x_i2c_enable_interrupts API.
 - After calling send_data, it will wait till all the data is transferred to the follower device.
 - Once the irq handler generates send_complete flag, it changes current_mode enum to RECEIVE_DATA.
 - Here receive_data is called which is a static function, that internally calls the APIs which needs to be configured before sending data.
   - Disable the interrupt using \ref sl_si91x_i2c_disable_interrupts API.
-  - Disable I2C, set the rx thresholds using \ref sl_si91x_i2c_set_rx_threshold API and enable the I2C.
+  - Disable I2C, sets slave address and rx thresholds using \ref sl_si91x_i2c_set_rx_threshold API and enable the I2C.
   - Set the direction of transfer using \ref sl_si91x_i2c_control_direction.
   - Set the \ref SL_I2C_EVENT_RECEIVE_FULL interrupt using \ref sl_si91x_i2c_set_interrupts API.
   - Enable the interrupt using \ref sl_si91x_i2c_enable_interrupts API.
@@ -82,7 +78,7 @@
 ![Figure: VCOM_setup](resources/readme/vcom.png)
 
 ## Configuration and Steps for Execution
-- Configure the following macros in i2c_leader_example.c file and update/modify following macros if required.
+- Configure the following macros in i2c_follower_example.c file to update/modify i2c instance used for follower device
 ```C
  #define I2C_INSTANCE    0    // I2C Instance for Pin configuration
  #define I2C             I2C0 // I2C Instance 

@@ -37,6 +37,9 @@
 /// Max Length of password in enterprise security.
 #define SL_EAP_PASSWORD_LENGTH 128
 
+/// Max Length of certificate key in enterprise security.
+#define SL_EAP_CERTIFICATE_KEY_LENGTH 80
+
 /// Select Internal Antenna for Wi-Fi.
 #define SL_WIFI_SELECT_INTERNAL_ANTENNA 0
 

@@ -14,11 +14,13 @@ defines:
 requires:
   components:
     - platform_common
-    - si91x_support
+    - wiseconnect3_common
+  features:
+    - wifi_driver
 
 supports:
   components:
-    si91x:
+    sl_si91x_wireless:
       sources:
         - si91x/sl_wifi.c
 
@@ -66,12 +68,14 @@ api:
     - inc/sl_wifi_callback_framework.h
     
 slc:
-  label: 'Wi-Fi Core'
-  description: 'Implementation of the SL Wi-Fi API'
-  category: 'Wi-Fi'
+  label: 'Wi-Fi'
+  description: 'The SL Wi-FI API implements the core Wi-Fi functionality'
+  category: 'Protocol'
+  requires:
+    - name: wifi_driver
   include:
     - path: inc
-      file_list:        
+      file_list:
         - sl_wifi_callback_framework.h 
         - sl_wifi_constants.h 
         - sl_wifi_host_interface.h 

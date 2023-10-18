@@ -1,0 +1,21 @@
+name: SL SI91X CRYPTO UTILITY
+
+clang-format: true
+
+includes:
+  global:
+    - inc
+
+sources:
+  - src/sl_si91x_crypto_utility.c
+
+slc:
+  label: 'Crypto - Utility'
+  description: 'Utility folder for crypto APIs'
+  category: 'Device|Si91x|Wireless|Crypto'
+  requires:
+    - name: sl_si91x_crypto
+  include:
+  - path: inc
+    file_list:
+      - sl_si91x_crypto_utility.h

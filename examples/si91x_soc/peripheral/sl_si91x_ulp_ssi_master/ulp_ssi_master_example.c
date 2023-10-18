@@ -36,13 +36,10 @@
 #define SSI_BAUDRATE            10000000  // SSI baudrate
 #define MAX_BIT_WIDTH           16        // Maximum Bit width
 #define RECEIVE_SAMPLE_DELAY    0         // By default sample delay is 0
+#define ENABLE_SW_CS            0         // Enable software slave select.
 #define ULP_BANK_OFFSET         0x800
 #define TX_BUF_MEMORY           (ULP_SRAM_START_ADDR + (1 * ULP_BANK_OFFSET))
 #define RX_BUF_MEMORY           (ULP_SRAM_START_ADDR + (2 * ULP_BANK_OFFSET))
-
-#define RESERVED_IRQ_COUNT   16                                   // Reserved IRQ count
-#define EXT_IRQ_COUNT        98                                   // External IRQ count
-#define VECTOR_TABLE_ENTRIES (RESERVED_IRQ_COUNT + EXT_IRQ_COUNT) // Vector table entries
 
 /*******************************************************************************
  **********************  Local Function prototypes   ***************************
@@ -60,6 +57,7 @@ static sl_ssi_handle_t ssi_driver_handle = NULL;
 boolean_t transfer_complete              = false;
 boolean_t begin_transmission             = true;
 static uint16_t division_factor          = 1;
+static uint32_t slave_number             = SSI_SLAVE_0;
 
 /// @brief Enumeration for different transmission scenarios
 typedef enum {
@@ -70,7 +68,7 @@ typedef enum {
 } ssi_mode_enum_t;
 static ssi_mode_enum_t current_mode = SL_TRANSFER_DATA;
 
-uint32_t ramVector[VECTOR_TABLE_ENTRIES] __attribute__((aligned(256)));
+uint32_t ramVector[SI91X_VECTOR_TABLE_ENTRIES] __attribute__((aligned(256)));
 extern void hardware_setup(void);
 
 /*******************************************************************************
@@ -90,7 +88,7 @@ void ssi_master_example_init(void)
     * startup_rs1xxxx.c file
     */
   //copying the vector table from flash to ram
-  memcpy(ramVector, (uint32_t *)SCB->VTOR, sizeof(uint32_t) * VECTOR_TABLE_ENTRIES);
+  memcpy(ramVector, (uint32_t *)SCB->VTOR, sizeof(uint32_t) * SI91X_VECTOR_TABLE_ENTRIES);
   // Assigning the ram vector address to VTOR register
   SCB->VTOR = (uint32_t)ramVector;
 
@@ -144,7 +142,7 @@ void ssi_master_example_init(void)
     }
     DEBUGOUT("SSI Initialization Success \n");
     // Configure the SSI to Master, 16-bit mode @10000 kBits/sec
-    sl_status = sl_si91x_ssi_set_configuration(ssi_driver_handle, &config);
+    sl_status = sl_si91x_ssi_set_configuration(ssi_driver_handle, &config, slave_number);
     if (sl_status != SL_STATUS_OK) {
       DEBUGOUT("Failed to Set Configuration Parameters to SSI, Error Code : %lu \n", sl_status);
       break;
@@ -170,10 +168,10 @@ void ssi_master_example_init(void)
       break;
     }
     if (SL_USE_RECEIVE) {
-      current_mode = SL_SEND_DATA;
+      current_mode = SL_RECEIVE_DATA;
       break;
     }
-    current_mode = SL_RECEIVE_DATA;
+    current_mode = SL_SEND_DATA;
   } while (false);
 }
 /*******************************************************************************
@@ -190,7 +188,11 @@ void ssi_master_example_process_action(void)
     case SL_TRANSFER_DATA:
       if (begin_transmission == true) {
         // Validation for executing the API only once
-        sl_si91x_ssi_set_slave_number(SSI_SLAVE_0);
+#if defined(ENABLE_SW_CS) && (ENABLE_SW_CS == 1)
+        sl_si91x_ssi_cs_assert(ssi_driver_handle, slave_number);
+#else
+        sl_si91x_ssi_set_slave_number(slave_number);
+#endif
         status = sl_si91x_ssi_transfer_data(ssi_driver_handle,
                                             (uint8_t *)TX_BUF_MEMORY,
                                             (uint8_t *)RX_BUF_MEMORY,
@@ -207,6 +209,9 @@ void ssi_master_example_process_action(void)
       if (transfer_complete) {
         transfer_complete = false;
         memcpy(data_in, (uint8_t *)RX_BUF_MEMORY, BUFFER_SIZE);
+#if defined(ENABLE_SW_CS) && (ENABLE_SW_CS == 1)
+        sl_si91x_ssi_cs_deassert(ssi_driver_handle, slave_number);
+#endif
         DEBUGOUT("SSI transfer completed successfully \n");
         // After comparing the loopback transfer, it compares the data_out and
         // data_in.
@@ -230,7 +235,11 @@ void ssi_master_example_process_action(void)
     case SL_SEND_DATA:
       if (begin_transmission) {
         // Validation for executing the API only once
-        sl_si91x_ssi_set_slave_number(SSI_SLAVE_0);
+#if defined(ENABLE_SW_CS) && (ENABLE_SW_CS == 1)
+        sl_si91x_ssi_cs_assert(ssi_driver_handle, slave_number);
+#else
+        sl_si91x_ssi_set_slave_number(slave_number);
+#endif
         status = sl_si91x_ssi_send_data(ssi_driver_handle, (uint8_t *)TX_BUF_MEMORY, BUFFER_SIZE / division_factor);
         if (status != SL_STATUS_OK) {
           // If it fails to execute the API, it will not execute rest of the things
@@ -245,14 +254,17 @@ void ssi_master_example_process_action(void)
       if (transfer_complete) {
         // If DMA is enabled, it will wait untill transfer_complete flag is set.
         transfer_complete = false;
+#if defined(ENABLE_SW_CS) && (ENABLE_SW_CS == 1)
+        sl_si91x_ssi_cs_deassert(ssi_driver_handle, slave_number);
+#endif
         if (SL_USE_RECEIVE) {
           // If send macro is enabled, current mode is set to send
           current_mode       = SL_RECEIVE_DATA;
           begin_transmission = true;
-          DEBUGOUT("SSI receive completed \n");
+          DEBUGOUT("SSI send completed \n");
           break;
         }
-        DEBUGOUT("SSI receive completed \n");
+        DEBUGOUT("SSI send completed \n");
         // If send macro is not enabled, current mode is set to completed.
         current_mode = SL_TRANSMISSION_COMPLETED;
       }
@@ -260,7 +272,11 @@ void ssi_master_example_process_action(void)
     case SL_RECEIVE_DATA:
       if (begin_transmission == true) {
         // Validation for executing the API only once
-        sl_si91x_ssi_set_slave_number(SSI_SLAVE_0);
+#if defined(ENABLE_SW_CS) && (ENABLE_SW_CS == 1)
+        sl_si91x_ssi_cs_assert(ssi_driver_handle, slave_number);
+#else
+        sl_si91x_ssi_set_slave_number(slave_number);
+#endif
         status = sl_si91x_ssi_receive_data(ssi_driver_handle, (uint8_t *)RX_BUF_MEMORY, BUFFER_SIZE);
         if (status != SL_STATUS_OK) {
           // If it fails to execute the API, it will not execute rest of the things
@@ -275,7 +291,12 @@ void ssi_master_example_process_action(void)
       if (transfer_complete) {
         memcpy(data_in, (uint8_t *)RX_BUF_MEMORY, BUFFER_SIZE);
         // If DMA is enabled, it will wait untill transfer_complete flag is set.
+#if defined(ENABLE_SW_CS) && (ENABLE_SW_CS == 1)
+        sl_si91x_ssi_cs_deassert(ssi_driver_handle, slave_number);
+#endif
         transfer_complete = false;
+        DEBUGOUT("SSI receive completed \n");
+        compare_loopback_data();
         // At last current mode is set to completed.
         current_mode = SL_TRANSMISSION_COMPLETED;
       }

@@ -43,21 +43,7 @@
 #ifdef RSI_M4_INTERFACE
 #include "rsi_rom_clks.h"
 #endif
-sl_wifi_data_rate_t rate = SL_WIFI_DATA_RATE_6;
-//! Transmit test power
-#define SL_TX_TEST_POWER 127
-
-//! Transmit test rate
-#define SL_TX_TEST_RATE rate
-
-//! Transmit test length
-#define SL_TX_TEST_LENGTH 1000
-
-//! Transmit test mode
-#define SL_TX_TEST_MODE 0
-
-//! Transmit test channel
-#define SL_TX_TEST_CHANNEL 1
+const sl_wifi_data_rate_t rate = SL_WIFI_DATA_RATE_6;
 
 //! Bandwidth 0 = 20Mhz, 1 = 40Mhz
 #define SL_WIFI_BANDWIDTH_20MHz 0
@@ -128,6 +114,40 @@ const osThreadAttr_t thread_attributes = {
   .reserved   = 0,
 };
 
+sl_si91x_request_tx_test_info_t tx_test_info = {
+  .enable      = 1,
+  .power       = 127,
+  .rate        = rate,
+  .length      = 1000,
+  .mode        = 0,
+  .channel     = 1,
+  .aggr_enable = 0,
+#ifdef CHIP_917
+  .enable_11ax            = 0,
+  .coding_type            = 0,
+  .nominal_pe             = 0,
+  .UL_DL                  = 0,
+  .he_ppdu_type           = 0,
+  .beam_change            = 0,
+  .BW                     = 0,
+  .STBC                   = 0,
+  .Tx_BF                  = 0,
+  .GI_LTF                 = 0,
+  .DCM                    = 0,
+  .NSTS_MIDAMBLE          = 0,
+  .spatial_reuse          = 0,
+  .BSS_color              = 0,
+  .HE_SIGA2_RESERVED      = 0,
+  .RU_ALLOCATION          = 0,
+  .N_HELTF_TOT            = 0,
+  .SIGB_DCM               = 0,
+  .SIGB_MCS               = 0,
+  .USER_STA_ID            = 0,
+  .USER_IDX               = 0,
+  .SIGB_COMPRESSION_FIELD = 0,
+#endif
+};
+
 /******************************************************
  *               Function Declarations
  ******************************************************/
@@ -170,11 +190,8 @@ static void application_start(void *argument)
   }
   printf("\r\nUpdate gain table Success \r\n");
 
-  status = sl_si91x_transmit_test_start(SL_TX_TEST_POWER,
-                                        SL_TX_TEST_RATE,
-                                        SL_TX_TEST_LENGTH,
-                                        SL_TX_TEST_MODE,
-                                        SL_TX_TEST_CHANNEL);
+  status = sl_si91x_transmit_test_start(&tx_test_info);
+
   if (status != SL_STATUS_OK) {
     printf("\r\nTransmit test start Failed, Error Code : 0x%lX\r\n", status);
     return;

@@ -56,7 +56,7 @@ sl_status_t default_wifi_event_handler(sl_wifi_event_t event, sl_wifi_buffer_t *
   // Start processing the event
   sl_si91x_packet_t *packet = (sl_si91x_packet_t *)sl_si91x_host_get_buffer_data((sl_wifi_buffer_t *)buffer, 0, NULL);
   if (CHECK_IF_EVENT_FAILED(event)) {
-    sl_status_t status = convert_firmware_status(get_si91x_frame_status(packet));
+    sl_status_t status = convert_and_save_firmware_status(get_si91x_frame_status(packet));
     if (packet->command == RSI_WLAN_RSP_JOIN) {
       sl_status_t temp_status = sl_si91x_driver_send_command(RSI_WLAN_REQ_INIT,
                                                              SI91X_WLAN_CMD_QUEUE,

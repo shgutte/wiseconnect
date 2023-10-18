@@ -45,10 +45,8 @@
  ******************************************************************************/
 #define SL_TIMER_MATCH_VALUE \
   ((CLOCKS_PER_MICROSECONDS_20MHZ) * (TIME_IN_MICROSECONDS)) // Timer match value for down-counter type with 20mhz clock
-#define RESERVED_IRQ_COUNT             16                    // Reserved IRQ count
-#define EXT_IRQ_COUNT                  98                    // External IRQ count
-#define VECTOR_TABLE_ENTRIES           (RESERVED_IRQ_COUNT + EXT_IRQ_COUNT) // Vector table entries
-#define LED0                           0                                    // For On-board LED-0
+
+#define LED0                           0    // For On-board LED-0
 #define ONE_SEC_MATCH_VALUE_256US_TYPE 3906 // Timer match value for 1-sec, in 256us type
 #define FIFTH_INTERRUPT_COUNT          5    // Count for fifth timeout interrupt
 #define TENTH_INTERRUPT_COUNT          10   // Count for tenth timeout interrupt
@@ -75,7 +73,7 @@ static bool timer_callback_unregister_flag = false;
 static uint32_t timer_count_value;
 static uint32_t timer_direction;
 sl_status_t status;
-uint32_t ramVector[VECTOR_TABLE_ENTRIES] __attribute__((aligned(256)));
+uint32_t ramVector[SI91X_VECTOR_TABLE_ENTRIES] __attribute__((aligned(256)));
 extern void hardware_setup(void);
 
 /*******************************************************************************
@@ -90,7 +88,7 @@ void ulp_timer_example_init(void)
    * startup_rs1xxxx.c file
    */
   //copying the vector table from flash to ram
-  memcpy(ramVector, (uint32_t *)SCB->VTOR, sizeof(uint32_t) * VECTOR_TABLE_ENTRIES);
+  memcpy(ramVector, (uint32_t *)SCB->VTOR, sizeof(uint32_t) * SI91X_VECTOR_TABLE_ENTRIES);
   // Assigning the ram vector address to VTOR register
   SCB->VTOR = (uint32_t)ramVector;
   // Switching MCU from PS4 to PS2 state(low power state)

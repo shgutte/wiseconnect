@@ -10,22 +10,25 @@ includes:
   files:
     - app.h
     - ble_config.h
+    - wifi_app.h
   global:
     - .
     
 defines:
   global:
     - RSI_DEBUG_PRINTS
+    - DEBUG_UART
 
 requires:
   components:
     - si91x_debug
-    - si91x
+    - sl_si91x_wireless
     - wifi
     - network_manager
     - freertos
     - clang-format
     - ble
     - bsd_socket
+    - socket
 
 clang-format: true

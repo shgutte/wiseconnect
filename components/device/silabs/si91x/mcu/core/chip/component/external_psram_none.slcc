@@ -1,0 +1,13 @@
+id: external_psram_none
+label: No External PSRAM
+package: platform
+description: Component for No External PSRAM on SIWG917 Chips
+category: Device|Si91x|MCU|PSRAM Types
+quality: production
+provides:
+  - name: external_psram_none
+  - name: external_psram_implementation
+
+template_contribution:
+    - name: external_psram_present
+      value: 0

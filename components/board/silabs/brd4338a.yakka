@@ -1,0 +1,40 @@
+name: BRD4338A
+
+includes:
+  global:
+    - inc
+    - config/brd4338a
+
+sources:
+  - src/rsi_board.c
+
+defines:
+  global:
+    - SI917_RADIO_BOARD_V2=1
+    - SI917_RADIO_BOARD=1
+    - COMMON_FLASH_EN=1
+    - IVT_OFFSET_ADDR=0x8202000
+    - WKP_RAM_USAGE_LOCATION=0x24061EFC
+
+requires:
+  features:
+    - wifi_internal_bus
+  components:
+    - sl_si91x_mcu
+
+flags:
+  ld:
+    global:
+      - -Wl,--defsym=SI91X_SOC_ROM_START_ADDRESS=0x8202000
+      - -Wl,--defsym=SI91X_SOC_RAM_START_ADDRESS=0x400
+
+clang-format: true
+
+silicon_labs:
+  device:
+    flash_addr: 136323072
+    ram_size: 196608
+    psram_present: true
+    psram_addr: 167772160
+    psram_size: 8388608
+    

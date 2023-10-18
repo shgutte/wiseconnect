@@ -1,0 +1,5 @@
+name: BRD8036A
+
+requires:
+  components:
+    - sl_si91x_wireless
