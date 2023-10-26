@@ -15,10 +15,25 @@
     <properties key="readmeFiles" value="examples/snippets/crypto/attestation/readme.md"/>
 	<properties key="filters" value="Device\ Type|SoC Wireless"/>
   </descriptors>
-<descriptors name="ble_accept_list" label="BLE - Acceptlist" description="This application demonstrates how to add a particular BD-Address to the Allow List. The Allow List can restrict which device are allowed to connect to other device.">
+<descriptors name="ble_accept_list_ncp" label="BLE - Acceptlist(NCP)" description="This application demonstrates how to add a particular BD-Address to the Allow List. The Allow List can restrict which device are allowed to connect to other device.">
     <properties key="namespace" value="template.uc"/>
     <properties key="keywords" value="universal\ configurator"/>
-    <properties key="projectFilePaths" value="examples/snippets/ble/ble_accept_list/ble_accept_list.slcp"/>
+    <properties key="projectFilePaths" value="examples/snippets/ble/ble_accept_list/ble_accept_list_ncp.slcp"/>
+    <properties key="boardCompatibility" value="com.silabs.board.none brd4180a brd4180b"/>
+    <properties key="partCompatibility" value="mcu.arm.efr32.mg21.* mcu.arm.efr32.mg21.* .*si917.* .*si917.* .*siwg917m111mgtba.* .*siwg917m111mgtba.* .*siwg917m141xgtba.* .*siwg917m111mgtba.* .*siwg917m111mgtba.* .*siwg917m111mgtba.*"/>
+    <properties key="ideCompatibility" value="makefile-ide simplicity-ide"/>
+    <properties key="toolchainCompatibility" value="gcc"/>
+    <properties key="quality" value="alpha"/>
+    <properties key="category" value="Example|Wi-Fi"/>
+    <properties key="stockConfigCompatibility" value="com.silabs.ss.framework.project.toolchain.core.default"/>
+    <properties key="sdkAndProtocolTags" value=""/>
+    <properties key="readmeFiles" value="examples/snippets/ble/ble_accept_list/readme.md"/>
+	<properties key="filters" value="Device\ Type|NCP Wireless\ Technology|Bluetooth Project\ Difficulty|Beginner"/>
+  </descriptors>
+<descriptors name="ble_accept_list_soc" label="BLE - Acceptlist(SOC)" description="This application demonstrates how to add a particular BD-Address to the Allow List. The Allow List can restrict which device are allowed to connect to other device.">
+    <properties key="namespace" value="template.uc"/>
+    <properties key="keywords" value="universal\ configurator"/>
+    <properties key="projectFilePaths" value="examples/snippets/ble/ble_accept_list/ble_accept_list_soc.slcp"/>
     <properties key="boardCompatibility" value="com.silabs.board.none brd4325a brd4325b brd4325c brd4325e brd4325f brd4325g brd4338a brd4339a brd4339b brd4340a brd4340b brd4341a brd4342a"/>
     <properties key="partCompatibility" value="mcu.arm.efr32.mg21.* mcu.arm.efr32.mg21.* .*si917.* .*si917.* .*siwg917m111mgtba.* .*siwg917m111mgtba.* .*siwg917m141xgtba.* .*siwg917m111mgtba.* .*siwg917m111mgtba.* .*siwg917m111mgtba.*"/>
     <properties key="ideCompatibility" value="makefile-ide simplicity-ide"/>
@@ -184,7 +199,7 @@
     <properties key="namespace" value="template.uc"/>
     <properties key="keywords" value="universal\ configurator"/>
     <properties key="projectFilePaths" value="examples/snippets/ble/ble_heart_rate_profile/ble_heart_rate_profile_psram.slcp"/>
-    <properties key="boardCompatibility" value="com.silabs.board.none brd4340a"/>
+    <properties key="boardCompatibility" value="com.silabs.board.none brd4325g brd4339a brd4340a brd4342a"/>
     <properties key="partCompatibility" value="mcu.arm.efr32.mg21.* mcu.arm.efr32.mg21.* .*si917.* .*si917.* .*siwg917m111mgtba.* .*siwg917m111mgtba.* .*siwg917m141xgtba.* .*siwg917m111mgtba.* .*siwg917m111mgtba.* .*siwg917m111mgtba.*"/>
     <properties key="ideCompatibility" value="makefile-ide simplicity-ide"/>
     <properties key="toolchainCompatibility" value="gcc"/>
@@ -319,7 +334,7 @@
     <properties key="namespace" value="template.uc"/>
     <properties key="keywords" value="universal\ configurator"/>
     <properties key="projectFilePaths" value="examples/featured/ble_per/ble_per_psram.slcp"/>
-    <properties key="boardCompatibility" value="com.silabs.board.none brd4340a"/>
+    <properties key="boardCompatibility" value="com.silabs.board.none brd4325g brd4339a brd4340a brd4342a"/>
     <properties key="partCompatibility" value="mcu.arm.efr32.mg21.* mcu.arm.efr32.mg21.* .*si917.* .*si917.* .*siwg917m111mgtba.* .*siwg917m111mgtba.* .*siwg917m141xgtba.* .*siwg917m111mgtba.* .*siwg917m111mgtba.* .*siwg917m111mgtba.*"/>
     <properties key="ideCompatibility" value="makefile-ide simplicity-ide"/>
     <properties key="toolchainCompatibility" value="gcc"/>
@@ -364,7 +379,7 @@
     <properties key="namespace" value="template.uc"/>
     <properties key="keywords" value="universal\ configurator"/>
     <properties key="projectFilePaths" value="examples/snippets/ble/ble_power_save/ble_power_save_psram.slcp"/>
-    <properties key="boardCompatibility" value="com.silabs.board.none brd4340a"/>
+    <properties key="boardCompatibility" value="com.silabs.board.none brd4325g brd4339a brd4340a brd4342a"/>
     <properties key="partCompatibility" value="mcu.arm.efr32.mg21.* mcu.arm.efr32.mg21.* .*si917.* .*si917.* .*siwg917m111mgtba.* .*siwg917m111mgtba.* .*siwg917m141xgtba.* .*siwg917m111mgtba.* .*siwg917m111mgtba.* .*siwg917m111mgtba.*"/>
     <properties key="ideCompatibility" value="makefile-ide simplicity-ide"/>
     <properties key="toolchainCompatibility" value="gcc"/>
@@ -499,7 +514,7 @@
     <properties key="namespace" value="template.uc"/>
     <properties key="keywords" value="universal\ configurator"/>
     <properties key="projectFilePaths" value="examples/snippets/ble/ble_throughput_app/ble_throughput_app_psram.slcp"/>
-    <properties key="boardCompatibility" value="com.silabs.board.none brd4340a"/>
+    <properties key="boardCompatibility" value="com.silabs.board.none brd4325g brd4339a brd4340a brd4342a"/>
     <properties key="partCompatibility" value="mcu.arm.efr32.mg21.* mcu.arm.efr32.mg21.* .*si917.* .*si917.* .*siwg917m111mgtba.* .*siwg917m111mgtba.* .*siwg917m141xgtba.* .*siwg917m111mgtba.* .*siwg917m111mgtba.* .*siwg917m111mgtba.*"/>
     <properties key="ideCompatibility" value="makefile-ide simplicity-ide"/>
     <properties key="toolchainCompatibility" value="gcc"/>
@@ -634,7 +649,7 @@
     <properties key="namespace" value="template.uc"/>
     <properties key="keywords" value="universal\ configurator"/>
     <properties key="projectFilePaths" value="examples/si91x_soc/peripheral/iostream_usart_baremetal/iostream_usart_baremetal.slcp"/>
-    <properties key="boardCompatibility" value="com.silabs.board.none brd4325a brd4325b brd4325c brd4325e brd4325f brd4325g brd4338a brd4340a"/>
+    <properties key="boardCompatibility" value="com.silabs.board.none brd4325a brd4325b brd4325c brd4325e brd4325f brd4325g brd4338a brd4339a brd4339b brd4340a brd4340b brd4341a brd4342a"/>
     <properties key="partCompatibility" value="mcu.arm.efr32.mg21.* mcu.arm.efr32.mg21.* .*si917.* .*si917.* .*siwg917m111mgtba.* .*siwg917m111mgtba.* .*siwg917m141xgtba.* .*siwg917m111mgtba.* .*siwg917m111mgtba.* .*siwg917m111mgtba.*"/>
     <properties key="ideCompatibility" value="makefile-ide simplicity-ide"/>
     <properties key="toolchainCompatibility" value="gcc"/>
@@ -664,7 +679,7 @@
     <properties key="namespace" value="template.uc"/>
     <properties key="keywords" value="universal\ configurator"/>
     <properties key="projectFilePaths" value="examples/si91x_soc/peripheral/psram_blinky/psram_blinky.slcp"/>
-    <properties key="boardCompatibility" value="com.silabs.board.none brd4325g brd4340a"/>
+    <properties key="boardCompatibility" value="com.silabs.board.none brd4325g brd4339a brd4340a brd4342a"/>
     <properties key="partCompatibility" value="mcu.arm.efr32.mg21.* mcu.arm.efr32.mg21.* .*si917.* .*si917.* .*siwg917m111mgtba.* .*siwg917m111mgtba.* .*siwg917m141xgtba.* .*siwg917m111mgtba.* .*siwg917m111mgtba.* .*siwg917m111mgtba.*"/>
     <properties key="ideCompatibility" value="makefile-ide simplicity-ide"/>
     <properties key="toolchainCompatibility" value="gcc"/>
@@ -679,7 +694,7 @@
     <properties key="namespace" value="template.uc"/>
     <properties key="keywords" value="universal\ configurator"/>
     <properties key="projectFilePaths" value="examples/si91x_soc/peripheral/psram_driver_example/psram_driver_example.slcp"/>
-    <properties key="boardCompatibility" value="com.silabs.board.none brd4325g brd4340a"/>
+    <properties key="boardCompatibility" value="com.silabs.board.none brd4325g brd4339a brd4340a brd4342a"/>
     <properties key="partCompatibility" value="mcu.arm.efr32.mg21.* mcu.arm.efr32.mg21.* .*si917.* .*si917.* .*siwg917m111mgtba.* .*siwg917m111mgtba.* .*siwg917m141xgtba.* .*siwg917m111mgtba.* .*siwg917m111mgtba.* .*siwg917m111mgtba.*"/>
     <properties key="ideCompatibility" value="makefile-ide simplicity-ide"/>
     <properties key="toolchainCompatibility" value="gcc"/>
@@ -754,7 +769,7 @@
     <properties key="namespace" value="template.uc"/>
     <properties key="keywords" value="universal\ configurator"/>
     <properties key="projectFilePaths" value="examples/si91x_soc/crypto/si91x_psa_ecdh/si91x_psa_ecdh.slcp"/>
-    <properties key="boardCompatibility" value="com.silabs.board.none brd4325a brd4325b brd4325c brd4325e brd4325g brd4338a"/>
+    <properties key="boardCompatibility" value="com.silabs.board.none brd4325a brd4325b brd4325c brd4325e brd4325f brd4325g brd4338a brd4339a brd4339b brd4340a brd4340b brd4341a brd4342a"/>
     <properties key="partCompatibility" value="mcu.arm.efr32.mg21.* mcu.arm.efr32.mg21.* .*si917.* .*si917.* .*siwg917m111mgtba.* .*siwg917m111mgtba.* .*siwg917m141xgtba.* .*siwg917m111mgtba.* .*siwg917m111mgtba.* .*siwg917m111mgtba.*"/>
     <properties key="ideCompatibility" value="makefile-ide simplicity-ide"/>
     <properties key="toolchainCompatibility" value="gcc"/>
@@ -799,7 +814,7 @@
     <properties key="namespace" value="template.uc"/>
     <properties key="keywords" value="universal\ configurator"/>
     <properties key="projectFilePaths" value="examples/si91x_soc/crypto/si91x_psa_sha/si91x_psa_sha.slcp"/>
-    <properties key="boardCompatibility" value="com.silabs.board.none brd4325a brd4325b brd4325c brd4325e brd4325g brd4338a"/>
+    <properties key="boardCompatibility" value="com.silabs.board.none brd4325a brd4325b brd4325c brd4325e brd4325f brd4325g brd4338a brd4339a brd4339b brd4340a brd4340b brd4341a brd4342a"/>
     <properties key="partCompatibility" value="mcu.arm.efr32.mg21.* mcu.arm.efr32.mg21.* .*si917.* .*si917.* .*siwg917m111mgtba.* .*siwg917m111mgtba.* .*siwg917m141xgtba.* .*siwg917m111mgtba.* .*siwg917m111mgtba.* .*siwg917m111mgtba.*"/>
     <properties key="ideCompatibility" value="makefile-ide simplicity-ide"/>
     <properties key="toolchainCompatibility" value="gcc"/>
@@ -829,7 +844,7 @@
     <properties key="namespace" value="template.uc"/>
     <properties key="keywords" value="universal\ configurator"/>
     <properties key="projectFilePaths" value="examples/si91x_soc/peripheral/sl_si91x_adc/sl_si91x_adc.slcp"/>
-    <properties key="boardCompatibility" value="com.silabs.board.none brd4325a brd4325b brd4325c brd4325e brd4325f brd4325g brd4338a"/>
+    <properties key="boardCompatibility" value="com.silabs.board.none brd4325a brd4325b brd4325c brd4325e brd4325f brd4325g brd4338a brd4339a brd4339b brd4340a brd4340b brd4341a brd4342a"/>
     <properties key="partCompatibility" value="mcu.arm.efr32.mg21.* mcu.arm.efr32.mg21.* .*si917.* .*si917.* .*siwg917m111mgtba.* .*siwg917m111mgtba.* .*siwg917m141xgtba.* .*siwg917m111mgtba.* .*siwg917m111mgtba.* .*siwg917m111mgtba.*"/>
     <properties key="ideCompatibility" value="makefile-ide simplicity-ide"/>
     <properties key="toolchainCompatibility" value="gcc"/>
@@ -844,7 +859,7 @@
     <properties key="namespace" value="template.uc"/>
     <properties key="keywords" value="universal\ configurator"/>
     <properties key="projectFilePaths" value="examples/si91x_soc/peripheral/sl_si91x_blinky/sl_si91x_blinky.slcp"/>
-    <properties key="boardCompatibility" value="com.silabs.board.none brd4325a brd4325b brd4325c brd4325e brd4325g brd4338a"/>
+    <properties key="boardCompatibility" value="com.silabs.board.none brd4325a brd4325b brd4325c brd4325e brd4325f brd4325g brd4338a brd4339a brd4339b brd4340a brd4340b brd4341a brd4342a"/>
     <properties key="partCompatibility" value="mcu.arm.efr32.mg21.* mcu.arm.efr32.mg21.* .*si917.* .*si917.* .*siwg917m111mgtba.* .*siwg917m111mgtba.* .*siwg917m141xgtba.* .*siwg917m111mgtba.* .*siwg917m111mgtba.* .*siwg917m111mgtba.*"/>
     <properties key="ideCompatibility" value="makefile-ide simplicity-ide"/>
     <properties key="toolchainCompatibility" value="gcc"/>
@@ -859,7 +874,7 @@
     <properties key="namespace" value="template.uc"/>
     <properties key="keywords" value="universal\ configurator"/>
     <properties key="projectFilePaths" value="examples/si91x_soc/peripheral/sl_si91x_button_baremetal/sl_si91x_button_baremetal.slcp"/>
-    <properties key="boardCompatibility" value="com.silabs.board.none brd4325a brd4325b brd4325c brd4325e brd4325g brd4338a"/>
+    <properties key="boardCompatibility" value="com.silabs.board.none brd4325a brd4325b brd4325c brd4325e brd4325f brd4325g brd4338a brd4339a brd4339b brd4340a brd4340b brd4341a brd4342a"/>
     <properties key="partCompatibility" value="mcu.arm.efr32.mg21.* mcu.arm.efr32.mg21.* .*si917.* .*si917.* .*siwg917m111mgtba.* .*siwg917m111mgtba.* .*siwg917m141xgtba.* .*siwg917m111mgtba.* .*siwg917m111mgtba.* .*siwg917m111mgtba.*"/>
     <properties key="ideCompatibility" value="makefile-ide simplicity-ide"/>
     <properties key="toolchainCompatibility" value="gcc"/>
@@ -874,7 +889,7 @@
     <properties key="namespace" value="template.uc"/>
     <properties key="keywords" value="universal\ configurator"/>
     <properties key="projectFilePaths" value="examples/si91x_soc/peripheral/sl_si91x_calendar/sl_si91x_calendar.slcp"/>
-    <properties key="boardCompatibility" value="com.silabs.board.none brd4325a brd4325b brd4325c brd4325e brd4325f brd4325g brd4338a brd4340a"/>
+    <properties key="boardCompatibility" value="com.silabs.board.none brd4325a brd4325b brd4325c brd4325e brd4325f brd4325g brd4338a brd4339a brd4339b brd4340a brd4340b brd4341a brd4342a"/>
     <properties key="partCompatibility" value="mcu.arm.efr32.mg21.* mcu.arm.efr32.mg21.* .*si917.* .*si917.* .*siwg917m111mgtba.* .*siwg917m111mgtba.* .*siwg917m141xgtba.* .*siwg917m111mgtba.* .*siwg917m111mgtba.* .*siwg917m111mgtba.*"/>
     <properties key="ideCompatibility" value="makefile-ide simplicity-ide"/>
     <properties key="toolchainCompatibility" value="gcc"/>
@@ -889,7 +904,7 @@
     <properties key="namespace" value="template.uc"/>
     <properties key="keywords" value="universal\ configurator"/>
     <properties key="projectFilePaths" value="examples/si91x_soc/peripheral/sl_si91x_config_timer/sl_si91x_config_timer.slcp"/>
-    <properties key="boardCompatibility" value="com.silabs.board.none brd4325a brd4325b brd4325c brd4325e brd4325f brd4325g brd4338a brd4340a"/>
+    <properties key="boardCompatibility" value="com.silabs.board.none brd4325a brd4325b brd4325c brd4325e brd4325f brd4325g brd4338a brd4339a brd4339b brd4340a brd4340b brd4341a brd4342a"/>
     <properties key="partCompatibility" value="mcu.arm.efr32.mg21.* mcu.arm.efr32.mg21.* .*si917.* .*si917.* .*siwg917m111mgtba.* .*siwg917m111mgtba.* .*siwg917m141xgtba.* .*siwg917m111mgtba.* .*siwg917m111mgtba.* .*siwg917m111mgtba.*"/>
     <properties key="ideCompatibility" value="makefile-ide simplicity-ide"/>
     <properties key="toolchainCompatibility" value="gcc"/>
@@ -904,7 +919,7 @@
     <properties key="namespace" value="template.uc"/>
     <properties key="keywords" value="universal\ configurator"/>
     <properties key="projectFilePaths" value="examples/si91x_soc/peripheral/sl_si91x_dma/sl_si91x_dma.slcp"/>
-    <properties key="boardCompatibility" value="com.silabs.board.none brd4325a brd4325b brd4325c brd4325e brd4325f brd4325g brd4338a brd4340a"/>
+    <properties key="boardCompatibility" value="com.silabs.board.none brd4325a brd4325b brd4325c brd4325e brd4325f brd4325g brd4338a brd4339a brd4339b brd4340a brd4340b brd4341a brd4342a"/>
     <properties key="partCompatibility" value="mcu.arm.efr32.mg21.* mcu.arm.efr32.mg21.* .*si917.* .*si917.* .*siwg917m111mgtba.* .*siwg917m111mgtba.* .*siwg917m141xgtba.* .*siwg917m111mgtba.* .*siwg917m111mgtba.* .*siwg917m111mgtba.*"/>
     <properties key="ideCompatibility" value="makefile-ide simplicity-ide"/>
     <properties key="toolchainCompatibility" value="gcc"/>
@@ -919,7 +934,7 @@
     <properties key="namespace" value="template.uc"/>
     <properties key="keywords" value="universal\ configurator"/>
     <properties key="projectFilePaths" value="examples/si91x_soc/peripheral/sl_si91x_driver_gpio/sl_si91x_driver_gpio.slcp"/>
-    <properties key="boardCompatibility" value="com.silabs.board.none brd4325a brd4325b brd4325c brd4325e brd4325g brd4338a brd4340a"/>
+    <properties key="boardCompatibility" value="com.silabs.board.none brd4325a brd4325b brd4325c brd4325e brd4325f brd4325g brd4338a brd4339a brd4339b brd4340a brd4340b brd4341a brd4342a"/>
     <properties key="partCompatibility" value="mcu.arm.efr32.mg21.* mcu.arm.efr32.mg21.* .*si917.* .*si917.* .*siwg917m111mgtba.* .*siwg917m111mgtba.* .*siwg917m141xgtba.* .*siwg917m111mgtba.* .*siwg917m111mgtba.* .*siwg917m111mgtba.*"/>
     <properties key="ideCompatibility" value="makefile-ide simplicity-ide"/>
     <properties key="toolchainCompatibility" value="gcc"/>
@@ -934,7 +949,7 @@
     <properties key="namespace" value="template.uc"/>
     <properties key="keywords" value="universal\ configurator"/>
     <properties key="projectFilePaths" value="examples/si91x_soc/peripheral/sl_si91x_efuse/sl_si91x_efuse.slcp"/>
-    <properties key="boardCompatibility" value="com.silabs.board.none brd4325a brd4325b brd4325c brd4325e brd4325f brd4325g brd4338a brd4340a"/>
+    <properties key="boardCompatibility" value="com.silabs.board.none brd4325a brd4325b brd4325c brd4325e brd4325f brd4325g brd4338a brd4339a brd4339b brd4340a brd4340b brd4341a brd4342a"/>
     <properties key="partCompatibility" value="mcu.arm.efr32.mg21.* mcu.arm.efr32.mg21.* .*si917.* .*si917.* .*siwg917m111mgtba.* .*siwg917m111mgtba.* .*siwg917m141xgtba.* .*siwg917m111mgtba.* .*siwg917m111mgtba.* .*siwg917m111mgtba.*"/>
     <properties key="ideCompatibility" value="makefile-ide simplicity-ide"/>
     <properties key="toolchainCompatibility" value="gcc"/>
@@ -949,7 +964,7 @@
     <properties key="namespace" value="template.uc"/>
     <properties key="keywords" value="universal\ configurator"/>
     <properties key="projectFilePaths" value="examples/si91x_soc/peripheral/sl_si91x_gpio/sl_si91x_gpio.slcp"/>
-    <properties key="boardCompatibility" value="com.silabs.board.none brd4325a brd4325b brd4325c brd4325e brd4325f brd4325g brd4338a brd4340a"/>
+    <properties key="boardCompatibility" value="com.silabs.board.none brd4325a brd4325b brd4325c brd4325e brd4325f brd4325g brd4338a brd4339a brd4339b brd4340a brd4340b brd4341a brd4342a"/>
     <properties key="partCompatibility" value="mcu.arm.efr32.mg21.* mcu.arm.efr32.mg21.* .*si917.* .*si917.* .*siwg917m111mgtba.* .*siwg917m111mgtba.* .*siwg917m141xgtba.* .*siwg917m111mgtba.* .*siwg917m111mgtba.* .*siwg917m111mgtba.*"/>
     <properties key="ideCompatibility" value="makefile-ide simplicity-ide"/>
     <properties key="toolchainCompatibility" value="gcc"/>
@@ -964,7 +979,7 @@
     <properties key="namespace" value="template.uc"/>
     <properties key="keywords" value="universal\ configurator"/>
     <properties key="projectFilePaths" value="examples/si91x_soc/peripheral/sl_si91x_gspi/sl_si91x_gspi.slcp"/>
-    <properties key="boardCompatibility" value="com.silabs.board.none brd4325a brd4325b brd4325c brd4325e brd4325f brd4325g brd4338a brd4340a"/>
+    <properties key="boardCompatibility" value="com.silabs.board.none brd4325a brd4325b brd4325c brd4325e brd4325f brd4325g brd4338a brd4339a brd4339b brd4340a brd4340b brd4341a brd4342a"/>
     <properties key="partCompatibility" value="mcu.arm.efr32.mg21.* mcu.arm.efr32.mg21.* .*si917.* .*si917.* .*siwg917m111mgtba.* .*siwg917m111mgtba.* .*siwg917m141xgtba.* .*siwg917m111mgtba.* .*siwg917m111mgtba.* .*siwg917m111mgtba.*"/>
     <properties key="ideCompatibility" value="makefile-ide simplicity-ide"/>
     <properties key="toolchainCompatibility" value="gcc"/>
@@ -979,7 +994,7 @@
     <properties key="namespace" value="template.uc"/>
     <properties key="keywords" value="universal\ configurator"/>
     <properties key="projectFilePaths" value="examples/si91x_soc/peripheral/sl_si91x_i2c_driver_follower/sl_si91x_i2c_driver_follower.slcp"/>
-    <properties key="boardCompatibility" value="com.silabs.board.none brd4325a brd4325b brd4325c brd4325e brd4325f brd4325g brd4338a"/>
+    <properties key="boardCompatibility" value="com.silabs.board.none brd4325a brd4325b brd4325c brd4325e brd4325f brd4325g brd4338a brd4339a brd4339b brd4340a brd4340b brd4341a brd4342a"/>
     <properties key="partCompatibility" value="mcu.arm.efr32.mg21.* mcu.arm.efr32.mg21.* .*si917.* .*si917.* .*siwg917m111mgtba.* .*siwg917m111mgtba.* .*siwg917m141xgtba.* .*siwg917m111mgtba.* .*siwg917m111mgtba.* .*siwg917m111mgtba.*"/>
     <properties key="ideCompatibility" value="makefile-ide simplicity-ide"/>
     <properties key="toolchainCompatibility" value="gcc"/>
@@ -994,7 +1009,7 @@
     <properties key="namespace" value="template.uc"/>
     <properties key="keywords" value="universal\ configurator"/>
     <properties key="projectFilePaths" value="examples/si91x_soc/peripheral/sl_si91x_i2c_driver_leader/sl_si91x_i2c_driver_leader.slcp"/>
-    <properties key="boardCompatibility" value="com.silabs.board.none brd4325a brd4325b brd4325c brd4325e brd4325f brd4325g brd4338a"/>
+    <properties key="boardCompatibility" value="com.silabs.board.none brd4325a brd4325b brd4325c brd4325e brd4325f brd4325g brd4338a brd4339a brd4339b brd4340a brd4340b brd4341a brd4342a"/>
     <properties key="partCompatibility" value="mcu.arm.efr32.mg21.* mcu.arm.efr32.mg21.* .*si917.* .*si917.* .*siwg917m111mgtba.* .*siwg917m111mgtba.* .*siwg917m141xgtba.* .*siwg917m111mgtba.* .*siwg917m111mgtba.* .*siwg917m111mgtba.*"/>
     <properties key="ideCompatibility" value="makefile-ide simplicity-ide"/>
     <properties key="toolchainCompatibility" value="gcc"/>
@@ -1009,7 +1024,7 @@
     <properties key="namespace" value="template.uc"/>
     <properties key="keywords" value="universal\ configurator"/>
     <properties key="projectFilePaths" value="examples/si91x_soc/peripheral/sl_si91x_i2c_follower/sl_si91x_i2c_follower.slcp"/>
-    <properties key="boardCompatibility" value="com.silabs.board.none brd4325a brd4325b brd4325c brd4325e brd4325f brd4325g brd4338a brd4340a"/>
+    <properties key="boardCompatibility" value="com.silabs.board.none brd4325a brd4325b brd4325c brd4325e brd4325f brd4325g brd4338a brd4339a brd4339b brd4340a brd4340b brd4341a brd4342a"/>
     <properties key="partCompatibility" value="mcu.arm.efr32.mg21.* mcu.arm.efr32.mg21.* .*si917.* .*si917.* .*siwg917m111mgtba.* .*siwg917m111mgtba.* .*siwg917m141xgtba.* .*siwg917m111mgtba.* .*siwg917m111mgtba.* .*siwg917m111mgtba.*"/>
     <properties key="ideCompatibility" value="makefile-ide simplicity-ide"/>
     <properties key="toolchainCompatibility" value="gcc"/>
@@ -1024,7 +1039,7 @@
     <properties key="namespace" value="template.uc"/>
     <properties key="keywords" value="universal\ configurator"/>
     <properties key="projectFilePaths" value="examples/si91x_soc/peripheral/sl_si91x_i2c_leader/sl_si91x_i2c_leader.slcp"/>
-    <properties key="boardCompatibility" value="com.silabs.board.none brd4325a brd4325b brd4325c brd4325e brd4325f brd4325g brd4338a brd4340a"/>
+    <properties key="boardCompatibility" value="com.silabs.board.none brd4325a brd4325b brd4325c brd4325e brd4325f brd4325g brd4338a brd4339a brd4339b brd4340a brd4340b brd4341a brd4342a"/>
     <properties key="partCompatibility" value="mcu.arm.efr32.mg21.* mcu.arm.efr32.mg21.* .*si917.* .*si917.* .*siwg917m111mgtba.* .*siwg917m111mgtba.* .*siwg917m141xgtba.* .*siwg917m111mgtba.* .*siwg917m111mgtba.* .*siwg917m111mgtba.*"/>
     <properties key="ideCompatibility" value="makefile-ide simplicity-ide"/>
     <properties key="toolchainCompatibility" value="gcc"/>
@@ -1039,7 +1054,7 @@
     <properties key="namespace" value="template.uc"/>
     <properties key="keywords" value="universal\ configurator"/>
     <properties key="projectFilePaths" value="examples/si91x_soc/peripheral/sl_si91x_i2s_loopback/sl_si91x_i2s_loopback.slcp"/>
-    <properties key="boardCompatibility" value="com.silabs.board.none brd4325a brd4325b brd4325c brd4325e brd4325f brd4325g brd4338a"/>
+    <properties key="boardCompatibility" value="com.silabs.board.none brd4325a brd4325b brd4325c brd4325e brd4325f brd4325g brd4338a brd4339a brd4339b brd4340a brd4340b brd4341a brd4342a"/>
     <properties key="partCompatibility" value="mcu.arm.efr32.mg21.* mcu.arm.efr32.mg21.* .*si917.* .*si917.* .*siwg917m111mgtba.* .*siwg917m111mgtba.* .*siwg917m141xgtba.* .*siwg917m111mgtba.* .*siwg917m111mgtba.* .*siwg917m111mgtba.*"/>
     <properties key="ideCompatibility" value="makefile-ide simplicity-ide"/>
     <properties key="toolchainCompatibility" value="gcc"/>
@@ -1054,7 +1069,7 @@
     <properties key="namespace" value="template.uc"/>
     <properties key="keywords" value="universal\ configurator"/>
     <properties key="projectFilePaths" value="examples/si91x_soc/peripheral/sl_si91x_i2s_low_power/sl_si91x_i2s_low_power.slcp"/>
-    <properties key="boardCompatibility" value="com.silabs.board.none brd4325a brd4325b brd4325c brd4325e brd4325f brd4325g brd4338a"/>
+    <properties key="boardCompatibility" value="com.silabs.board.none brd4325a brd4325b brd4325c brd4325e brd4325f brd4325g brd4338a brd4339a brd4339b brd4340a brd4340b brd4341a brd4342a"/>
     <properties key="partCompatibility" value="mcu.arm.efr32.mg21.* mcu.arm.efr32.mg21.* .*si917.* .*si917.* .*siwg917m111mgtba.* .*siwg917m111mgtba.* .*siwg917m141xgtba.* .*siwg917m111mgtba.* .*siwg917m111mgtba.* .*siwg917m111mgtba.*"/>
     <properties key="ideCompatibility" value="makefile-ide simplicity-ide"/>
     <properties key="toolchainCompatibility" value="gcc"/>
@@ -1069,7 +1084,7 @@
     <properties key="namespace" value="template.uc"/>
     <properties key="keywords" value="universal\ configurator"/>
     <properties key="projectFilePaths" value="examples/si91x_soc/peripheral/sl_si91x_i2s_primary/sl_si91x_i2s_primary.slcp"/>
-    <properties key="boardCompatibility" value="com.silabs.board.none brd4325a brd4325b brd4325c brd4325e brd4325f brd4325g brd4338a brd4340a"/>
+    <properties key="boardCompatibility" value="com.silabs.board.none brd4325a brd4325b brd4325c brd4325e brd4325f brd4325g brd4338a brd4339a brd4339b brd4340a brd4340b brd4341a brd4342a"/>
     <properties key="partCompatibility" value="mcu.arm.efr32.mg21.* mcu.arm.efr32.mg21.* .*si917.* .*si917.* .*siwg917m111mgtba.* .*siwg917m111mgtba.* .*siwg917m141xgtba.* .*siwg917m111mgtba.* .*siwg917m111mgtba.* .*siwg917m111mgtba.*"/>
     <properties key="ideCompatibility" value="makefile-ide simplicity-ide"/>
     <properties key="toolchainCompatibility" value="gcc"/>
@@ -1084,7 +1099,7 @@
     <properties key="namespace" value="template.uc"/>
     <properties key="keywords" value="universal\ configurator"/>
     <properties key="projectFilePaths" value="examples/si91x_soc/peripheral/sl_si91x_i2s_secondary/sl_si91x_i2s_secondary.slcp"/>
-    <properties key="boardCompatibility" value="com.silabs.board.none brd4325a brd4325b brd4325c brd4325e brd4325f brd4325g brd4338a brd4340a"/>
+    <properties key="boardCompatibility" value="com.silabs.board.none brd4325a brd4325b brd4325c brd4325e brd4325f brd4325g brd4338a brd4339a brd4339b brd4340a brd4340b brd4341a brd4342a"/>
     <properties key="partCompatibility" value="mcu.arm.efr32.mg21.* mcu.arm.efr32.mg21.* .*si917.* .*si917.* .*siwg917m111mgtba.* .*siwg917m111mgtba.* .*siwg917m141xgtba.* .*siwg917m111mgtba.* .*siwg917m111mgtba.* .*siwg917m111mgtba.*"/>
     <properties key="ideCompatibility" value="makefile-ide simplicity-ide"/>
     <properties key="toolchainCompatibility" value="gcc"/>
@@ -1099,7 +1114,7 @@
     <properties key="namespace" value="template.uc"/>
     <properties key="keywords" value="universal\ configurator"/>
     <properties key="projectFilePaths" value="examples/si91x_soc/peripheral/sl_si91x_joystick/sl_si91x_joystick.slcp"/>
-    <properties key="boardCompatibility" value="com.silabs.board.none brd4325a brd4325b brd4325c brd4325e brd4325f brd4325g brd4338a brd4340a"/>
+    <properties key="boardCompatibility" value="com.silabs.board.none brd4325a brd4325b brd4325c brd4325e brd4325f brd4325g brd4338a brd4339a brd4339b brd4340a brd4340b brd4341a brd4342a"/>
     <properties key="partCompatibility" value="mcu.arm.efr32.mg21.* mcu.arm.efr32.mg21.* .*si917.* .*si917.* .*siwg917m111mgtba.* .*siwg917m111mgtba.* .*siwg917m141xgtba.* .*siwg917m111mgtba.* .*siwg917m111mgtba.* .*siwg917m111mgtba.*"/>
     <properties key="ideCompatibility" value="makefile-ide simplicity-ide"/>
     <properties key="toolchainCompatibility" value="gcc"/>
@@ -1114,7 +1129,7 @@
     <properties key="namespace" value="template.uc"/>
     <properties key="keywords" value="universal\ configurator"/>
     <properties key="projectFilePaths" value="examples/si91x_soc/peripheral/sl_si91x_ml_blink/sl_si91x_ml_blink.slcp"/>
-    <properties key="boardCompatibility" value="com.silabs.board.none brd4325c brd4325e brd4325f brd4325g brd4338a brd4340a"/>
+    <properties key="boardCompatibility" value="com.silabs.board.none brd4325c brd4325e brd4325f brd4325g brd4338a brd4339a brd4339b brd4340a brd4340b brd4341a brd4342a"/>
     <properties key="partCompatibility" value="mcu.arm.efr32.mg21.* mcu.arm.efr32.mg21.* .*si917.* .*si917.* .*siwg917m111mgtba.* .*siwg917m111mgtba.* .*siwg917m141xgtba.* .*siwg917m111mgtba.* .*siwg917m111mgtba.* .*siwg917m111mgtba.*"/>
     <properties key="ideCompatibility" value="makefile-ide simplicity-ide"/>
     <properties key="toolchainCompatibility" value="gcc"/>
@@ -1129,7 +1144,7 @@
     <properties key="namespace" value="template.uc"/>
     <properties key="keywords" value="universal\ configurator"/>
     <properties key="projectFilePaths" value="examples/si91x_soc/peripheral/sl_si91x_ml_model_profiler/sl_si91x_ml_model_profiler.slcp"/>
-    <properties key="boardCompatibility" value="com.silabs.board.none brd4325c brd4325e brd4325f brd4325g brd4338a brd4340a"/>
+    <properties key="boardCompatibility" value="com.silabs.board.none brd4325c brd4325e brd4325f brd4325g brd4338a brd4339a brd4339b brd4340a brd4340b brd4341a brd4342a"/>
     <properties key="partCompatibility" value="mcu.arm.efr32.mg21.* mcu.arm.efr32.mg21.* .*si917.* .*si917.* .*siwg917m111mgtba.* .*siwg917m111mgtba.* .*siwg917m141xgtba.* .*siwg917m111mgtba.* .*siwg917m111mgtba.* .*siwg917m111mgtba.*"/>
     <properties key="ideCompatibility" value="makefile-ide simplicity-ide"/>
     <properties key="toolchainCompatibility" value="gcc"/>
@@ -1159,7 +1174,7 @@
     <properties key="namespace" value="template.uc"/>
     <properties key="keywords" value="universal\ configurator"/>
     <properties key="projectFilePaths" value="examples/si91x_soc/service/sl_si91x_nvm3_dual_flash/sl_si91x_nvm3_dual_flash.slcp"/>
-    <properties key="boardCompatibility" value="com.silabs.board.none brd4325b brd4325e"/>
+    <properties key="boardCompatibility" value="com.silabs.board.none brd4325b brd4325e brd4339b"/>
     <properties key="partCompatibility" value="mcu.arm.efr32.mg21.* mcu.arm.efr32.mg21.* .*si917.* .*si917.* .*siwg917m111mgtba.* .*siwg917m111mgtba.* .*siwg917m141xgtba.* .*siwg917m111mgtba.* .*siwg917m111mgtba.* .*siwg917m111mgtba.*"/>
     <properties key="ideCompatibility" value="makefile-ide simplicity-ide"/>
     <properties key="toolchainCompatibility" value="gcc"/>
@@ -1174,7 +1189,7 @@
     <properties key="namespace" value="template.uc"/>
     <properties key="keywords" value="universal\ configurator"/>
     <properties key="projectFilePaths" value="examples/si91x_soc/service/sl_si91x_power_manager_m4_wireless/sl_si91x_power_manager_m4_wireless.slcp"/>
-    <properties key="boardCompatibility" value="com.silabs.board.none brd4325a brd4325b brd4325c brd4325e brd4325f brd4325g brd4338a"/>
+    <properties key="boardCompatibility" value="com.silabs.board.none brd4325a brd4325b brd4325c brd4325e brd4325f brd4325g brd4338a brd4339a brd4339b brd4340a brd4340b brd4341a brd4342a"/>
     <properties key="partCompatibility" value="mcu.arm.efr32.mg21.* mcu.arm.efr32.mg21.* .*si917.* .*si917.* .*siwg917m111mgtba.* .*siwg917m111mgtba.* .*siwg917m141xgtba.* .*siwg917m111mgtba.* .*siwg917m111mgtba.* .*siwg917m111mgtba.*"/>
     <properties key="ideCompatibility" value="makefile-ide simplicity-ide"/>
     <properties key="toolchainCompatibility" value="gcc"/>
@@ -1189,7 +1204,7 @@
     <properties key="namespace" value="template.uc"/>
     <properties key="keywords" value="universal\ configurator"/>
     <properties key="projectFilePaths" value="examples/si91x_soc/peripheral/sl_si91x_pwm/sl_si91x_pwm.slcp"/>
-    <properties key="boardCompatibility" value="com.silabs.board.none brd4325c brd4325e brd4325f brd4325g brd4338a brd4340a"/>
+    <properties key="boardCompatibility" value="com.silabs.board.none brd4325c brd4325e brd4325f brd4325g brd4338a brd4339a brd4339b brd4340a brd4340b brd4341a brd4342a"/>
     <properties key="partCompatibility" value="mcu.arm.efr32.mg21.* mcu.arm.efr32.mg21.* .*si917.* .*si917.* .*siwg917m111mgtba.* .*siwg917m111mgtba.* .*siwg917m141xgtba.* .*siwg917m111mgtba.* .*siwg917m111mgtba.* .*siwg917m111mgtba.*"/>
     <properties key="ideCompatibility" value="makefile-ide simplicity-ide"/>
     <properties key="toolchainCompatibility" value="gcc"/>
@@ -1219,7 +1234,7 @@
     <properties key="namespace" value="template.uc"/>
     <properties key="keywords" value="universal\ configurator"/>
     <properties key="projectFilePaths" value="examples/si91x_soc/service/sl_si91x_sensorhub/sl_si91x_sensorhub.slcp"/>
-    <properties key="boardCompatibility" value="com.silabs.board.none brd4325a brd4325b brd4325c brd4325e brd4325f brd4325g brd4338a brd4340a"/>
+    <properties key="boardCompatibility" value="com.silabs.board.none brd4325a brd4325b brd4325c brd4325e brd4325f brd4325g brd4338a brd4339a brd4339b brd4340a brd4340b brd4341a brd4342a"/>
     <properties key="partCompatibility" value="mcu.arm.efr32.mg21.* mcu.arm.efr32.mg21.* .*si917.* .*si917.* .*siwg917m111mgtba.* .*siwg917m111mgtba.* .*siwg917m141xgtba.* .*siwg917m111mgtba.* .*siwg917m111mgtba.* .*siwg917m111mgtba.*"/>
     <properties key="ideCompatibility" value="makefile-ide simplicity-ide"/>
     <properties key="toolchainCompatibility" value="gcc"/>
@@ -1234,7 +1249,7 @@
     <properties key="namespace" value="template.uc"/>
     <properties key="keywords" value="universal\ configurator"/>
     <properties key="projectFilePaths" value="examples/si91x_soc/peripheral/sl_si91x_si70xx/sl_si91x_si70xx.slcp"/>
-    <properties key="boardCompatibility" value="com.silabs.board.none brd4325a brd4325b brd4325c brd4325e brd4325g brd4338a brd4340a"/>
+    <properties key="boardCompatibility" value="com.silabs.board.none brd4325a brd4325b brd4325c brd4325e brd4325f brd4325g brd4338a brd4339a brd4339b brd4340a brd4340b brd4341a brd4342a"/>
     <properties key="partCompatibility" value="mcu.arm.efr32.mg21.* mcu.arm.efr32.mg21.* .*si917.* .*si917.* .*siwg917m111mgtba.* .*siwg917m111mgtba.* .*siwg917m141xgtba.* .*siwg917m111mgtba.* .*siwg917m111mgtba.* .*siwg917m111mgtba.*"/>
     <properties key="ideCompatibility" value="makefile-ide simplicity-ide"/>
     <properties key="toolchainCompatibility" value="gcc"/>
@@ -1249,7 +1264,7 @@
     <properties key="namespace" value="template.uc"/>
     <properties key="keywords" value="universal\ configurator"/>
     <properties key="projectFilePaths" value="examples/si91x_soc/peripheral/sl_si91x_sio/sl_si91x_sio.slcp"/>
-    <properties key="boardCompatibility" value="com.silabs.board.none brd4325c brd4325e brd4325f brd4325g brd4338a brd4340a"/>
+    <properties key="boardCompatibility" value="com.silabs.board.none brd4325c brd4325e brd4325f brd4325g brd4338a brd4339a brd4339b brd4340a brd4340b brd4341a brd4342a"/>
     <properties key="partCompatibility" value="mcu.arm.efr32.mg21.* mcu.arm.efr32.mg21.* .*si917.* .*si917.* .*siwg917m111mgtba.* .*siwg917m111mgtba.* .*siwg917m141xgtba.* .*siwg917m111mgtba.* .*siwg917m111mgtba.* .*siwg917m111mgtba.*"/>
     <properties key="ideCompatibility" value="makefile-ide simplicity-ide"/>
     <properties key="toolchainCompatibility" value="gcc"/>
@@ -1264,7 +1279,7 @@
     <properties key="namespace" value="template.uc"/>
     <properties key="keywords" value="universal\ configurator"/>
     <properties key="projectFilePaths" value="examples/si91x_soc/service/sl_si91x_sleeptimer/sl_si91x_sleeptimer.slcp"/>
-    <properties key="boardCompatibility" value="com.silabs.board.none brd4325c brd4325e brd4325f brd4325g brd4338a brd4340a"/>
+    <properties key="boardCompatibility" value="com.silabs.board.none brd4325c brd4325e brd4325f brd4325g brd4338a brd4339a brd4339b brd4340a brd4340b brd4341a brd4342a"/>
     <properties key="partCompatibility" value="mcu.arm.efr32.mg21.* mcu.arm.efr32.mg21.* .*si917.* .*si917.* .*siwg917m111mgtba.* .*siwg917m111mgtba.* .*siwg917m141xgtba.* .*siwg917m111mgtba.* .*siwg917m111mgtba.* .*siwg917m111mgtba.*"/>
     <properties key="ideCompatibility" value="makefile-ide simplicity-ide"/>
     <properties key="toolchainCompatibility" value="gcc"/>
@@ -1279,7 +1294,7 @@
     <properties key="namespace" value="template.uc"/>
     <properties key="keywords" value="universal\ configurator"/>
     <properties key="projectFilePaths" value="examples/si91x_soc/peripheral/sl_si91x_ssi_master/sl_si91x_ssi_master.slcp"/>
-    <properties key="boardCompatibility" value="com.silabs.board.none brd4325a brd4325b brd4325c brd4325e brd4325f brd4325g brd4338a brd4340a"/>
+    <properties key="boardCompatibility" value="com.silabs.board.none brd4325a brd4325b brd4325c brd4325e brd4325f brd4325g brd4338a brd4339a brd4339b brd4340a brd4340b brd4341a brd4342a"/>
     <properties key="partCompatibility" value="mcu.arm.efr32.mg21.* mcu.arm.efr32.mg21.* .*si917.* .*si917.* .*siwg917m111mgtba.* .*siwg917m111mgtba.* .*siwg917m141xgtba.* .*siwg917m111mgtba.* .*siwg917m111mgtba.* .*siwg917m111mgtba.*"/>
     <properties key="ideCompatibility" value="makefile-ide simplicity-ide"/>
     <properties key="toolchainCompatibility" value="gcc"/>
@@ -1294,7 +1309,7 @@
     <properties key="namespace" value="template.uc"/>
     <properties key="keywords" value="universal\ configurator"/>
     <properties key="projectFilePaths" value="examples/si91x_soc/peripheral/sl_si91x_ssi_slave/sl_si91x_ssi_slave.slcp"/>
-    <properties key="boardCompatibility" value="com.silabs.board.none brd4325a brd4325b brd4325c brd4325e brd4325f brd4325g brd4338a brd4340a"/>
+    <properties key="boardCompatibility" value="com.silabs.board.none brd4325a brd4325b brd4325c brd4325e brd4325f brd4325g brd4338a brd4339a brd4339b brd4340a brd4340b brd4341a brd4342a"/>
     <properties key="partCompatibility" value="mcu.arm.efr32.mg21.* mcu.arm.efr32.mg21.* .*si917.* .*si917.* .*siwg917m111mgtba.* .*siwg917m111mgtba.* .*siwg917m141xgtba.* .*siwg917m111mgtba.* .*siwg917m111mgtba.* .*siwg917m111mgtba.*"/>
     <properties key="ideCompatibility" value="makefile-ide simplicity-ide"/>
     <properties key="toolchainCompatibility" value="gcc"/>
@@ -1309,7 +1324,7 @@
     <properties key="namespace" value="template.uc"/>
     <properties key="keywords" value="universal\ configurator"/>
     <properties key="projectFilePaths" value="examples/si91x_soc/peripheral/sl_si91x_sysrtc/sl_si91x_sysrtc.slcp"/>
-    <properties key="boardCompatibility" value="com.silabs.board.none brd4325c brd4325e brd4325f brd4325g brd4338a brd4340a"/>
+    <properties key="boardCompatibility" value="com.silabs.board.none brd4325c brd4325e brd4325f brd4325g brd4338a brd4339a brd4339b brd4340a brd4340b brd4341a brd4342a"/>
     <properties key="partCompatibility" value="mcu.arm.efr32.mg21.* mcu.arm.efr32.mg21.* .*si917.* .*si917.* .*siwg917m111mgtba.* .*siwg917m111mgtba.* .*siwg917m141xgtba.* .*siwg917m111mgtba.* .*siwg917m111mgtba.* .*siwg917m111mgtba.*"/>
     <properties key="ideCompatibility" value="makefile-ide simplicity-ide"/>
     <properties key="toolchainCompatibility" value="gcc"/>
@@ -1324,7 +1339,7 @@
     <properties key="namespace" value="template.uc"/>
     <properties key="keywords" value="universal\ configurator"/>
     <properties key="projectFilePaths" value="examples/si91x_soc/peripheral/sl_si91x_ulp_adc/sl_si91x_ulp_adc.slcp"/>
-    <properties key="boardCompatibility" value="com.silabs.board.none brd4325a brd4325b brd4325c brd4325e brd4325f brd4325g brd4338a"/>
+    <properties key="boardCompatibility" value="com.silabs.board.none brd4325a brd4325b brd4325c brd4325e brd4325f brd4325g brd4338a brd4339a brd4339b brd4340a brd4340b brd4341a brd4342a"/>
     <properties key="partCompatibility" value="mcu.arm.efr32.mg21.* mcu.arm.efr32.mg21.* .*si917.* .*si917.* .*siwg917m111mgtba.* .*siwg917m111mgtba.* .*siwg917m141xgtba.* .*siwg917m111mgtba.* .*siwg917m111mgtba.* .*siwg917m111mgtba.*"/>
     <properties key="ideCompatibility" value="makefile-ide simplicity-ide"/>
     <properties key="toolchainCompatibility" value="gcc"/>
@@ -1339,7 +1354,7 @@
     <properties key="namespace" value="template.uc"/>
     <properties key="keywords" value="universal\ configurator"/>
     <properties key="projectFilePaths" value="examples/si91x_soc/peripheral/sl_si91x_ulp_calendar/sl_si91x_ulp_calendar.slcp"/>
-    <properties key="boardCompatibility" value="com.silabs.board.none brd4325a brd4325b brd4325c brd4325e brd4325f brd4325g brd4338a"/>
+    <properties key="boardCompatibility" value="com.silabs.board.none brd4325a brd4325b brd4325c brd4325e brd4325f brd4325g brd4338a brd4339a brd4339b brd4340a brd4340b brd4341a brd4342a"/>
     <properties key="partCompatibility" value="mcu.arm.efr32.mg21.* mcu.arm.efr32.mg21.* .*si917.* .*si917.* .*siwg917m111mgtba.* .*siwg917m111mgtba.* .*siwg917m141xgtba.* .*siwg917m111mgtba.* .*siwg917m111mgtba.* .*siwg917m111mgtba.*"/>
     <properties key="ideCompatibility" value="makefile-ide simplicity-ide"/>
     <properties key="toolchainCompatibility" value="gcc"/>
@@ -1354,7 +1369,7 @@
     <properties key="namespace" value="template.uc"/>
     <properties key="keywords" value="universal\ configurator"/>
     <properties key="projectFilePaths" value="examples/si91x_soc/peripheral/sl_si91x_ulp_dma/sl_si91x_ulp_dma.slcp"/>
-    <properties key="boardCompatibility" value="com.silabs.board.none brd4325a brd4325b brd4325c brd4325e brd4325f brd4325g brd4338a"/>
+    <properties key="boardCompatibility" value="com.silabs.board.none brd4325a brd4325b brd4325c brd4325e brd4325f brd4325g brd4338a brd4339a brd4339b brd4340a brd4340b brd4341a brd4342a"/>
     <properties key="partCompatibility" value="mcu.arm.efr32.mg21.* mcu.arm.efr32.mg21.* .*si917.* .*si917.* .*siwg917m111mgtba.* .*siwg917m111mgtba.* .*siwg917m141xgtba.* .*siwg917m111mgtba.* .*siwg917m111mgtba.* .*siwg917m111mgtba.*"/>
     <properties key="ideCompatibility" value="makefile-ide simplicity-ide"/>
     <properties key="toolchainCompatibility" value="gcc"/>
@@ -1369,7 +1384,7 @@
     <properties key="namespace" value="template.uc"/>
     <properties key="keywords" value="universal\ configurator"/>
     <properties key="projectFilePaths" value="examples/si91x_soc/peripheral/sl_si91x_ulp_gpio/sl_si91x_ulp_gpio.slcp"/>
-    <properties key="boardCompatibility" value="com.silabs.board.none brd4325a brd4325b brd4325c brd4325e brd4325f brd4325g brd4338a"/>
+    <properties key="boardCompatibility" value="com.silabs.board.none brd4325a brd4325b brd4325c brd4325e brd4325f brd4325g brd4338a brd4339a brd4339b brd4340a brd4340b brd4341a brd4342a"/>
     <properties key="partCompatibility" value="mcu.arm.efr32.mg21.* mcu.arm.efr32.mg21.* .*si917.* .*si917.* .*siwg917m111mgtba.* .*siwg917m111mgtba.* .*siwg917m141xgtba.* .*siwg917m111mgtba.* .*siwg917m111mgtba.* .*siwg917m111mgtba.*"/>
     <properties key="ideCompatibility" value="makefile-ide simplicity-ide"/>
     <properties key="toolchainCompatibility" value="gcc"/>
@@ -1384,7 +1399,7 @@
     <properties key="namespace" value="template.uc"/>
     <properties key="keywords" value="universal\ configurator"/>
     <properties key="projectFilePaths" value="examples/si91x_soc/peripheral/sl_si91x_ulp_i2c_leader/sl_si91x_ulp_i2c_leader.slcp"/>
-    <properties key="boardCompatibility" value="com.silabs.board.none brd4325a brd4325b brd4325c brd4325e brd4325f brd4325g brd4338a"/>
+    <properties key="boardCompatibility" value="com.silabs.board.none brd4325a brd4325b brd4325c brd4325e brd4325f brd4325g brd4338a brd4339a brd4339b brd4340a brd4340b brd4341a brd4342a"/>
     <properties key="partCompatibility" value="mcu.arm.efr32.mg21.* mcu.arm.efr32.mg21.* .*si917.* .*si917.* .*siwg917m111mgtba.* .*siwg917m111mgtba.* .*siwg917m141xgtba.* .*siwg917m111mgtba.* .*siwg917m111mgtba.* .*siwg917m111mgtba.*"/>
     <properties key="ideCompatibility" value="makefile-ide simplicity-ide"/>
     <properties key="toolchainCompatibility" value="gcc"/>
@@ -1399,7 +1414,7 @@
     <properties key="namespace" value="template.uc"/>
     <properties key="keywords" value="universal\ configurator"/>
     <properties key="projectFilePaths" value="examples/si91x_soc/peripheral/sl_si91x_ulp_ssi_master/sl_si91x_ulp_ssi_master.slcp"/>
-    <properties key="boardCompatibility" value="com.silabs.board.none brd4325a brd4325b brd4325c brd4325e brd4325f brd4325g brd4338a"/>
+    <properties key="boardCompatibility" value="com.silabs.board.none brd4325a brd4325b brd4325c brd4325e brd4325f brd4325g brd4338a brd4339a brd4339b brd4340a brd4340b brd4341a brd4342a"/>
     <properties key="partCompatibility" value="mcu.arm.efr32.mg21.* mcu.arm.efr32.mg21.* .*si917.* .*si917.* .*siwg917m111mgtba.* .*siwg917m111mgtba.* .*siwg917m141xgtba.* .*siwg917m111mgtba.* .*siwg917m111mgtba.* .*siwg917m111mgtba.*"/>
     <properties key="ideCompatibility" value="makefile-ide simplicity-ide"/>
     <properties key="toolchainCompatibility" value="gcc"/>
@@ -1414,7 +1429,7 @@
     <properties key="namespace" value="template.uc"/>
     <properties key="keywords" value="universal\ configurator"/>
     <properties key="projectFilePaths" value="examples/si91x_soc/peripheral/sl_si91x_ulp_timer/sl_si91x_ulp_timer.slcp"/>
-    <properties key="boardCompatibility" value="com.silabs.board.none brd4325a brd4325b brd4325c brd4325e brd4325f brd4325g brd4338a brd4340a"/>
+    <properties key="boardCompatibility" value="com.silabs.board.none brd4325a brd4325b brd4325c brd4325e brd4325f brd4325g brd4338a brd4339a brd4339b brd4340a brd4340b brd4341a brd4342a"/>
     <properties key="partCompatibility" value="mcu.arm.efr32.mg21.* mcu.arm.efr32.mg21.* .*si917.* .*si917.* .*siwg917m111mgtba.* .*siwg917m111mgtba.* .*siwg917m141xgtba.* .*siwg917m111mgtba.* .*siwg917m111mgtba.* .*siwg917m111mgtba.*"/>
     <properties key="ideCompatibility" value="makefile-ide simplicity-ide"/>
     <properties key="toolchainCompatibility" value="gcc"/>
@@ -1429,7 +1444,7 @@
     <properties key="namespace" value="template.uc"/>
     <properties key="keywords" value="universal\ configurator"/>
     <properties key="projectFilePaths" value="examples/si91x_soc/peripheral/sl_si91x_ulp_uart/sl_si91x_ulp_uart.slcp"/>
-    <properties key="boardCompatibility" value="com.silabs.board.none brd4325a brd4325b brd4325c brd4325e brd4325f brd4325g brd4338a"/>
+    <properties key="boardCompatibility" value="com.silabs.board.none brd4325a brd4325b brd4325c brd4325e brd4325f brd4325g brd4338a brd4339a brd4339b brd4340a brd4340b brd4341a brd4342a"/>
     <properties key="partCompatibility" value="mcu.arm.efr32.mg21.* mcu.arm.efr32.mg21.* .*si917.* .*si917.* .*siwg917m111mgtba.* .*siwg917m111mgtba.* .*siwg917m141xgtba.* .*siwg917m111mgtba.* .*siwg917m111mgtba.* .*siwg917m111mgtba.*"/>
     <properties key="ideCompatibility" value="makefile-ide simplicity-ide"/>
     <properties key="toolchainCompatibility" value="gcc"/>
@@ -1444,7 +1459,7 @@
     <properties key="namespace" value="template.uc"/>
     <properties key="keywords" value="universal\ configurator"/>
     <properties key="projectFilePaths" value="examples/si91x_soc/peripheral/sl_si91x_usart/sl_si91x_usart.slcp"/>
-    <properties key="boardCompatibility" value="com.silabs.board.none brd4325a brd4325b brd4325c brd4325e brd4325f brd4325g brd4338a brd4340a"/>
+    <properties key="boardCompatibility" value="com.silabs.board.none brd4325a brd4325b brd4325c brd4325e brd4325f brd4325g brd4338a brd4339a brd4339b brd4340a brd4340b brd4341a brd4342a"/>
     <properties key="partCompatibility" value="mcu.arm.efr32.mg21.* mcu.arm.efr32.mg21.* .*si917.* .*si917.* .*siwg917m111mgtba.* .*siwg917m111mgtba.* .*siwg917m141xgtba.* .*siwg917m111mgtba.* .*siwg917m111mgtba.* .*siwg917m111mgtba.*"/>
     <properties key="ideCompatibility" value="makefile-ide simplicity-ide"/>
     <properties key="toolchainCompatibility" value="gcc"/>
@@ -1459,7 +1474,7 @@
     <properties key="namespace" value="template.uc"/>
     <properties key="keywords" value="universal\ configurator"/>
     <properties key="projectFilePaths" value="examples/si91x_soc/peripheral/sl_si91x_watchdog_timer/sl_si91x_watchdog_timer.slcp"/>
-    <properties key="boardCompatibility" value="com.silabs.board.none brd4325a brd4325b brd4325c brd4325e brd4325f brd4325g brd4338a brd4340a"/>
+    <properties key="boardCompatibility" value="com.silabs.board.none brd4325a brd4325b brd4325c brd4325e brd4325f brd4325g brd4338a brd4339a brd4339b brd4340a brd4340b brd4341a brd4342a"/>
     <properties key="partCompatibility" value="mcu.arm.efr32.mg21.* mcu.arm.efr32.mg21.* .*si917.* .*si917.* .*siwg917m111mgtba.* .*siwg917m111mgtba.* .*siwg917m141xgtba.* .*siwg917m111mgtba.* .*siwg917m111mgtba.* .*siwg917m111mgtba.*"/>
     <properties key="ideCompatibility" value="makefile-ide simplicity-ide"/>
     <properties key="toolchainCompatibility" value="gcc"/>
@@ -1984,7 +1999,7 @@
     <properties key="namespace" value="template.uc"/>
     <properties key="keywords" value="universal\ configurator"/>
     <properties key="projectFilePaths" value="examples/featured/powersave_standby_associated/powersave_standby_associated_psram.slcp"/>
-    <properties key="boardCompatibility" value="com.silabs.board.none brd4340a"/>
+    <properties key="boardCompatibility" value="com.silabs.board.none brd4325g brd4339a brd4340a brd4342a"/>
     <properties key="partCompatibility" value="mcu.arm.efr32.mg21.* mcu.arm.efr32.mg21.* .*si917.* .*si917.* .*siwg917m111mgtba.* .*siwg917m111mgtba.* .*siwg917m141xgtba.* .*siwg917m111mgtba.* .*siwg917m111mgtba.* .*siwg917m111mgtba.*"/>
     <properties key="ideCompatibility" value="makefile-ide simplicity-ide"/>
     <properties key="toolchainCompatibility" value="gcc"/>
@@ -2314,7 +2329,7 @@
     <properties key="namespace" value="template.uc"/>
     <properties key="keywords" value="universal\ configurator"/>
     <properties key="projectFilePaths" value="examples/si91x_soc/wlan/wlan_throughput_psram/wlan_throughput_psram.slcp"/>
-    <properties key="boardCompatibility" value="com.silabs.board.none brd4325g brd4340a"/>
+    <properties key="boardCompatibility" value="com.silabs.board.none brd4325g brd4339a brd4340a brd4342a"/>
     <properties key="partCompatibility" value="mcu.arm.efr32.mg21.* mcu.arm.efr32.mg21.* .*si917.* .*si917.* .*siwg917m111mgtba.* .*siwg917m111mgtba.* .*siwg917m141xgtba.* .*siwg917m111mgtba.* .*siwg917m111mgtba.* .*siwg917m111mgtba.*"/>
     <properties key="ideCompatibility" value="makefile-ide simplicity-ide"/>
     <properties key="toolchainCompatibility" value="gcc"/>

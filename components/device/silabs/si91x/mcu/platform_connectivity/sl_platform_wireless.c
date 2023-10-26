@@ -373,8 +373,18 @@ void sl_si91x_trigger_sleep(SLEEP_TYPE_T sleepType,
  */
 void sl_si91x_configure_ram_retention(uint32_t rams_in_use, uint32_t rams_retention_during_sleep)
 {
+
+  uint32_t rams_to_be_powered_down = rams_in_use;
+
+#if (MEM_CONFIG_917 == 1) // RAM_LEVEL_NWP_ADV_MCU_BASIC
+  rams_to_be_powered_down &= ~(RAM_BANK_8 | RAM_BANK_9);
+#elif (MEM_CONFIG_917 == 2) // RAM_LEVEL_NWP_MEDIUM_MCU_MEDIUM
+  rams_to_be_powered_down &= ~(RAM_BANK_9);
+#endif
+
   /* Turn off Unused SRAMs*/
-  //RSI_PS_M4ssRamBanksPowerDown(rams_in_use);
+  RSI_PS_M4ssRamBanksPowerDown(rams_to_be_powered_down);
+
   /* Turn off Unused SRAM Core/Periphery domains*/
   RSI_PS_M4ssRamBanksPeriPowerDown(rams_in_use);
 

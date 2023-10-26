@@ -123,23 +123,18 @@ static const sl_wifi_device_configuration_t sl_wifi_throughput_configuration = {
   .band        = SL_SI91X_WIFI_BAND_2_4GHZ,
   .region_code = US,
   .boot_config = { .oper_mode = SL_SI91X_CLIENT_MODE,
-                   .coex_mode = SL_SI91X_WLAN_MODE,
+                   .coex_mode = SL_SI91X_WLAN_ONLY_MODE,
                    .feature_bit_map =
                      (SL_SI91X_FEAT_SECURITY_OPEN | SL_SI91X_FEAT_AGGREGATION | SL_SI91X_FEAT_WPS_DISABLE),
                    .tcp_ip_feature_bit_map = (SL_SI91X_TCP_IP_FEAT_DHCPV4_CLIENT | SL_SI91X_TCP_IP_FEAT_SSL
                                               | SL_SI91X_TCP_IP_FEAT_EXTENSION_VALID),
                    .custom_feature_bit_map =
                      (SL_SI91X_FEAT_CUSTOM_FEAT_EXTENTION_VALID | SL_SI91X_CUSTOM_FEAT_SOC_CLK_CONFIG_160MHZ),
-                   .ext_custom_feature_bit_map = (
-#ifndef RSI_M4_INTERFACE
-                     RAM_LEVEL_NWP_ALL_MCU_ZERO
-#else
-                     RAM_LEVEL_NWP_ADV_MCU_BASIC
-#endif
+                   .ext_custom_feature_bit_map = (MEMORY_CONFIG
 #ifdef CHIP_917
-                     | SL_SI91X_EXT_FEAT_FRONT_END_SWITCH_PINS_ULP_GPIO_4_5_0
+                                                  | SL_SI91X_EXT_FEAT_FRONT_END_SWITCH_PINS_ULP_GPIO_4_5_0
 #endif
-                     ),
+                                                  ),
                    .bt_feature_bit_map = 0,
                    .ext_tcp_ip_feature_bit_map =
                      (SL_SI91X_EXT_TCP_IP_WINDOW_DIV | SL_SI91X_CONFIG_FEAT_EXTENTION_VALID
@@ -524,9 +519,9 @@ void receive_data_from_tcp_client(void)
   close(server_socket);
   measure_and_print_throughput(bytes_read, (now - start));
 #else
-  int read_bytes = 1;
+  int read_bytes                = 1;
   uint32_t total_bytes_received = 0;
-  server_socket = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
+  server_socket                 = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
   if (server_socket < 0) {
     printf("\r\nSocket creation failed with bsd error: %d\r\n", errno);
     return;
@@ -544,7 +539,7 @@ void receive_data_from_tcp_client(void)
     return;
   }
   server_address.sin_family = AF_INET;
-  server_address.sin_port = LISTENING_PORT;
+  server_address.sin_port   = LISTENING_PORT;
 
   socket_return_value = bind(server_socket, (struct sockaddr *)&server_address, socket_length);
   if (socket_return_value < 0) {
@@ -580,7 +575,7 @@ void receive_data_from_tcp_client(void)
       return;
     }
     total_bytes_received = total_bytes_received + read_bytes;
-    now = osKernelGetTickCount();
+    now                  = osKernelGetTickCount();
 
     if ((now - start) > TEST_TIMEOUT) {
       printf("\r\nTest Time Out: %ld ms\r\n", (now - start));
@@ -691,9 +686,9 @@ void receive_data_from_udp_client(void)
 
   close(client_socket);
 #else
-  int read_bytes = 1;
+  int read_bytes                = 1;
   uint32_t total_bytes_received = 0;
-  client_socket = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
+  client_socket                 = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
   if (client_socket < 0) {
     printf("\r\nSocket creation failed with bsd error: %d\r\n", errno);
     return;
@@ -701,7 +696,7 @@ void receive_data_from_udp_client(void)
   printf("\r\nSocket ID : %d\r\n", client_socket);
 
   server_address.sin_family = AF_INET;
-  server_address.sin_port = LISTENING_PORT;
+  server_address.sin_port   = LISTENING_PORT;
 
   socket_return_value = bind(client_socket, (struct sockaddr *)&server_address, socket_length);
   if (socket_return_value < 0) {
@@ -721,7 +716,7 @@ void receive_data_from_udp_client(void)
       return;
     }
     total_bytes_received = total_bytes_received + read_bytes;
-    now = osKernelGetTickCount();
+    now                  = osKernelGetTickCount();
     if ((now - start) > TEST_TIMEOUT) {
       printf("\r\nTest Time Out: %ld ms\r\n", (now - start));
       break;
@@ -806,7 +801,7 @@ void receive_data_from_tls_server(void)
   measure_and_print_throughput(bytes_read, (now - start));
 #else
   uint32_t total_bytes_received = 0;
-  client_socket = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
+  client_socket                 = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
   if (client_socket < 0) {
     printf("\r\nSocket creation failed with bsd error: %d\r\n", errno);
     return;
@@ -832,7 +827,7 @@ void receive_data_from_tls_server(void)
   }
 
   server_address.sin_family = AF_INET;
-  server_address.sin_port = SERVER_PORT;
+  server_address.sin_port   = SERVER_PORT;
   sl_net_inet_addr(SERVER_IP, &server_address.sin_addr.s_addr);
 
   socket_return_value = connect(client_socket, (struct sockaddr *)&server_address, socket_length);
@@ -845,7 +840,7 @@ void receive_data_from_tls_server(void)
 
   printf("\r\nTLS_RX Throughput test start\r\n");
   uint32_t start = osKernelGetTickCount();
-  uint32_t now = start;
+  uint32_t now   = start;
   int read_bytes = 1;
   while (read_bytes > 0) {
     read_bytes = recv(client_socket, data_buffer, sizeof(data_buffer), 0);
@@ -855,7 +850,7 @@ void receive_data_from_tls_server(void)
       return;
     }
     total_bytes_received = total_bytes_received + read_bytes;
-    now = osKernelGetTickCount();
+    now                  = osKernelGetTickCount();
 
     if ((now - start) > TEST_TIMEOUT) {
       printf("\r\nTest Time Out: %ld ms\r\n", (now - start));

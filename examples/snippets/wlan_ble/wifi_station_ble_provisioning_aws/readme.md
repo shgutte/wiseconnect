@@ -349,13 +349,12 @@ Place the certificate files in `<SDK>/resources/certificates/` path and include 
    #include "aws_client_certificate.pem.crt.h"
    #include "aws_client_private_key.pem.key.h"
 
-   Replace the default Device certificate and Private key certificate given in `rsi_wlan_set_certificate()` API in the application with the converted pem array.
+   Replace the default Device certificate and Private key certificate given in `sl_net_set_credential()` API in the application with the converted pem array.
 
    // Load Security Certificates
-   status = rsi_wlan_set_certificate(RSI_SSL_CLIENT, aws_client_certificate, (sizeof(aws_client_certificate) - 1));
+   status = sl_net_set_credential(SL_NET_TLS_SERVER_CREDENTIAL_ID(0), SL_NET_CERTIFICATE, aws_client_certificate, (sizeof(aws_client_certificate) - 1));
   
-   status =
-   rsi_wlan_set_certificate(RSI_SSL_CLIENT_PRIVATE_KEY, aws_client_private_key, (sizeof(aws_client_private_key) - 1));
+   status = sl_net_set_credential(SL_NET_TLS_SERVER_CREDENTIAL_ID(0), SL_NET_PRIVATE_KEY, aws_client_private_key, (sizeof(aws_client_private_key) - 1));
    ```
 
 > NOTE :

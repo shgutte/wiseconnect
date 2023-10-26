@@ -24,8 +24,6 @@ define:
   - name: RSI_DEBUG_PRINTS
   - name: HIGH_EFFICIENCY_PARAMS_SUPPORT
   - name: TWT_SUPPORT
-component:
-- {from: wiseconnect3_sdk}
 requires:
 - name: sl_system
 - name: bsd_socket

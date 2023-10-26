@@ -34,18 +34,20 @@ slc:
         - socket.h
 
 suds:
-  wiseconnect-api-reference-guide-bsd-socket:
+  wiseconnect-api-reference-guide-sockets:
     version: "3.0.0"
     authors:
       - aji.gerdiman@silabs.com
       - nik.vonhuben@silabs.com
     contentType: doxygen
-    title: "BSD Socket"
-    description: "BSD Socket"
+    title: "Sockets"
+    description: "Sockets"
 
 doxygen:
-  project_name: "BSD Socket"
+  project_name: "Sockets"
   inputs:
     - inc
+    - ../../../third_party/iot_socket/include/iot_socket.h
     - docs/doxygen_template.h 
     - docs/doxygen_indexfile.md 
+  

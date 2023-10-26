@@ -96,12 +96,13 @@ typedef enum {
 } sl_wifi_credential_type_t;
 
 /// Wi-Fi antenna selections
+/// @note Only SL_WIFI_ANTENNA_1 currently supported.
 typedef enum {
   SL_WIFI_ANTENNA_1,        ///< Wi-Fi Radio Antenna 1
-  SL_WIFI_ANTENNA_2,        ///< Wi-Fi Radio Antenna 2
-  SL_WIFI_ANTENNA_AUTO,     ///< Wi-Fi Radio Antenna Auto Selection
-  SL_WIFI_ANTENNA_EXTERNAL, ///< Wi-Fi Radio External Antenna
-  SL_WIFI_ANTENNA_INTERNAL, ///< Wi-Fi Radio Internal Antenna
+  SL_WIFI_ANTENNA_2,        ///< Wi-Fi Radio Antenna 2 (not currently supported)
+  SL_WIFI_ANTENNA_AUTO,     ///< Wi-Fi Radio Antenna Auto Selection (not currently supported)
+  SL_WIFI_ANTENNA_EXTERNAL, ///< Wi-Fi Radio External Antenna (not currently supported)
+  SL_WIFI_ANTENNA_INTERNAL, ///< Wi-Fi Radio Internal Antenna (not currently supported)
 } sl_wifi_antenna_t;
 
 /// Wi-Fi interface index enumeration.

@@ -53,20 +53,20 @@ other_file:
 - {path: resources/readme/image513b.png}
 - {path: resources/readme/image513c.png}
 - {path: resources/uc_screen/image513d.png}
+requires:
+- name: ulp_platform
 define:
 - name: ROM_BYPASS
 - name: RSI_M4_INTERFACE
 - name: USART_CONFIG
 - name: SI917_RADIO_BOARD
 - name: SYSCALLS_WRITE
-- name: M4_PS2_STATE
-template_contribution:
-- {name: ulp_platform, priority: 0, value: 1}
 readme:
   - path: readme.md
 ui_hints:
-  highlight: readme.md
-  focus: true
+  highlight:
+    - path: readme.md
+      focus: true
 post_build:
   path: ../../../../utilities/postbuild_profile/wiseconnect_soc.slpb
 

@@ -18,4 +18,3 @@ provides:
   - name: sl_config_timer
 requires:
   - name: udma_linker_config
-  - name: rsilib_config_timer

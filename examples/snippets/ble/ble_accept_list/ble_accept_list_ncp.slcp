@@ -1,7 +1,7 @@
-project_name: ble_accept_list
+project_name: ble_accept_list_ncp
 package: ble
 quality: production
-label: ble_accept_list
+label: ble_accept_list_ncp
 category: Example|BLE
 description: >
   This application demonstrates how to add a particular BD-Address to the Accept List.
@@ -24,12 +24,6 @@ include:
       - path: ble_config.h
 define:
   - name: RSI_DEBUG_PRINTS
-  - name: WIRELESS_BASED_WAKEUP_TO_USE
-component:
-- {from: wiseconnect3_sdk, id: si917_memory_default_config}
-- {from: wiseconnect3_sdk, id: sllib_m4_power_save}
-- {from: wiseconnect3_sdk, id: si91x_debug}
-- {from: wiseconnect3_sdk, id: syscalls}
 requires:
 - name: sl_system
 - name: network_manager
@@ -55,9 +49,12 @@ requires:
   condition: [device_has_devinfo]
 - name: emlib_ldma
   condition: [device_has_devinfo]
-toolchain_settings: []
+toolchain_settings: 
+  - option: gcc_linker_option
+    value: "-u _printf_float"
 configuration:
 - {name: SL_BOARD_ENABLE_VCOM, value: '1'}
+- {name: configTOTAL_HEAP_SIZE, value: '51200'}
 readme:
   - path: readme.md
 other_file:
@@ -84,5 +81,3 @@ ui_hints:
   highlight:
     - path: readme.md
       focus: true
-post_build:
-  path: ../../../../utilities/postbuild_profile/wiseconnect_soc.slpb

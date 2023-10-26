@@ -505,7 +505,6 @@ int32_t rsi_driver_process_bt_resp(
     if (status == RSI_SUCCESS) { //To not allow BT SetAddress after these states are triggered
       if (bt_cb->expected_response_type == RSI_BLE_REQ_ADV || bt_cb->expected_response_type == RSI_BLE_REQ_SCAN
           || bt_cb->expected_response_type == RSI_BLE_REQ_CONN) {
-        //bt_cb->state = RSI_BT_STATE_NONE;
         rsi_driver_cb->bt_common_cb->state = RSI_BT_STATE_NONE;
       }
     }

@@ -28,6 +28,7 @@ component:
   - id: psa_crypto_source
   - id: psa_driver
   - id: psa_crypto_trng
+  - id: psa_crypto_sha256
   - id: sl_si91x_trng
     from: wiseconnect3_sdk
   - id: sl_si91x_psa_crypto

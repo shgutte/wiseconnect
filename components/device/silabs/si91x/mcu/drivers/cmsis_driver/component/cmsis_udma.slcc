@@ -17,3 +17,4 @@ provides:
 requires:
   - name: rsilib_udma_wrapper
   - name: rsilib_udma
+  - name: udma_linker_config

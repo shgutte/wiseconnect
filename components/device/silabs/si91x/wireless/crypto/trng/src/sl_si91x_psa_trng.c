@@ -90,12 +90,12 @@ sl_status_t sl_si91x_psa_get_random(uint8_t *output, size_t len, size_t *out_len
   if (output == NULL || len == 0 || out_len == NULL) {
     return SL_STATUS_FAIL;
   }
-  int32_t status = SL_STATUS_OK;
+  int32_t status = SL_STATUS_FAIL;
 
   //! Memset the buffer to zero
   memset(output, 0, len);
 #ifdef SLI_TRNG_DEVICE_SI91X
-  //! Get Random dwords of desired length
+  //! Get Random number of desired length
   status = sl_si91x_trng_get_random_num((uint32_t *)output, len);
 
 #else  // SLI_TRNG_DEVICE_SI91X

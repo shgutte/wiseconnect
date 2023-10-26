@@ -32,12 +32,11 @@ component:
 - {from: wiseconnect3_sdk, id: si91x_debug}
 - {from: wiseconnect3_sdk, id: syscalls}
 - {from: wiseconnect3_sdk, instance: [channel_0], id: adc_instance}
+requires:
+  - name: ulp_platform
 define:
   - name: GAIN_OFFSET_CAL_EN
   - name: RSI_M4_INTERFACE
-  - name: M4_PS2_STATE
-template_contribution:
-- {name: ulp_platform, priority: 0, value: 1}
 provides:
   - name: si91x_soc
 other_file:
@@ -48,7 +47,8 @@ other_file:
 readme:
   - path: readme.md
 ui_hints:
-  highlight: readme.md
-  focus: true
+  highlight:
+    - path: readme.md
+      focus: true
 post_build:
   path: ../../../../utilities/postbuild_profile/wiseconnect_soc.slpb

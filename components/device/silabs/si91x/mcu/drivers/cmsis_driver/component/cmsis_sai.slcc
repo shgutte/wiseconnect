@@ -19,3 +19,4 @@ requires:
   - name: romdriver_gpdma
   - name: romdriver_qspi
   - name: romdriver_timer
+  - name: udma_linker_config

@@ -18,3 +18,4 @@ requires:
   - name: rsilib_aux_reference_volt_config
   - name: rsilib_dac
   - name: systemlevel_bod
+  - name: udma_linker_config

@@ -177,6 +177,8 @@ typedef struct {
   uint8_t flags;                        ///< One of the values from @ref SI91X_RESPONSE_HANDLING_FLAGS
   uint16_t frame_status;                ///< Si91x command status
   void *sdk_context;                    ///< sdk context, unused internally to invoke user callbacks
+  int32_t
+    sl_si91x_socket_id; ///< socket_id, used only for SI91X_SOCKET_CMD queue to update socket_id in command trace of bus thread.
 } sl_si91x_queue_packet_t;
 
 /// Structure for module state async notification

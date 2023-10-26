@@ -40,6 +40,8 @@ component:
     from: wiseconnect3_sdk
   - id: syscalls
     from: wiseconnect3_sdk
+requires:
+- name: ulp_platform
 other_file:
 - {path: resources/readme/image503a.png}
 - {path: resources/readme/image503b.png}
@@ -47,11 +49,8 @@ other_file:
 - {path: resources/readme/vcom.png}
 define:
 - {name: RSI_M4_INTERFACE}
-- {name: M4_PS2_STATE}
 - {name: SL_SI91X_DMA}
 - {name: __STATIC_INLINE, value: "static inline"}
-template_contribution:
-- {name: ulp_platform, priority: 0, value: 1}
 provides:
 - {name: si91x_soc}
 ui_hints:

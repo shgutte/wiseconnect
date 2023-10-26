@@ -112,7 +112,6 @@ static void i2c_clock_init(I2C_TypeDef *i2c);
 static void compare_data(void);
 static void handle_leader_transmit_irq(void);
 static void handle_leader_receive_irq(void);
-uint32_t ramVector[SI91X_VECTOR_TABLE_ENTRIES] __attribute__((aligned(256)));
 extern void hardware_setup(void);
 /*******************************************************************************
  **************************   GLOBAL FUNCTIONS   *******************************
@@ -128,10 +127,6 @@ void i2c_leader_example_init(void)
      * To reconfigure the default setting of SystemInit() function, refer to
      * startup_rs1xxxx.c file
      */
-  //copying the vector table from flash to ram
-  memcpy(ramVector, (uint32_t *)SCB->VTOR, sizeof(uint32_t) * SI91X_VECTOR_TABLE_ENTRIES);
-  // Assigning the ram vector address to VTOR register
-  SCB->VTOR = (uint32_t)ramVector;
   // Switching MCU from PS4 to PS2 state(low power state)
   // In this mode, whatever be the timer clock source value, it will run with 20MHZ only,
   // as it trims higher clock frequencies to 20MHZ.

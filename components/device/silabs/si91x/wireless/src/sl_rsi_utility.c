@@ -110,7 +110,9 @@ void get_coex_performance_profile(sl_performance_profile_t *profile)
 {
   SL_ASSERT(profile != NULL);
   uint8_t mode_decision = 0;
-
+  if (performance_profile.coex_mode == 0) { // updating coex_mode to 1
+    performance_profile.coex_mode = performance_profile.coex_mode | BIT(0);
+  }
   // Determine the mode decision based on the coexistence mode
   switch (performance_profile.coex_mode) {
     case SL_SI91X_WLAN_MODE: {
@@ -175,7 +177,9 @@ void get_coex_performance_profile(sl_performance_profile_t *profile)
       // Do nothing
     } break;
   }
-
+  if (performance_profile.coex_mode == 1) { // setting coex_mode to zero
+    performance_profile.coex_mode = performance_profile.coex_mode ^ BIT(1);
+  }
   return;
 }
 
@@ -903,6 +907,81 @@ sl_status_t sl_si91x_host_flush_nodes_from_queue(sl_si91x_queue_type_t queue,
 
   osMutexRelease(cmd_queues[queue].mutex);
   return status;
+}
+
+sl_status_t sl_si91x_flush_queue_based_on_type(sl_si91x_queue_type_t queue,
+                                               sl_si91x_node_free_function_t node_free_function)
+{
+  sl_status_t status                  = SL_STATUS_OK;
+  sl_wifi_buffer_t *packet            = NULL;
+  sl_wifi_buffer_t *data              = NULL;
+  sl_si91x_queue_packet_t *node       = NULL;
+  sl_si91x_queue_packet_t *queue_node = NULL;
+  uint16_t length                     = 0;
+  uint32_t response_event             = 0;
+  uint32_t response_type              = 0;
+
+  // Acquire the mutex for the specified queue with a timeout
+  osMutexAcquire(cmd_queues[queue].mutex, 0xFFFFFFFFUL);
+
+  if (cmd_queues[queue].tail == NULL) {
+    osMutexRelease(cmd_queues[queue].mutex);
+    return SL_STATUS_EMPTY; // The queue is empty, no packets to flush
+  }
+
+  packet = cmd_queues[queue].head;
+
+  while (NULL != packet) {
+    sl_wifi_buffer_t *temp_packet = NULL;
+    queue_node                    = sl_si91x_host_get_buffer_data(packet, 0, &length);
+    if (queue_node == NULL) {
+      osMutexRelease(cmd_queues[queue].mutex);
+      return SL_STATUS_NOT_AVAILABLE;
+    }
+
+    if (queue_node->flags & SI91X_PACKET_RESPONSE_PACKET) {
+      status = sl_create_generic_rx_packet_from_params(node,
+                                                       temp_packet,
+                                                       queue_node->packet_id,
+                                                       queue_node->flags,
+                                                       queue_node->sdk_context,
+                                                       queue_node->command_type);
+      if (status != SL_STATUS_OK) {
+        osMutexRelease(cmd_queues[queue].mutex);
+        return status;
+      }
+
+      if (queue_node->command_type == SI91X_COMMON_CMD) {
+        response_event = NCP_HOST_COMMON_RESPONSE_EVENT;
+        response_type  = SI91X_COMMON_RESPONSE_QUEUE;
+      } else if (queue_node->command_type == SI91X_WLAN_CMD) {
+        response_event = NCP_HOST_WLAN_RESPONSE_EVENT;
+        response_type  = SI91X_WLAN_RESPONSE_QUEUE;
+      } else if (queue_node->command_type == SI91X_NETWORK_CMD) {
+        response_event = NCP_HOST_NETWORK_RESPONSE_EVENT;
+        response_type  = SI91X_NETWORK_RESPONSE_QUEUE;
+      } else if (queue_node->command_type == SI91X_SOCKET_CMD) {
+        response_event = NCP_HOST_SOCKET_RESPONSE_EVENT;
+        response_type  = SI91X_SOCKET_RESPONSE_QUEUE;
+      }
+      // add to response queue and raise event
+      sl_si91x_host_add_to_queue(response_type, temp_packet);
+      sl_si91x_host_set_event(response_event); // TODO: Handle partial async packets with appropriate event
+    } else {
+      data = packet;
+      node_free_function(data);
+    }
+
+    cmd_queues[queue].head = (sl_wifi_buffer_t *)packet->node.node;
+    packet                 = (sl_wifi_buffer_t *)packet->node.node;
+  }
+
+  if (NULL == cmd_queues[queue].head) {
+    cmd_queues[queue].tail = NULL;
+  }
+
+  osMutexRelease(cmd_queues[queue].mutex);
+  return SL_STATUS_OK;
 }
 
 uint32_t sl_si91x_host_queue_status(sl_si91x_queue_type_t queue)

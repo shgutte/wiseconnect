@@ -29,7 +29,7 @@
 #ifdef SL_SI91X_GSPI_DMA
 #include "sl_si91x_dma.h"
 #include "rsi_gspi.h"
-#define DMA_NUMBER 0
+#define DMA_INSTANCE 0
 #endif
 #include "rsi_gspi.h"
 
@@ -186,7 +186,7 @@ int32_t GSPI_Initialize(ARM_SPI_SignalEvent_t cb_event,
       if ((gspi->reg == GSPI0)) {
 #ifdef SL_SI91X_GSPI_DMA
         sl_dma_init_t dma_init;
-        dma_init.dma_number = DMA_NUMBER;
+        dma_init.dma_number = DMA_INSTANCE;
         if (sl_si91x_dma_init(&dma_init)) {
           return ARM_DRIVER_ERROR;
         }
@@ -225,7 +225,7 @@ int32_t GSPI_Uninitialize(const GSPI_RESOURCES *gspi, UDMA_RESOURCES *udma)
     // Diasable DMA instance
     if ((gspi->reg == GSPI0)) {
 #ifdef SL_SI91X_GSPI_DMA
-      if (sl_si91x_dma_deinit(DMA_NUMBER)) {
+      if (sl_si91x_dma_deinit(DMA_INSTANCE)) {
         return ARM_DRIVER_ERROR;
       }
 #else
@@ -573,6 +573,7 @@ int32_t GSPI_Send(const void *data,
   (void)udma;
   (void)udmaHandle;
   (void)chnl_info;
+  sl_status_t status;
 #else
   volatile int32_t stat = 0;
 #endif
@@ -648,15 +649,16 @@ int32_t GSPI_Send(const void *data,
       dma_transfer_tx.signal         = gspi->tx_dma->chnl_cfg.periAck;
 
       //Allocate DMA channel for Tx
-      if (sl_si91x_dma_allocate_channel(DMA_NUMBER, &channel, channel_priority)) {
+      status = sl_si91x_dma_allocate_channel(DMA_INSTANCE, &channel, channel_priority);
+      if (status && (status != SL_STATUS_DMA_CHANNEL_ALLOCATED)) {
         return ARM_DRIVER_ERROR;
       }
       //Register transfer complete and error callback
-      if (sl_si91x_dma_register_callbacks(DMA_NUMBER, channel, &gspi_tx_callback)) {
+      if (sl_si91x_dma_register_callbacks(DMA_INSTANCE, channel, &gspi_tx_callback)) {
         return ARM_DRIVER_ERROR;
       }
       //Configure the channel for DMA transfer
-      if (sl_si91x_dma_transfer(DMA_NUMBER, channel, &dma_transfer_tx)) {
+      if (sl_si91x_dma_transfer(DMA_INSTANCE, channel, &dma_transfer_tx)) {
         return ARM_DRIVER_ERROR;
       }
 #else
@@ -678,8 +680,8 @@ int32_t GSPI_Send(const void *data,
       gspi->reg->GSPI_CONFIG1_b.GSPI_MANUAL_WR          = 0x1; //write enable
       GSPI0->GSPI_WRITE_DATA2_b.USE_PREV_LENGTH         = 0x1;
 #ifdef SL_SI91X_GSPI_DMA
-      sl_si91x_dma_channel_enable(DMA_NUMBER, gspi->tx_dma->channel);
-      sl_si91x_dma_enable(DMA_NUMBER);
+      sl_si91x_dma_channel_enable(DMA_INSTANCE, gspi->tx_dma->channel + 1);
+      sl_si91x_dma_enable(DMA_INSTANCE);
 #else
       UDMAx_ChannelEnable(gspi->tx_dma->channel, udma, udmaHandle);
       UDMAx_DMAEnable(udma, udmaHandle);
@@ -750,6 +752,7 @@ int32_t GSPI_Receive(void *data,
   (void)udma;
   (void)udmaHandle;
   (void)chnl_info;
+  sl_status_t status;
 #else
   volatile int32_t stat = 0;
 #endif
@@ -835,15 +838,16 @@ int32_t GSPI_Receive(void *data,
         dma_transfer_tx.signal         = gspi->tx_dma->chnl_cfg.periAck;
 
         //Allocate DMA channel for Tx
-        if (sl_si91x_dma_allocate_channel(DMA_NUMBER, &channel, channel_priority)) {
+        status = sl_si91x_dma_allocate_channel(DMA_INSTANCE, &channel, channel_priority);
+        if (status && (status != SL_STATUS_DMA_CHANNEL_ALLOCATED)) {
           return ARM_DRIVER_ERROR;
         }
         //Register transfer complete and error callback
-        if (sl_si91x_dma_register_callbacks(DMA_NUMBER, channel, &gspi_tx_callback)) {
+        if (sl_si91x_dma_register_callbacks(DMA_INSTANCE, channel, &gspi_tx_callback)) {
           return ARM_DRIVER_ERROR;
         }
         //Configure the channel for DMA transfer
-        if (sl_si91x_dma_transfer(DMA_NUMBER, channel, &dma_transfer_tx)) {
+        if (sl_si91x_dma_transfer(DMA_INSTANCE, channel, &dma_transfer_tx)) {
           return ARM_DRIVER_ERROR;
         }
 #else
@@ -911,15 +915,16 @@ int32_t GSPI_Receive(void *data,
         dma_transfer_rx.signal         = gspi->rx_dma->chnl_cfg.periAck;
 
         //Allocate DMA channel for Rx
-        if (sl_si91x_dma_allocate_channel(DMA_NUMBER, &channel, channel_priority)) {
+        status = sl_si91x_dma_allocate_channel(DMA_INSTANCE, &channel, channel_priority);
+        if (status && (status != SL_STATUS_DMA_CHANNEL_ALLOCATED)) {
           return ARM_DRIVER_ERROR;
         }
         //Register transfer complete and error callback
-        if (sl_si91x_dma_register_callbacks(DMA_NUMBER, channel, &gspi_rx_callback)) {
+        if (sl_si91x_dma_register_callbacks(DMA_INSTANCE, channel, &gspi_rx_callback)) {
           return ARM_DRIVER_ERROR;
         }
         //Configure the channel for DMA transfer
-        if (sl_si91x_dma_transfer(DMA_NUMBER, channel, &dma_transfer_rx)) {
+        if (sl_si91x_dma_transfer(DMA_INSTANCE, channel, &dma_transfer_rx)) {
           return ARM_DRIVER_ERROR;
         }
 #else
@@ -942,9 +947,9 @@ int32_t GSPI_Receive(void *data,
         return ARM_DRIVER_ERROR;
       }
 #ifdef SL_SI91X_GSPI_DMA
-      sl_si91x_dma_channel_enable(DMA_NUMBER, gspi->tx_dma->channel);
-      sl_si91x_dma_channel_enable(DMA_NUMBER, gspi->rx_dma->channel);
-      sl_si91x_dma_enable(DMA_NUMBER);
+      sl_si91x_dma_channel_enable(DMA_INSTANCE, gspi->tx_dma->channel + 1);
+      sl_si91x_dma_channel_enable(DMA_INSTANCE, gspi->rx_dma->channel + 1);
+      sl_si91x_dma_enable(DMA_INSTANCE);
 #else
       UDMAx_ChannelEnable(gspi->tx_dma->channel, udma, udmaHandle);
       UDMAx_ChannelEnable(gspi->rx_dma->channel, udma, udmaHandle);
@@ -1007,6 +1012,7 @@ int32_t GSPI_Transfer(const void *data_out,
   (void)udma;
   (void)udmaHandle;
   (void)chnl_info;
+  sl_status_t status;
 #else
   volatile int32_t stat = 0;
 #endif
@@ -1088,15 +1094,16 @@ int32_t GSPI_Transfer(const void *data_out,
         dma_transfer_tx.signal         = gspi->tx_dma->chnl_cfg.periAck;
 
         //Allocate DMA channel for Tx
-        if (sl_si91x_dma_allocate_channel(DMA_NUMBER, &channel, channel_priority)) {
+        status = sl_si91x_dma_allocate_channel(DMA_INSTANCE, &channel, channel_priority);
+        if (status && (status != SL_STATUS_DMA_CHANNEL_ALLOCATED)) {
           return ARM_DRIVER_ERROR;
         }
         //Register transfer complete and error callback
-        if (sl_si91x_dma_register_callbacks(DMA_NUMBER, channel, &gspi_tx_callback)) {
+        if (sl_si91x_dma_register_callbacks(DMA_INSTANCE, channel, &gspi_tx_callback)) {
           return ARM_DRIVER_ERROR;
         }
         //Configure the channel for DMA transfer
-        if (sl_si91x_dma_transfer(DMA_NUMBER, channel, &dma_transfer_tx)) {
+        if (sl_si91x_dma_transfer(DMA_INSTANCE, channel, &dma_transfer_tx)) {
           return ARM_DRIVER_ERROR;
         }
 #else
@@ -1162,15 +1169,16 @@ int32_t GSPI_Transfer(const void *data_out,
         dma_transfer_rx.signal         = gspi->rx_dma->chnl_cfg.periAck;
 
         //Allocate DMA channel for Rx
-        if (sl_si91x_dma_allocate_channel(DMA_NUMBER, &channel, channel_priority)) {
+        status = sl_si91x_dma_allocate_channel(DMA_INSTANCE, &channel, channel_priority);
+        if (status && (status != SL_STATUS_DMA_CHANNEL_ALLOCATED)) {
           return ARM_DRIVER_ERROR;
         }
         //Register transfer complete and error callback
-        if (sl_si91x_dma_register_callbacks(DMA_NUMBER, channel, &gspi_rx_callback)) {
+        if (sl_si91x_dma_register_callbacks(DMA_INSTANCE, channel, &gspi_rx_callback)) {
           return ARM_DRIVER_ERROR;
         }
         //Configure the channel for DMA transfer
-        if (sl_si91x_dma_transfer(DMA_NUMBER, channel, &dma_transfer_rx)) {
+        if (sl_si91x_dma_transfer(DMA_INSTANCE, channel, &dma_transfer_rx)) {
           return ARM_DRIVER_ERROR;
         }
 #else
@@ -1190,9 +1198,9 @@ int32_t GSPI_Transfer(const void *data_out,
 #endif
         gspi->reg->GSPI_CONFIG1_b.GSPI_MANUAL_RD = 0x1;
 #ifdef SL_SI91X_GSPI_DMA
-        sl_si91x_dma_channel_enable(DMA_NUMBER, gspi->rx_dma->channel);
-        sl_si91x_dma_channel_enable(DMA_NUMBER, gspi->tx_dma->channel);
-        sl_si91x_dma_enable(DMA_NUMBER);
+        sl_si91x_dma_channel_enable(DMA_INSTANCE, gspi->rx_dma->channel + 1);
+        sl_si91x_dma_channel_enable(DMA_INSTANCE, gspi->tx_dma->channel + 1);
+        sl_si91x_dma_enable(DMA_INSTANCE);
 #else
         UDMAx_ChannelEnable(gspi->rx_dma->channel, udma, udmaHandle);
         UDMAx_ChannelEnable(gspi->tx_dma->channel, udma, udmaHandle);

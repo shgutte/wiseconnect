@@ -114,6 +114,7 @@
 
 #define DUTY_CYCLING_DISABLE 0
 #define DUTY_CYCLING_ENABLE  1
+#define ENABLE_POWER_SAVE    0 //! Set to 1 for powersave mode
 
 //! Application global parameters.
 static rsi_bt_resp_get_local_name_t rsi_app_resp_get_local_name = { 0 };
@@ -132,29 +133,20 @@ static const sl_wifi_device_configuration_t config = {
 #ifdef RSI_M4_INTERFACE
                    .feature_bit_map = (SL_SI91X_FEAT_WPS_DISABLE | RSI_FEATURE_BIT_MAP),
 #else
-                   .feature_bit_map        = RSI_FEATURE_BIT_MAP,
+                   .feature_bit_map            = RSI_FEATURE_BIT_MAP,
 #endif
 #if RSI_TCP_IP_BYPASS
                    .tcp_ip_feature_bit_map = RSI_TCP_IP_FEATURE_BIT_MAP,
 #else
-                   .tcp_ip_feature_bit_map = (RSI_TCP_IP_FEATURE_BIT_MAP | SL_SI91X_TCP_IP_FEAT_EXTENSION_VALID),
+                   .tcp_ip_feature_bit_map     = (RSI_TCP_IP_FEATURE_BIT_MAP | SL_SI91X_TCP_IP_FEAT_EXTENSION_VALID),
 #endif
                    .custom_feature_bit_map = (SL_SI91X_FEAT_CUSTOM_FEAT_EXTENTION_VALID | RSI_CUSTOM_FEATURE_BIT_MAP),
-                   .ext_custom_feature_bit_map = (
+                   .ext_custom_feature_bit_map =
+                     (SL_SI91X_EXT_FEAT_LOW_POWER_MODE | SL_SI91X_EXT_FEAT_XTAL_CLK | MEMORY_CONFIG
 #ifdef CHIP_917
-                     (RSI_EXT_CUSTOM_FEATURE_BIT_MAP)
-#else //defaults
-#ifdef RSI_M4_INTERFACE
-                     (SL_SI91X_EXT_FEAT_256K_MODE | RSI_EXT_CUSTOM_FEATURE_BIT_MAP)
-#else
-                     (SL_SI91X_EXT_FEAT_384K_MODE | RSI_EXT_CUSTOM_FEATURE_BIT_MAP)
+                      | SL_SI91X_EXT_FEAT_FRONT_END_SWITCH_PINS_ULP_GPIO_4_5_0
 #endif
-#endif
-                     | (SL_SI91X_EXT_FEAT_BT_CUSTOM_FEAT_ENABLE)
-#if (defined A2DP_POWER_SAVE_ENABLE)
-                     | SL_SI91X_EXT_FEAT_XTAL_CLK
-#endif
-                     ),
+                      | SL_SI91X_EXT_FEAT_BT_CUSTOM_FEAT_ENABLE),
                    .bt_feature_bit_map = (RSI_BT_FEATURE_BITMAP
 #if (RSI_BT_GATT_ON_CLASSIC)
                                           | SL_SI91X_BT_ATT_OVER_CLASSIC_ACL /* to support att over classic acl link */
@@ -413,7 +405,7 @@ void ble_per(void *unused)
                 per_stats.rssi,
                 per_stats.id_pkts_rcvd);
     }
-#if RSI_M4_INTERFACE
+#if (RSI_M4_INTERFACE && ENABLE_POWER_SAVE)
     if (!(P2P_STATUS_REG & TA_wakeup_M4)) {
       P2P_STATUS_REG &= ~M4_wakeup_TA;
       LOG_PRINT("\r\n M4 sleep");

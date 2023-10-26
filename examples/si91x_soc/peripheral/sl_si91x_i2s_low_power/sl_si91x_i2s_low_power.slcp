@@ -43,19 +43,13 @@ component:
     from: wiseconnect3_sdk
   - id: sl_system
   - id: status
+requires:
+  - name: ulp_platform
 define:
   - name: RSI_M4_INTERFACE
-  - name: M4_PS2_STATE
   - name: ROM_BYPASS
   - name: SYSCALLS_WRITE
   - name: SL_SI91X_I2S
-template_contribution:
-  - name: ram_execution
-    value: 1
-    priority: 0
-  - name: ulp_platform
-    value: 1
-    priority: 0
 provides:
   - name: si91x_soc
 other_file:
@@ -65,7 +59,8 @@ other_file:
 readme:
   - path: readme.md
 ui_hints:
-  highlight: readme.md
-  focus: true
+  highlight:
+    - path: readme.md
+      focus: true
 post_build:
   path: ../../../../utilities/postbuild_profile/wiseconnect_soc.slpb

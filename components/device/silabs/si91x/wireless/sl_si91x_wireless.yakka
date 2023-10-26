@@ -37,6 +37,7 @@ supports:
       sources:
         - sl_net/src/sl_net_rsi_utility.c
         - sl_net/src/sl_net_si91x_integration_handler.c
+        - sl_net/src/sl_si91x_net_credentials.c
       includes:
         global:
           - sl_net/inc

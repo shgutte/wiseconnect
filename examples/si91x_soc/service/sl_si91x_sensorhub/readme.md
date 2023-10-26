@@ -14,6 +14,7 @@
 - The application runs in PS4 state (Active mode) before switching to Power save modes. After switching to PS2 state, the sensor data will be sampled and collected.
 - By default, Sensor Hub will operate at **20 MHz** core frequency in order to support PS2 State. This framework interfaces with peripherals using **ULP_GPIOs** since it must run in low power modes such as PS2 mode.
 - ADXL345 sensor's maximum SPI clock speed is 5MHz.
+- Support for ADC peripherals has been introduced in PS1 power saving mode.
 
 
 ## Framework
@@ -106,10 +107,11 @@
       #define configEXPECTED_IDLE_TIME_BEFORE_SLEEP    70
   #endif
   ```
-    ***Note***: 
-    * By using above sleep configuration, sensor hub is going to sleep by using the idle task and idle time.  
-    * If the Ideal time exceeds the expected sleep time value, the system is allowed to sleep.
-    * The above idle time is fed to the Alarm timer, which we are using as a wake-up source.
+    >***Note***: 
+    >* By using above sleep configuration, sensor hub is going to sleep by using the idle task and idle time.  
+    >* If the Ideal time exceeds the expected sleep time value, the system is allowed to sleep.
+    >* The above idle time is fed to the Alarm timer, which we are using as a wake-up source.
+    >#
 
 * **ADC Configurations**: 
 Configure only below parameters for ADC to change its mode from FIFO to STATIC and vice versa
@@ -124,6 +126,24 @@ Configure only below parameters for ADC to change its mode from FIFO to STATIC a
     .adc_config.adc_cfg.operation_mode        = SL_ADC_STATIC_MODE,
     .adc_config.adc_ch_cfg.sampling_rate[0]   = SL_SH_ADC_SAMPLING_RATE, // Use 1000 for Static Mode
   ```
+  * To configure the PS1 power state from PS2 State, please update the below macro in the preprocessor settings:
+    ```C
+    SL_SH_ADC_PS1=1 
+    //Enabling this macro will move the core from PS2 Active state to PS1 state
+    ```
+    * Please update the defines in ***\gecko_sdk_4.3.2\util\third_party\freertos\kernel\include\FreeRTOS.h** file as below:
+        ```C
+        #ifndef configUSE_TICKLESS_IDLE
+        #define configUSE_TICKLESS_IDLE 1           // 1 is to Enable the tickless Idle mode 
+        #endif
+
+        #ifndef configPRE_SLEEP_PROCESSING
+        #define configPRE_SLEEP_PROCESSING(x) sli_si91x_sleep_wakeup(x)               // Here x is idle time, 
+        #endif
+        ```
+  >***Note***:
+  >* The PS1 state transition only applies to ADC FIFO Mode. Before entering this mode, kindly turn off any other sensors.
+  >#
 
 ## Sensor Pins Setup
 
@@ -147,7 +167,7 @@ Configure only below parameters for ADC to change its mode from FIFO to STATIC a
 ### ADC Sensor Pin Configurations
 | Sensor PIN | ULP GPIO PIN | Description |
 | --- | --- | --- |
-| ADC Input | ULP_GPIO_10 [ P17 ] | Connect to Joystick output (P36)
+| ADC Input | ULP_GPIO_10 [ P17 ] | Connect to Joystick output (P36) / Signal output of the ADC sensor
 | 
 
 
@@ -180,5 +200,5 @@ Configure only below parameters for ADC to change its mode from FIFO to STATIC a
   >- ADC static mode will read the data from the ADC registers and does not depends on ADC Interrupt.
   >- ADC static mode only supports Sensor Hub's Polling mode. And it will read 1 sample at a time based on the Sensor Hub Polling Sampling interval
   >- ADC FIFO mode will support Sensor Hub Polling and Interrupt Mode.
-
+  >#
 

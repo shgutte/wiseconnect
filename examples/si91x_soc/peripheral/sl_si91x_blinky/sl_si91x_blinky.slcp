@@ -15,7 +15,7 @@ source:
   - path: main.c
   - path: blinky.c
 include:
-  - path:
+  - path: .
     file_list:
     - path: app.h
     - path: blinky.h
@@ -41,6 +41,8 @@ component:
     from: wiseconnect3_sdk
   - id: syscalls
     from: wiseconnect3_sdk
+requires:
+- name: sleeptimer
 define:
   - name: RSI_M4_INTERFACE
   - name: SYSCALLS_WRITE

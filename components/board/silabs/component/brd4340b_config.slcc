@@ -12,9 +12,9 @@
   - name: brd4340b_config
 - config_file: 
   - override:
-      component: "%extension-wiseconnect3_sdk%brd4340b"
-      file_id: B0_pin_config
-    path: RTE_Device_917.h   
+      component: "%extension-wiseconnect3_sdk%board_configuration_headers"
+      file_id: RTE_Device_917
+    path: RTE_Device_917.h
   - override:
       component: "%extension-wiseconnect3_sdk%adc_instance"
       file_id: adc_config
@@ -120,3 +120,15 @@
       file_id: pwm_config
       instance: channel_3
     path: sl_si91x_pwm_init_channel_3_config.h
+  - override:
+      component: "%extension-wiseconnect3_sdk%board_configuration_headers"
+      file_id: freertos_config
+    path: FreeRTOSConfig.h
+  - override:
+      component: "%extension-wiseconnect3_sdk%board_configuration_headers"
+      file_id: sl_board_configuration
+    path: sl_board_configuration.h
+  - override:
+      component: "%extension-wiseconnect3_sdk%board_configuration_headers"
+      file_id: sl_board_control
+    path: sl_board_control.h

@@ -47,7 +47,6 @@ component:
 - {from: wiseconnect3_sdk, id: si91x_debug}
 - {from: wiseconnect3_sdk, id: syscalls}
 requires:
-- name: sl_siwx917_platform
 - name: cmsis_common
 - name: component_catalog
 - name: sl_si91x_mcu

@@ -245,6 +245,7 @@ int accept(int socket_id, struct sockaddr *addr, socklen_t *addr_len)
   sl_si91x_socket_accept_request_t accept_request = { 0 };
   sl_wifi_buffer_t *buffer                        = NULL;
   sl_si91x_rsp_ltcp_est_t *ltcp                   = NULL;
+  void *sdk_context                               = NULL;
 
   sl_status_t status       = SL_STATUS_OK;
   int32_t client_socket_id = -1;
@@ -266,6 +267,7 @@ int accept(int socket_id, struct sockaddr *addr, socklen_t *addr_len)
 
   // populating socket info to accept request structure
   accept_request.socket_id   = si91x_server_socket->id;
+  sdk_context                = &(accept_request.socket_id);
   accept_request.source_port = si91x_server_socket->local_address.sin6_port;
   wait_time                  = (SL_SI91X_WAIT_FOR_EVER | SL_SI91X_WAIT_FOR_RESPONSE_BIT);
 
@@ -277,7 +279,8 @@ int accept(int socket_id, struct sockaddr *addr, socklen_t *addr_len)
                                                &buffer,
                                                (void *)&ltcp,
                                                &events,
-                                               &wait_time);
+                                               &wait_time,
+                                               sdk_context);
 
   if (status != SL_STATUS_OK) {
     // Close the client socket and free resources if the connection fails
@@ -508,6 +511,7 @@ ssize_t recvfrom(int socket_id, void *buf, size_t buf_len, int flags, struct soc
   ssize_t bytes_read                 = 0;                              // Number of bytes read
   si91x_rsp_socket_recv_t *response  = NULL;                           // Response structure
   si91x_socket_t *si91x_socket       = get_si91x_socket(socket_id);    // Get socket information
+  void *sdk_context                  = NULL;
 
   sl_wifi_buffer_t *buffer = NULL;
 
@@ -537,6 +541,7 @@ ssize_t recvfrom(int socket_id, void *buf, size_t buf_len, int flags, struct soc
 
   // Prepare the request structure with socket and buffer information
   request.socket_id = si91x_socket->id;
+  sdk_context       = &(request.socket_id);
   memcpy(request.requested_bytes, &buf_len, sizeof(buf_len));
   memcpy(request.read_timeout, &si91x_socket->read_timeout, sizeof(request.read_timeout));
 
@@ -552,7 +557,8 @@ ssize_t recvfrom(int socket_id, void *buf, size_t buf_len, int flags, struct soc
                                                &buffer,
                                                (void *)&response,
                                                &event,
-                                               &wait_time);
+                                               &wait_time,
+                                               sdk_context);
 
   // Free the buffer if there was an error
   if ((status != SL_STATUS_OK) && (buffer != NULL)) {

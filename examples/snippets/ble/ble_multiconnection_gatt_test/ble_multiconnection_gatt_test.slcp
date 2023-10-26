@@ -21,7 +21,7 @@ source:
   - path: main.c
   - path: app.c
 include:
-  - path: 
+  - path: .
     file_list:
       - path: ble_device_info.h
       - path: app.h

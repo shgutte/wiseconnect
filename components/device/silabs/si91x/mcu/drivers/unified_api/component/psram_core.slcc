@@ -18,6 +18,7 @@ requires:
   - name: device_supports_psram
   - name: romdriver_clks
   - name: romdriver_qspi
+  - name: udma_linker_config
 source:
   - path: src/sl_si91x_psram.c
   - path: src/sl_si91x_psram_handle.c

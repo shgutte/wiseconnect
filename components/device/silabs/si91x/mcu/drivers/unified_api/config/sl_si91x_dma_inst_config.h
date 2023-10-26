@@ -48,10 +48,6 @@ extern "C" {
 // <i> Default: 10000
 #define SL_DMA_TRANSFER_SIZE 2048
 
-// <q SL_DMA_SIMPLE_TRANSFER>
-// <i> Default: 1
-#define SL_DMA_SIMPLE_TRANSFER 1
-
 #ifdef __cplusplus
 }
 #endif

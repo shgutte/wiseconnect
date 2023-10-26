@@ -12,14 +12,22 @@ provides:
   - name: wiseconnect_toolchain_plugin
 template_file:
   - path: linkerfile_SoC.ld.jinja
+    unless:
+      - wiseconnect_toolchain_gcc_override
 requires:
   - name: toolchain_gcc
   - name: toolchain_variant_arm
 library:
   - system: gcc
+    unless:
+      - wiseconnect_toolchain_gcc_override
   - system: nosys
+    unless:
+      - wiseconnect_toolchain_gcc_override
 toolchain_settings:
   - option: linkerfile
     value: autogen/linkerfile_SoC.ld
+    unless:
+      - wiseconnect_toolchain_gcc_override
   - option: gcc_linker_option
     value: "-u _printf_float"

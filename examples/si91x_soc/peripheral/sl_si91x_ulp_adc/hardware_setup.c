@@ -39,13 +39,11 @@ void hardware_setup(void)
   RSI_ULPSS_DisableRefClks(MCU_ULP_40MHZ_CLK_EN);    /* Disabling 40MHz Clocks */
   RSI_ULPSS_DisableRefClks(MCU_ULP_32KHZ_RC_CLK_EN); /* Disabling LF_RC Clocks */
 
-  RSI_PS_BodPwrGateButtonCalibDisable();                     /* Power-Down Button Calibration */
   RSI_IPMU_ProgramConfigData(ana_perif_ptat_common_config2); /* Disable PTAT for Analog Peripherals */
   RSI_IPMU_ProgramConfigData(ipmu_bod_clks_common_config2);  /* Disable PTAT for Brown-Out Detection Clocks */
 
   /* Power-Down Analog Peripherals */
-  RSI_IPMU_PowerGateClr(AUXDAC_PG_ENB | AUXADC_PG_ENB | WURX_CORR_PG_ENB | WURX_PG_ENB | ULP_ANG_CLKS_PG_ENB
-                        | CMP_NPSS_PG_ENB);
+  RSI_IPMU_PowerGateClr(AUXDAC_PG_ENB | AUXADC_PG_ENB | WURX_CORR_PG_ENB | WURX_PG_ENB | ULP_ANG_CLKS_PG_ENB);
 
   /* Power-Down Domains in NPSS */
   RSI_PS_NpssPeriPowerDown(SLPSS_PWRGATE_ULP_MCUWDT | SLPSS_PWRGATE_ULP_MCUPS | SLPSS_PWRGATE_ULP_MCUTS

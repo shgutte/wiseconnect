@@ -113,7 +113,7 @@ sl_wifi_device_configuration_t si91x_init_configuration = {
   .mac_address = NULL,
   .band        = SL_SI91X_WIFI_BAND_2_4GHZ,
   .boot_config = { .oper_mode              = SL_SI91X_CLIENT_MODE,
-                   .coex_mode              = SL_SI91X_WLAN_MODE,
+                   .coex_mode              = SL_SI91X_WLAN_ONLY_MODE,
                    .feature_bit_map        = (SL_SI91X_FEAT_EAP_LEAP_IN_COEX),
                    .tcp_ip_feature_bit_map = (SL_SI91X_TCP_IP_FEAT_LOAD_PUBLIC_PRIVATE_CERTS),
                    .custom_feature_bit_map = SL_SI91X_CUSTOM_FEAT_HTTP_HTTPS_AUTH,

@@ -144,17 +144,12 @@ static const sl_wifi_device_configuration_t http_client_configuration = {
   .mac_address = NULL,
   .band        = SL_SI91X_WIFI_BAND_2_4GHZ,
   .boot_config = { .oper_mode                  = SL_SI91X_CLIENT_MODE,
-                   .coex_mode                  = SL_SI91X_WLAN_MODE,
+                   .coex_mode                  = SL_SI91X_WLAN_ONLY_MODE,
                    .feature_bit_map            = (SL_SI91X_FEAT_SECURITY_OPEN),
                    .tcp_ip_feature_bit_map     = (SL_SI91X_TCP_IP_FEAT_DHCPV4_CLIENT | SL_SI91X_TCP_IP_FEAT_HTTP_CLIENT
                                               | SL_SI91X_TCP_IP_FEAT_DNS_CLIENT | SL_SI91X_TCP_IP_FEAT_SSL),
                    .custom_feature_bit_map     = SL_SI91X_FEAT_CUSTOM_FEAT_EXTENTION_VALID,
-                   .ext_custom_feature_bit_map = (SL_SI91X_EXT_FEAT_XTAL_CLK |
-#ifndef RSI_M4_INTERFACE
-                                                  RAM_LEVEL_NWP_ALL_MCU_ZERO
-#else
-                                                  RAM_LEVEL_NWP_ADV_MCU_BASIC
-#endif
+                   .ext_custom_feature_bit_map = (SL_SI91X_EXT_FEAT_XTAL_CLK | MEMORY_CONFIG
 #ifdef CHIP_917
                                                   | SL_SI91X_EXT_FEAT_FRONT_END_SWITCH_PINS_ULP_GPIO_4_5_0
 #endif

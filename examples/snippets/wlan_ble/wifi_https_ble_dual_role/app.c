@@ -49,6 +49,22 @@
 /*=======================================================================*/
 
 /*=======================================================================*/
+// TA buffer allocation parameters
+/*=======================================================================*/
+
+#ifndef TX_POOL_RATIO
+#define TX_POOL_RATIO 1
+#endif
+
+#ifndef RX_POOL_RATIO
+#define RX_POOL_RATIO 1
+#endif
+
+#ifndef GLOBAL_POOL_RATIO
+#define GLOBAL_POOL_RATIO 1
+#endif
+/*=======================================================================*/
+/*=======================================================================*/
 //   ! GLOBAL VARIABLES
 /*=======================================================================*/
 osThreadId_t app_thread_id, ble_app_thread_id;
@@ -109,19 +125,13 @@ static const sl_wifi_device_configuration_t config = {
                      (SL_SI91X_TCP_IP_FEAT_DHCPV4_CLIENT | SL_SI91X_TCP_IP_FEAT_SSL | SL_SI91X_TCP_IP_FEAT_DNS_CLIENT
                       | SL_SI91X_TCP_IP_FEAT_HTTP_CLIENT | SL_SI91X_TCP_IP_FEAT_EXTENSION_VALID),
                    .custom_feature_bit_map     = (SL_SI91X_FEAT_CUSTOM_FEAT_EXTENTION_VALID),
-                   .ext_custom_feature_bit_map = (SL_SI91X_EXT_FEAT_XTAL_CLK |
+                   .ext_custom_feature_bit_map = (SL_SI91X_EXT_FEAT_XTAL_CLK | MEMORY_CONFIG
 #if ENABLE_POWER_SAVE
-                                                  SL_SI91X_EXT_FEAT_LOW_POWER_MODE |
-#endif
-#ifndef RSI_M4_INTERFACE
-                                                  RAM_LEVEL_NWP_ALL_MCU_ZERO
-#else
-                                                  RAM_LEVEL_NWP_ADV_MCU_BASIC
+                                                  | SL_SI91X_EXT_FEAT_LOW_POWER_MODE
 #endif
 #ifdef CHIP_917
                                                   | SL_SI91X_EXT_FEAT_FRONT_END_SWITCH_PINS_ULP_GPIO_4_5_0
 #endif
-
                                                   | SL_SI91X_EXT_FEAT_BT_CUSTOM_FEAT_ENABLE),
                    .bt_feature_bit_map = (SL_SI91X_BT_RF_TYPE | SL_SI91X_ENABLE_BLE_PROTOCOL
 #if (RSI_BT_GATT_ON_CLASSIC)
@@ -170,7 +180,10 @@ static const sl_wifi_device_configuration_t config = {
 #else
                      0
 #endif
-                     ) }
+                     ) },
+  .ta_pool = { .tx_ratio_in_buffer_pool     = TX_POOL_RATIO,
+               .rx_ratio_in_buffer_pool     = RX_POOL_RATIO,
+               .global_ratio_in_buffer_pool = GLOBAL_POOL_RATIO }
 };
 
 /*=======================================================================*/

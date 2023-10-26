@@ -96,13 +96,10 @@ static const sl_wifi_device_configuration_t station_init_configuration = {
                                               | SL_SI91X_TCP_IP_FEAT_EXTENSION_VALID),
                    .custom_feature_bit_map = (SL_SI91X_FEAT_CUSTOM_FEAT_EXTENTION_VALID),
                    .ext_custom_feature_bit_map =
-                     (SL_SI91X_EXT_FEAT_XTAL_CLK | BIT(29) | SL_SI91X_EXT_FEAT_UART_SEL_FOR_DEBUG_PRINTS
-                      | SL_SI91X_EXT_FEAT_LOW_POWER_MODE |
-#ifndef RSI_M4_INTERFACE
-                      RAM_LEVEL_NWP_ALL_MCU_ZERO
-#else
-                      RAM_LEVEL_NWP_ADV_MCU_BASIC // RAM_LEVEL_NWP_MEDIUM_MCU_MEDIUM
-                                                  // //RAM_LEVEL_NWP_BASIC_MCU_ADV
+                     (SL_SI91X_EXT_FEAT_XTAL_CLK | SL_SI91X_EXT_FEAT_UART_SEL_FOR_DEBUG_PRINTS
+                      | SL_SI91X_EXT_FEAT_LOW_POWER_MODE | MEMORY_CONFIG
+#ifdef CHIP_917
+                      | SL_SI91X_EXT_FEAT_FRONT_END_SWITCH_PINS_ULP_GPIO_4_5_0
 #endif
                       ),
                    .bt_feature_bit_map         = 0,

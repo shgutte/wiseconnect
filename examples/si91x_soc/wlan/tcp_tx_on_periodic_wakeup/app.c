@@ -165,7 +165,7 @@ static const sl_wifi_device_configuration_t sl_wifi_throughput_configuration = {
   .band        = SL_SI91X_WIFI_BAND_2_4GHZ,
   .region_code = US,
   .boot_config = { .oper_mode              = SL_SI91X_CLIENT_MODE,
-                   .coex_mode              = SL_SI91X_WLAN_MODE,
+                   .coex_mode              = SL_SI91X_WLAN_ONLY_MODE,
                    .feature_bit_map        = (SL_SI91X_FEAT_SECURITY_OPEN | SL_SI91X_FEAT_WPS_DISABLE),
                    .tcp_ip_feature_bit_map = (SL_SI91X_TCP_IP_FEAT_DHCPV4_CLIENT | SL_SI91X_TCP_IP_FEAT_SSL
                                               | SL_SI91X_TCP_IP_FEAT_EXTENSION_VALID),
@@ -406,6 +406,9 @@ void m4_sleep_wakeup(void)
 
   /* Enable M4_TA interrupt */
   sli_m4_ta_interrupt_init();
+
+  /* Clear M4_wakeup_TA bit so that TA will go to sleep after M4 wakeup*/
+  sl_si91x_host_clear_sleep_indicator();
 
   //  /*Start of M4 init after wake up  */
   printf("\r\nM4 Wake Up\r\n");

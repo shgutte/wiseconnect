@@ -101,12 +101,12 @@ The application can be configured to suit your requirements and development envi
 
 >  **Note:**
 >
-> 1. Application shall load the certificates using **sl_wifi_set_certificate** API.
+> 1. Application shall load the certificates using **[sl_net_set_credential](https://docs.silabs.com/wiseconnect/3.0.13/wiseconnect-api-reference-guide-nwk-mgmt/net-credential-functions#sl-net-set-credential)** API.
 > 2. By default, the application loads **wifiuser.pem** certificate present at **<WiFi SDK> → resources → certificates** 
       
    - In order to load your own certificate, follow the below steps:
 
-   - The certificate has to be passed as a parameter to **rsi_wlan_set_certificate** API in linear array format. Convert the **.pem** format certificate into linear array form using python script provided in the SDK **SiWx91x COMBO SDK → resources → certificates → certificate_to_array.py**
+   - The certificate has to be passed as a parameter to **sl_net_set_credential** API in linear array format. Convert the **.pem** format certificate into linear array form using python script provided in the SDK **SiWx91x COMBO SDK → resources → certificates → certificate_to_array.py**
 
    - You can load the certificate in two ways as mentioned below. 
      - Aggregate the certificates in to one file in a fixed order of private key, public key, intermediate CA/dummy certificate, and CA certificate and load the certificate with certificate type **1**. Place the certificate at **<SiWx91x COMBO SDK> → resources → certificates**. Convert the single certificate file into linear array using the following command.

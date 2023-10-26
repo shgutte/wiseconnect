@@ -40,7 +40,6 @@ static sl_i2s_handle_t i2s_driver_handle    = NULL;
 static uint8_t send_complete                = 0;
 static uint8_t receive_complete             = 0;
 static sl_i2s_xfer_config_t i2s_xfer_config = { 0 };
-uint32_t ramVector[SI91X_VECTOR_TABLE_ENTRIES] __attribute__((aligned(256)));
 
 /*******************************************************************************
  **********************  Local Function prototypes   ***************************
@@ -64,12 +63,6 @@ void i2s_lowpower_example_init(void)
   i2s_xfer_config.sampling_rate = SL_I2S_SAMPLING_RATE;
   i2s_xfer_config.sync          = SL_I2S_ASYNC;
   i2s_xfer_config.data_size     = SL_I2S_DATA_SIZE32;
-  //copying the vector table from flash to ram
-
-  memcpy(ramVector, (uint32_t *)SCB->VTOR, sizeof(uint32_t) * SI91X_VECTOR_TABLE_ENTRIES);
-
-  //assing the ram vector adress to VTOR register
-  SCB->VTOR = (uint32_t)ramVector;
 
   hardware_setup();
   DEBUGINIT();

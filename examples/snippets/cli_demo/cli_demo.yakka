@@ -149,3 +149,28 @@ choices:
       - brd4325b
       - brd4325g
       - brd4338a
+      
+blueprints:
+  update_console_commands:
+    depends:
+      - '{{project_output}}/generated/console_argument_types.c'
+      - '{{project_output}}/generated/console_argument_types.h'
+      - '{{project_output}}/generated/console_command_database.c'
+      - '{{project_output}}/generated/console_variable_database.c'
+      - '{{project_output}}/generated/console_argument_types.c.format'
+      - '{{project_output}}/generated/console_argument_types.h.format'
+      - '{{project_output}}/generated/console_command_database.c.format'
+      - '{{project_output}}/generated/console_variable_database.c.format'
+    process:
+      - copy:
+          source:
+            - '{{project_output}}/generated/console_argument_types.c'
+            - '{{project_output}}/generated/console_command_database.c'
+            - '{{project_output}}/generated/console_variable_database.c'
+          destination: '{{curdir}}/console_commands/src'
+      - copy:
+          source:
+            - '{{project_output}}/generated/console_argument_types.h'
+          destination: '{{curdir}}/console_commands/inc'
+
+          

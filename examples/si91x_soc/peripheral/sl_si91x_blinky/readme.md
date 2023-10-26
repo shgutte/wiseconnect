@@ -3,7 +3,6 @@
 ## Introduction 
 - This application contains an example code to demonstrate the GPIO/LED toggle functionality
 
-
 ## Setting Up 
  - To use this application following Hardware, Software and the Project Setup is required
 
@@ -24,15 +23,16 @@
 ## Loading Application on Simplicity Studio
 
 1. With the product BRD4338A selected, navigate to the example projects by clicking on Example Projects & Demos
-   in Simplicity Studio and create MEMLCD Baremetal example application as shown below.
+   in Simplicity Studio and create blinky example application as shown below.
 
 ![Figure: Selecting Example project](resources/readme/image700b.png)
 
 ## Configuration and Steps for Execution
 
-- Configure the following parameter in blinky.c file, update/modify following macro if required
+- By default, LED0 should blink on WSTK/WPK base board. To use LED1, initial step is to install LED1 instance. Further, the LED1 instance can then be changed in blinky.c file.
+- By default, the toggle delay is 500 ms. The delay should have a minimum value of 31.25 ms. Ideally, there is no maximum value limit for the delay. Configure the following parameter in blinky.c file to change the delay.
 ```C
-#define RSI_BLINK_RATE //  configured for 10 ticks per second   
+#define TOOGLE_DELAY_MS 500//  configured for 500 ms delay
 ```   
 
 ## Build 
@@ -45,8 +45,8 @@
 
 ## Executing the Application
 - Sets the board state of LED to on and off for configured blink rate and then device goes to sleep 
- **Note!** LED off ,LED ON ,device sleep will be a continous process 
+ **Note!** LED OFF ,LED ON ,device sleep will be a continous process 
 
 ## Expected Results 
-- LED0/LED1 should blink on WSTK/WPK base board 
+- LED0/LED1 should blink on WSTK/WPK base board.
  

@@ -12,3 +12,5 @@ template_contribution:
     value: 1
   - name: psram_linker_config_enabled
     value: 1
+conflicts:
+  - name: device_needs_ram_execution

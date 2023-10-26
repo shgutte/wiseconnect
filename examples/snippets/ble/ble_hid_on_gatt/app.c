@@ -310,15 +310,9 @@ static const sl_wifi_device_configuration_t config = {
                      (SL_SI91X_TCP_IP_FEAT_DHCPV4_CLIENT | SL_SI91X_TCP_IP_FEAT_EXTENSION_VALID),
                    .custom_feature_bit_map = (SL_SI91X_FEAT_CUSTOM_FEAT_EXTENTION_VALID),
                    .ext_custom_feature_bit_map =
-                     (SL_SI91X_EXT_FEAT_LOW_POWER_MODE | SL_SI91X_EXT_FEAT_XTAL_CLK
+                     (SL_SI91X_EXT_FEAT_LOW_POWER_MODE | SL_SI91X_EXT_FEAT_XTAL_CLK | MEMORY_CONFIG
 #ifdef CHIP_917
-                      | RAM_LEVEL_NWP_ADV_MCU_BASIC | SL_SI91X_EXT_FEAT_FRONT_END_SWITCH_PINS_ULP_GPIO_4_5_0
-#else //defaults
-#ifdef RSI_M4_INTERFACE
-                      | RAM_LEVEL_NWP_MEDIUM_MCU_MEDIUM
-#else
-                      | RAM_LEVEL_NWP_ALL_MCU_ZERO
-#endif
+                      | SL_SI91X_EXT_FEAT_FRONT_END_SWITCH_PINS_ULP_GPIO_4_5_0
 #endif
                       | (SL_SI91X_EXT_FEAT_BT_CUSTOM_FEAT_ENABLE)),
                    .bt_feature_bit_map = (SL_SI91X_BT_RF_TYPE | SL_SI91X_ENABLE_BLE_PROTOCOL
@@ -1339,9 +1333,9 @@ void ble_hids_gatt_application(rsi_ble_hid_info_t *p_hid_info)
   adv_data_len = strlen(RSI_BLE_APP_HIDS) + 13;
 #elif (GATT_ROLE == CLIENT)
   uuid_t service_uuid;
-  profile_descriptors_t ble_servs = { 0 };
+  profile_descriptors_t ble_servs         = { 0 };
   rsi_ble_resp_char_services_t char_servs = { 0 };
-  rsi_ble_resp_att_descs_t att_desc = { 0 };
+  rsi_ble_resp_att_descs_t att_desc       = { 0 };
 #endif
 #ifdef RSI_M4_INTERFACE
   sl_si91x_hardware_setup();

@@ -118,11 +118,17 @@ sl_status_t join_callback_handler(sl_wifi_event_t event, char *result, uint32_t 
 {
   UNUSED_PARAMETER(result);
   UNUSED_PARAMETER(arg);
+  int32_t status = 0;
 
   if (CHECK_IF_EVENT_FAILED(event)) {
     LOG_PRINT("F: Join Event received with %lu bytes payload\n", result_length);
     if (client_socket) {
-      close(client_socket);
+      status = close(client_socket);
+      if (status != 0) {
+        LOG_PRINT("\r\nsocket close failed with status = %d and BSD error: %d\r\n", status, errno);
+      } else {
+        LOG_PRINT("\r\nsocket close success\r\n");
+      }
     }
     rsi_wlan_app_cb.state = RSI_WLAN_UNCONNECTED_STATE;
     return SL_STATUS_FAIL;
@@ -241,7 +247,12 @@ int32_t rsi_app_wlan_socket_create()
   status = setsockopt(client_socket, SOL_TCP, TCP_ULP, TLS, sizeof(TLS));
   if (status < 0) {
     LOG_PRINT("\r\nSet socket failed with BSD error: %d\r\n", errno);
-    close(client_socket);
+    status = close(client_socket);
+    if (status != 0) {
+      LOG_PRINT("\r\nsocket close failed with status = %d and BSD error: %d\r\n", status, errno);
+    } else {
+      LOG_PRINT("\r\nsocket close success\r\n");
+    }
     return status;
   }
 #endif
@@ -254,7 +265,12 @@ int32_t rsi_app_wlan_socket_create()
                                             sizeof(high_performance_socket));
   if (status < 0) {
     LOG_PRINT("\r\nSet Socket option failed with bsd error: %d\r\n", errno);
-    close(client_socket);
+    status = close(client_socket);
+    if (status != 0) {
+      LOG_PRINT("\r\nsocket close failed with status = %d and BSD error: %d\r\n", status, errno);
+    } else {
+      LOG_PRINT("\r\nsocket close success\r\n");
+    }
     return status;
   }
 #endif
@@ -263,7 +279,12 @@ int32_t rsi_app_wlan_socket_create()
   status = connect(client_socket, (struct sockaddr *)&server_address, sizeof(struct sockaddr_in));
   if (status < 0) {
     LOG_PRINT("\r\nSocket connect failed with BSD error: %d, return value %ld\r\n", errno, status);
-    close(client_socket);
+    status = close(client_socket);
+    if (status != 0) {
+      LOG_PRINT("\r\nsocket close failed with status = %d and BSD error: %d\r\n", status, errno);
+    } else {
+      LOG_PRINT("\r\nsocket close success\r\n");
+    }
     return status;
   } else {
     rsi_wlan_app_cb.state = RSI_WLAN_SOCKET_CONNECTED_STATE;
@@ -434,7 +455,12 @@ int32_t rsi_wlan_app_task(void)
 #elif !HTTPS_DOWNLOAD
           LOG_PRINT("\r\nHTTP download completed \r\n");
 #endif
-          close(client_socket);
+          status = close(client_socket);
+          if (status != 0) {
+            LOG_PRINT("\r\nsocket close failed with status = %d and BSD error: %d\r\n", status, errno);
+          } else {
+            LOG_PRINT("\r\nsocket close success\r\n");
+          }
           LOG_PRINT("\r\nClosing the socket\r\n");
 #if !CONTINUOUS_HTTP_DOWNLOAD
           stop_download = 1;
@@ -459,7 +485,12 @@ int32_t rsi_wlan_app_task(void)
         while (bytes_cnt != strlen(httpreq)) {
           status = send(client_socket, (const int8_t *)(httpreq + bytes_cnt), (strlen(httpreq) - bytes_cnt), 0);
           if (status < 0) {
-            close(client_socket);
+            status = close(client_socket);
+            if (status != 0) {
+              LOG_PRINT("\r\nsocket close failed with status = %d and BSD error: %d\r\n", status, errno);
+            } else {
+              LOG_PRINT("\r\nsocket close success\r\n");
+            }
             LOG_PRINT("\r\n send failed\n");
             rsi_wlan_app_cb.state = RSI_WLAN_IPCONFIG_DONE_STATE;
             break;
@@ -476,7 +507,12 @@ int32_t rsi_wlan_app_task(void)
                         (strlen(http_req_str_connection_close) - bytes_cnt),
                         0);
           if (status < 0) {
-            close(client_socket);
+            status = close(client_socket);
+            if (status != 0) {
+              LOG_PRINT("\r\nsocket close failed with status = %d and BSD error: %d\r\n", status, errno);
+            } else {
+              LOG_PRINT("\r\nsocket close success\r\n");
+            }
             LOG_PRINT("\r\n send failed\r\n");
             rsi_wlan_app_cb.state = RSI_WLAN_IPCONFIG_DONE_STATE;
             break;
@@ -493,8 +529,13 @@ int32_t rsi_wlan_app_task(void)
                         (strlen(http_req_str_end) - bytes_cnt),
                         0);
           if (status < 0) {
-            close(client_socket);
             LOG_PRINT("send failed\n");
+            status = close(client_socket);
+            if (status != 0) {
+              LOG_PRINT("\r\nsocket close failed with status = %d and BSD error: %d\r\n", status, errno);
+            } else {
+              LOG_PRINT("\r\nsocket close success\r\n");
+            }
             rsi_wlan_app_cb.state = RSI_WLAN_IPCONFIG_DONE_STATE;
             break;
           }

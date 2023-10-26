@@ -83,7 +83,10 @@ sl_status_t sl_net_deinit(sl_net_interface_t interface, void *context);
  *   SL Network profile identifier for specific interface.
  * @return
  *   sl_status_t. See https://docs.silabs.com/gecko-platform/4.1/common/api/group-status for details.
- ******************************************************************************/
+   @note
+ *   "By default, the profile and credential configurations mentioned in sl_net_defaults.h are used in the SDK examples. 
+ *    If you want to define your own profile and credential configuration for an interface, call @ref sl_net_set_profile and @ref sl_net_set_credentials APIs before calling @ref sl_net_up API".
+ *    ******************************************************************************/
 sl_status_t sl_net_up(sl_net_interface_t interface, sl_net_profile_id_t profile_id);
 
 /***************************************************************************/ /**

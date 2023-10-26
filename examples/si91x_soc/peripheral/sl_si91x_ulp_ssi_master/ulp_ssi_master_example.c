@@ -68,7 +68,6 @@ typedef enum {
 } ssi_mode_enum_t;
 static ssi_mode_enum_t current_mode = SL_TRANSFER_DATA;
 
-uint32_t ramVector[SI91X_VECTOR_TABLE_ENTRIES] __attribute__((aligned(256)));
 extern void hardware_setup(void);
 
 /*******************************************************************************
@@ -87,10 +86,6 @@ void ssi_master_example_init(void)
     * To reconfigure the default setting of SystemInit() function, refer to
     * startup_rs1xxxx.c file
     */
-  //copying the vector table from flash to ram
-  memcpy(ramVector, (uint32_t *)SCB->VTOR, sizeof(uint32_t) * SI91X_VECTOR_TABLE_ENTRIES);
-  // Assigning the ram vector address to VTOR register
-  SCB->VTOR = (uint32_t)ramVector;
 
   uint16_t i            = 0;
   sl_status_t sl_status = 0;

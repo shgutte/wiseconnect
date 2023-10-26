@@ -96,16 +96,12 @@ component:
     from: wiseconnect3_sdk
   - id: slist
   - id: sl_system
+requires:
+  - name: ulp_platform
 define:
   - name: RSI_M4_INTERFACE
   - name: SPI_MULTI_SLAVE
-  - name: M4_PS2_STATE
   - name: SSI_CONFIG  
-template_contribution:
-  - name: RAM_EXECUTION
-    value: 1
-  - name: ULP_PLATFORM
-    value: 1
 provides:
   - name: si91x_soc
 other_file:

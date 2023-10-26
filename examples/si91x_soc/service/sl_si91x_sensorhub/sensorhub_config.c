@@ -50,7 +50,7 @@ sl_sensor_info_t sensor_hub_info_t[SL_MAX_NUM_SENSORS] = {
     .data_deliver.data_mode    = SL_SH_NUM_OF_SAMPLES,
     .data_deliver.numofsamples = 5,
   },
-  {
+  /* {
     .sensor_name               = "ADC_JOYSTICK",
     .sensor_id                 = SL_SENSOR_ADC_JOYSTICK_ID,
     .channel                   = SL_SH_ADC_CH0_CHANNEL,
@@ -59,7 +59,7 @@ sl_sensor_info_t sensor_hub_info_t[SL_MAX_NUM_SENSORS] = {
     .sampling_interval         = 1000,
     .data_deliver.data_mode    = SL_SH_NUM_OF_SAMPLES,
     .data_deliver.numofsamples = SL_SH_ADC_CH0_NUM_SAMPLES,
-  },
+  }, */
   /*  {
     .sensor_name               = "ACCELEROMETER_SENSOR",
     .sensor_bus                = SL_SH_SPI,
@@ -70,6 +70,17 @@ sl_sensor_info_t sensor_hub_info_t[SL_MAX_NUM_SENSORS] = {
     .data_deliver.data_mode    = SL_SH_NUM_OF_SAMPLES,
     .data_deliver.numofsamples = 5,
   },*/
+
+  {
+    .sensor_name               = "GUVA_12D_UV",
+    .sensor_id                 = SL_SENSOR_ADC_GUVA_S12D_ID,
+    .channel                   = SL_SH_ADC_CH0_CHANNEL,
+    .sensor_bus                = SL_SH_ADC,
+    .sensor_mode               = SL_SH_POLLING_MODE,
+    .sampling_interval         = 1000,
+    .data_deliver.data_mode    = SL_SH_NUM_OF_SAMPLES,
+    .data_deliver.numofsamples = SL_SH_ADC_CH0_NUM_SAMPLES,
+  },
 
   {
     .sensor_name               = "LIGHT_SENSOR",

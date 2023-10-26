@@ -15,7 +15,7 @@ source:
   - path: main.c
   - path: sleeptimer.c
 include:
-  - path:
+  - path: .
     file_list:
     - path: app.h
     - path: sleeptimer.h

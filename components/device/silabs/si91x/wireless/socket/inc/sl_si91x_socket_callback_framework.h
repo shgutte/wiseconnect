@@ -23,6 +23,7 @@
 typedef struct {
   void *user_context;
   void *socket_context;
+  int32_t socket_id; //socket_id to update in command trace of bus thread.
 } sl_si91x_socket_context_t;
 
 /**

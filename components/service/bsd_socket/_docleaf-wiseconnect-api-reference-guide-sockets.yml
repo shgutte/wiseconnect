@@ -1,5 +1,5 @@
 objectType: docLeaf
-id: wiseconnect-api-reference-guide-bsd-socket
+id: wiseconnect-api-reference-guide-sockets
 access: "public"
 status: "active"
 version: "3.1.0"
@@ -9,9 +9,10 @@ authors:
 
 contentType: doxygen
 sourceDir: "doxygen-output/xml"
-title: "BSD socket"
+title: "Sockets"
 
 menu:
   items:
     - index
     - bsd_socket
+    - iot_socket

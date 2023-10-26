@@ -5,6 +5,7 @@
 - description: Board support for BRD4325F.
 - category: Board|Radio Board
 - quality: production
+- root_path: components/board/silabs/config/brd4325f
 - requires:
   - name: siwg917m141xgtba
   - name: brd4325f_config
@@ -17,7 +18,7 @@
   - name: hardware_board
   - name: hardware_board_rb
   - name: hardware_board_supports_multi_slave
-  - name: si91x_dual_flash
+  - name: si91x_common_flash
   - name: si91x_b0_board
 - recommends:
   - id: brd4002a
@@ -30,10 +31,6 @@
     value: '1'
   - name: FLASH_BASED_EXECUTION_ENABLE
     value: '1'
-  - name: IVT_OFFSET_ADDR
-    value: 0x8012000
-  - name: WKP_RAM_USAGE_LOCATION
-    value: 0x24061EFC
 
 - template_contribution:
   # Default Memory configuration

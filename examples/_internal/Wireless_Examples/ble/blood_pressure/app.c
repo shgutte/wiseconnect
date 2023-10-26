@@ -95,15 +95,9 @@ static const sl_wifi_device_configuration_t config = {
                      (SL_SI91X_TCP_IP_FEAT_DHCPV4_CLIENT | SL_SI91X_TCP_IP_FEAT_EXTENSION_VALID),
                    .custom_feature_bit_map = (SL_SI91X_FEAT_CUSTOM_FEAT_EXTENTION_VALID),
                    .ext_custom_feature_bit_map =
-                     (SL_SI91X_EXT_FEAT_LOW_POWER_MODE | SL_SI91X_EXT_FEAT_XTAL_CLK
+                     (SL_SI91X_EXT_FEAT_LOW_POWER_MODE | SL_SI91X_EXT_FEAT_XTAL_CLK | MEMORY_CONFIG
 #ifdef CHIP_917
-                      | RAM_LEVEL_NWP_ADV_MCU_BASIC | SL_SI91X_EXT_FEAT_FRONT_END_SWITCH_PINS_ULP_GPIO_4_5_0
-#else //defaults
-#ifdef RSI_M4_INTERFACE
-                      | SL_SI91X_EXT_FEAT_256K_MODE
-#else
-                      | SL_SI91X_EXT_FEAT_384K_MODE
-#endif
+                      | SL_SI91X_EXT_FEAT_FRONT_END_SWITCH_PINS_ULP_GPIO_4_5_0
 #endif
                       | SL_SI91X_EXT_FEAT_BT_CUSTOM_FEAT_ENABLE),
                    .bt_feature_bit_map = (SL_SI91X_BT_RF_TYPE | SL_SI91X_ENABLE_BLE_PROTOCOL
@@ -834,10 +828,10 @@ void rsi_ble_blood_pressure_gatt_server(void)
 #elif (GATT_ROLE == CLIENT)
   uint8_t ix, jx;
   uuid_t service_uuid;
-  uint8_t temp_handle = 0;
-  profile_descriptors_t ble_servs = { 0 };
+  uint8_t temp_handle                     = 0;
+  profile_descriptors_t ble_servs         = { 0 };
   rsi_ble_resp_char_services_t char_servs = { 0 };
-  rsi_ble_resp_att_descs_t att_desc = { 0 };
+  rsi_ble_resp_att_descs_t att_desc       = { 0 };
 #endif
   sl_wifi_version_string_t version = { 0 };
 
@@ -1002,7 +996,7 @@ void rsi_ble_blood_pressure_gatt_server(void)
         status_flag |= (1 << CONNECTED);
 #elif (GATT_ROLE == CLIENT)
         //rsi_6byte_dev_address_to_ascii ((int8_t *)remote_dev_addr, (uint8_t *)conn_event_to_app.dev_addr);
-        service_uuid.size = 2;
+        service_uuid.size      = 2;
         service_uuid.val.val16 = RSI_BLE_BLOOD_PRESSURE_SERVICE_UUID;
 retry:
         //! query particular profile details from the connected remote device.

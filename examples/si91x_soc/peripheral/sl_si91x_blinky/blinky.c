@@ -23,58 +23,72 @@
 #include "rsi_ccp_user_config.h"
 #include "rsi_chip.h"
 #include "rsi_board.h"
+
+#include "sl_sleeptimer.h"
+#include "sl_si91x_led_instances.h"
 #include "rsi_debug.h"
 #include "sl_si91x_led.h"
 
-#define RSI_BLINK_RATE (10) // 10 ticks per second
+/*******************************************************************************
+ *******************************   DEFINES   ***********************************
+ ******************************************************************************/
 
-/*==============================================*/
-/**
- * @fn      void SysTick_Handler(void)
- * @brief	Handle interrupt from SysTick timer
- * @return	None
- */
-void SysTick_Handler(void)
+#ifndef LED_INSTANCE
+#define LED_INSTANCE led_led0
+#endif
+
+#ifndef TOOGLE_DELAY_MS
+#define TOOGLE_DELAY_MS 500
+#endif
+
+/*******************************************************************************
+ ***************************  LOCAL VARIABLES   ********************************
+ ******************************************************************************/
+
+sl_sleeptimer_timer_handle_t timer;
+bool toggle_timeout = false;
+
+/*******************************************************************************
+ *********************   LOCAL FUNCTION PROTOTYPES   ***************************
+ ******************************************************************************/
+
+static void on_timeout(sl_sleeptimer_timer_handle_t *handle, void *data);
+
+/*******************************************************************************
+ **************************   GLOBAL FUNCTIONS   *******************************
+ ******************************************************************************/
+
+/***************************************************************************/ /**
+ * Initialize blinky example.
+ ******************************************************************************/
+void blinky_init(void)
 {
-  //  Toggles the current state of a board '0' number LED.
-  sl_si91x_led_toggle(SL_SI91x_LED0_PIN);
+  // Create timer for waking up the system periodically.
+  sl_sleeptimer_start_periodic_timer_ms(&timer,
+                                        TOOGLE_DELAY_MS,
+                                        on_timeout,
+                                        NULL,
+                                        0,
+                                        SL_SLEEPTIMER_NO_HIGH_PRECISION_HF_CLOCKS_REQUIRED_FLAG);
 }
 
-/*==============================================*/
-/**
- * @fn     int main(void)
- * @brief  Main Application Function
- * @return None
- */
-int blinky_init(void)
+/***************************************************************************/ /**
+ * Blinky ticking function.
+ ******************************************************************************/
+void blinky_process_action(void)
 {
-  int forever = 1;
-  //Configures the system default clock and power configurations
-  SystemCoreClockUpdate();
-
-  /* Enable the DEBUG UART port for debug prints and  Set up and initialize all required
-        blocks and functions  related to the board hardware. */
-  RSI_Board_Init();
-
-  // Sets the state of a board '0'number LED to off(false).
-  sl_si91x_led_clear(SL_SI91x_LED0_PIN);
-
-  // Sets the state of a board '1'number LED to on(true).
-  sl_si91x_led_set(SL_SI91x_LED1_PIN);
-
-  // Enable SysTick Timer
-  SysTick_Config(SystemCoreClock / RSI_BLINK_RATE);
-
-  // LED toggling and debug prints for ever
-  while (forever) {
-    //Sleep till interrupt occurs
-#ifdef DEBUG_UART
-    // Prints on hyper-terminal as "Core is Sleeping...\n"
-    DEBUGOUT("Core is Sleeping ...\n");
-#endif
-    // Sleep untill next interrupt occurres
-    __WFI();
+  if (toggle_timeout == true) {
+    sl_si91x_led_toggle(LED_INSTANCE.pin);
+    toggle_timeout = false;
   }
-  // Statement will never reach here , just to satisfy the standard main
-  return 0;
+}
+
+/***************************************************************************/ /**
+ * Sleeptimer timeout callback.
+ ******************************************************************************/
+static void on_timeout(sl_sleeptimer_timer_handle_t *handle, void *data)
+{
+  (void)&handle;
+  (void)&data;
+  toggle_timeout = true;
 }

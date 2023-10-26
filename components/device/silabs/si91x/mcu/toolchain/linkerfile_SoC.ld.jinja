@@ -128,20 +128,21 @@ SECTIONS
 	{
 		KEEP(*(.isr_vector))
 		{%- if ram_execution %}
-     	        KEEP(*(.reset_handler))
-		*(EXCLUDE_FILE(*sl_si91x_bus.o *sl_si91x_driver.o *sli_si91x_multithreaded.o *rsi_deepsleep_soc.o *sl_si91x_psram.o *rsi_qspi.o *rsi_pll.o *rsi_egpio.o *rsi_hal_mcu_m4_ram.o *croutine.o *event_groups.o *list.o *queue.o *stream_buffer.o *tasks.o *timers.o *cmsis_os2.o *freertos_umm_malloc_host.o *malloc_buffers.o *siwx917_soc_ncp_host.o *port.o *heap_*.o) .text*)
-        {% elif psram_present and psram_linker_config_enabled and psram_powersave_handle %}	
-		*(EXCLUDE_FILE(*sl_si91x_bus.o *sl_si91x_driver.o *sli_si91x_multithreaded.o *rsi_deepsleep_soc.o *sl_si91x_psram.o *rsi_qspi.o *rsi_pll.o *rsi_egpio.o *rsi_hal_mcu_m4_ram.o *croutine.o *event_groups.o *list.o *queue.o *stream_buffer.o *tasks.o *timers.o *cmsis_os2.o *freertos_umm_malloc_host.o *malloc_buffers.o *siwx917_soc_ncp_host.o *port.o *heap_*.o) .text*)
+     	  KEEP(*(.reset_handler))
+			*(EXCLUDE_FILE(*sl_si91x_bus.o *sl_si91x_driver.o *sli_si91x_multithreaded.o *rsi_deepsleep_soc.o *rsi_hal_mcu_m4_ram.o *croutine.o *event_groups.o *list.o *queue.o *stream_buffer.o *tasks.o *timers.o *cmsis_os2.o *freertos_umm_malloc_host.o *malloc_buffers.o *sl_rsi_utility.o *port.o *heap_*.o) .text*)
+		{% endif %}
+    {% if psram_present and psram_linker_config_enabled and psram_powersave_handle %}	
+			*(EXCLUDE_FILE(*rsi_deepsleep_soc.o *sl_si91x_psram.o *rsi_qspi.o *rsi_pll.o *rsi_egpio.o *sl_rsi_utility.o) .text*)
 		{% elif power_manager_ps2 %}
-			*(EXCLUDE_FILE(*stdio.o *lib_a-puts.o *lib_a-wbuf.o *lib_a-writer.o *lib_a-memchr.o *lib_a-memset.o *lib_a-nano-vfprintf.o *lib_a-nano-vfprintf_i.o *lib_a-printf.o *lib_a-lock.o *lib_a-fflush.o *cmsis_os2.o *port.o *queue.o *siwx917_soc_ncp_host.o *tasks.o *clock_update.o *rsi_board.o *rsi_debug.o *rsi_deepsleep_soc.o *rsi_egpio.o *rsi_ipmu.o *rsi_pll.o *rsi_power_save.o *rsi_system_config.o *rsi_time_period.o *rsi_ulpss_clk.o *rsi_usart.o *syscalls.o *system_si91x.o *USART.o *sl_si91x_power_manager.o *sli_si91x_power_manager.o *power_manager_m4_wireless_example.o *sl_si91x_button.o *sl_si91x_button_instances.o *app.o *main.o {% for c in calendar_ps2 %}*{{c}} {% endfor %}{% for c in ulp_timer_ps2 %}*{{c}} {% endfor %}{% for c in wdt_ps2 %}*{{c}} {% endfor %}{% for c in adc_ps2 %}*{{c}} {% endfor %}{% for c in bod_ps2 %}*{{c}} {% endfor %}{% for c in comparator_ps2 %}*{{c}} {% endfor %}{% for c in cts_ps2 %}*{{c}} {% endfor %}{% for c in dac_ps2 %}*{{c}} {% endfor %}{% for c in dma_ps2 %}*{{c}} {% endfor %}{% for c in gpio_ps2 %}*{{c}} {% endfor %}{% for c in i2c_ps2 %}*{{c}} {% endfor %}{% for c in i2s_ps2 %}*{{c}} {% endfor %}{% for c in ir_ps2 %}*{{c}} {% endfor %}{% for c in ssi_ps2 %}*{{c}} {% endfor %}{% for c in sysrtc_ps2 %}*{{c}} {% endfor %}{% for c in uart_ps2 %}*{{c}} {% endfor %}{% for c in user_files_ps2 %}*{{c}}{% endfor %}) .text*)
+			*(EXCLUDE_FILE(*stdio.o *lib_a-puts.o *lib_a-wbuf.o *lib_a-writer.o *lib_a-memchr.o *lib_a-memset.o *lib_a-nano-vfprintf.o *lib_a-nano-vfprintf_i.o *lib_a-printf.o *lib_a-lock.o *lib_a-fflush.o *cmsis_os2.o *port.o *queue.o *sl_rsi_utility.o *tasks.o *clock_update.o *rsi_board.o *rsi_debug.o *rsi_deepsleep_soc.o *rsi_egpio.o *rsi_ipmu.o *rsi_pll.o *rsi_power_save.o *rsi_system_config.o *rsi_time_period.o *rsi_ulpss_clk.o *rsi_usart.o *syscalls.o *system_si91x.o *USART.o *sl_si91x_power_manager.o *sli_si91x_power_manager.o *power_manager_m4_wireless_example.o *sl_si91x_button.o *sl_si91x_button_instances.o *app.o *main.o {% for c in calendar_ps2 %}*{{c}} {% endfor %}{% for c in ulp_timer_ps2 %}*{{c}} {% endfor %}{% for c in wdt_ps2 %}*{{c}} {% endfor %}{% for c in adc_ps2 %}*{{c}} {% endfor %}{% for c in bod_ps2 %}*{{c}} {% endfor %}{% for c in comparator_ps2 %}*{{c}} {% endfor %}{% for c in cts_ps2 %}*{{c}} {% endfor %}{% for c in dac_ps2 %}*{{c}} {% endfor %}{% for c in dma_ps2 %}*{{c}} {% endfor %}{% for c in gpio_ps2 %}*{{c}} {% endfor %}{% for c in i2c_ps2 %}*{{c}} {% endfor %}{% for c in i2s_ps2 %}*{{c}} {% endfor %}{% for c in ir_ps2 %}*{{c}} {% endfor %}{% for c in ssi_ps2 %}*{{c}} {% endfor %}{% for c in sysrtc_ps2 %}*{{c}} {% endfor %}{% for c in uart_ps2 %}*{{c}} {% endfor %}{% for c in user_files_ps2 %}*{{c}}{% endfor %}) .text*)
 		{% elif ulp_platform %}	
-		*(.copysection*) 
+			*(.copysection*) 
 	    	*(.zerosection*)
 
-		{% else %}
-                *(.text*)        
-		KEEP(*(.init))
-		KEEP(*(.fini))
+		{% elif not ram_execution %}
+            *(.text*)        
+			KEEP(*(.init))
+			KEEP(*(.fini))
 		{%- endif %}
 
 		/* .ctors */
@@ -312,7 +313,7 @@ SECTIONS
 		*timers.o(.text*)
 		*freertos_umm_malloc_host.o(.text*)
 		*malloc_buffers.o(.text*)
-		*siwx917_soc_ncp_host.o(.text*)
+		*sl_rsi_utility.o(.text*)
 		*port.o(.text*)
 		*heap_*.o(.text*)
 		{%- elif ulp_platform %}
@@ -348,7 +349,7 @@ SECTIONS
 		*cmsis_os2.o(.text*)
 		*port.o(.text*)
 		*queue.o(.text*)
-		*siwx917_soc_ncp_host.o(.text*)
+		*sl_rsi_utility.o(.text*)
 		*tasks.o(.text*)
 		*clock_update.o(.text*)
 		*rsi_board.o(.text*)

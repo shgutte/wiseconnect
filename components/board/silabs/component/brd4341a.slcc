@@ -5,9 +5,10 @@
 - description: Board support for BRD4341A.
 - category: Board|Radio Board
 - quality: production
+- root_path: components/board/silabs/config/brd4341a
 - requires:
   - name: siwg917m100xntba
-#  - name: brd4341a_config
+  - name: brd4341a_config
   - name: hardware_board_mainboard
   - name: external_flash_8mb
   - name: external_psram_none

@@ -73,7 +73,6 @@ static bool timer_callback_unregister_flag = false;
 static uint32_t timer_count_value;
 static uint32_t timer_direction;
 sl_status_t status;
-uint32_t ramVector[SI91X_VECTOR_TABLE_ENTRIES] __attribute__((aligned(256)));
 extern void hardware_setup(void);
 
 /*******************************************************************************
@@ -87,10 +86,6 @@ void ulp_timer_example_init(void)
    * To reconfigure the default setting of SystemInit() function, refer to
    * startup_rs1xxxx.c file
    */
-  //copying the vector table from flash to ram
-  memcpy(ramVector, (uint32_t *)SCB->VTOR, sizeof(uint32_t) * SI91X_VECTOR_TABLE_ENTRIES);
-  // Assigning the ram vector address to VTOR register
-  SCB->VTOR = (uint32_t)ramVector;
   // Switching MCU from PS4 to PS2 state(low power state)
   // In this mode, whatever be the timer clock source value, it will run with 20MHZ only,
   // as it trims higher clock frequencies to 20MHZ.

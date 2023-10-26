@@ -51,6 +51,9 @@
 #include "cmsis_os2.h"
 #include <rsi_common_apis.h>
 #include <string.h>
+#ifdef USE_SELECT_FEATURE
+#include "select.h"
+#endif
 
 /*=======================================================================*/
 //   ! MACROS
@@ -310,6 +313,13 @@ void receive_data_from_tcp_client(void)
   uint32_t start                    = 0;
   uint32_t now                      = 0;
   int read_bytes                    = 1;
+#ifdef USE_SELECT_FEATURE
+  fd_set read_fds;
+  int highest_socket_number = 1;
+  int total_set_fds_count   = 0;
+  struct timeval timeout    = { 0 };
+  timeout.tv_sec            = 30;
+#endif
 
   server_socket = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
   if (server_socket < 0) {
@@ -355,6 +365,8 @@ void receive_data_from_tcp_client(void)
   printf("\r\nClient Socket ID : %d\r\n", client_socket);
 
   printf("\r\nTCP_RX Throughput test start\r\n");
+
+#ifndef USE_SELECT_FEATURE
   start = osKernelGetTickCount();
   while (1) {
     read_bytes = recv(client_socket, data_buffer, sizeof(data_buffer), 0);
@@ -382,10 +394,62 @@ void receive_data_from_tcp_client(void)
 #endif
     }
   }
+#else
+  FD_ZERO(&read_fds);
 
+  for (uint8_t socket = 0; socket <= highest_socket_number; socket++) {
+    FD_SET(socket, &read_fds);
+  }
+
+  total_set_fds_count = select(highest_socket_number + 1, &read_fds, NULL, NULL, &timeout);
+
+  if (total_set_fds_count == 0 || total_set_fds_count == -1) {
+    printf("\r\nSocket select failed with bsd error: %d\r\n", errno);
+    close(client_socket);
+    return;
+  }
+
+  for (uint8_t socket = 1; socket <= highest_socket_number; socket++) {
+
+    if (FD_ISSET(socket, &read_fds)) {
+      start = osKernelGetTickCount();
+      while (1) {
+        read_bytes = recv(client_socket, data_buffer, sizeof(data_buffer), 0);
+        if (read_bytes < 0) {
+          if (errno == ENOTCONN) {
+            printf("\nRemote server terminated\n");
+          } else {
+            printf("\nTCP recv failed with BSD error : %d\n", errno);
+          }
+          close(server_socket);
+          close(client_socket);
+          return;
+        }
+
+        total_bytes_received = total_bytes_received + read_bytes;
+        now = osKernelGetTickCount();
+        if ((now - start) > THROUGHPUT_AVG_TIME) {
+          printf("\r\nTotal bytes received : %ld\r\n", total_bytes_received);
+          measure_and_print_throughput(total_bytes_received, (now - start));
+#if CONTINUOUS_THROUGHPUT
+          total_bytes_received = 0;
+          start = osKernelGetTickCount();
+#else
+          break;
+#endif
+        }
+      }
+    }
+  }
+#endif
+  if (client_socket > 0)
+    close(client_socket);
+
+  if (server_socket > 0)
+    close(server_socket);
+
+  printf("\r\n Socket close success\r\n");
   printf("\r\nTCP_RX Throughput test finished\r\n");
-  close(client_socket);
-  close(server_socket);
   return;
 }
 

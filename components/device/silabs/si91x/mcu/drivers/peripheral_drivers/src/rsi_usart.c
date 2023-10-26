@@ -494,7 +494,7 @@ int32_t USART_PowerControl(ARM_POWER_STATE state,
         if ((usart->pREGS == UART0) || (usart->pREGS == USART0) || (usart->pREGS == UART1)
             || (usart->pREGS == ULP_UART)) {
 #ifdef SL_SI91X_USART_DMA
-          if (sl_si91x_dma_channel_disable(DMA_INSTANCE, usart->dma_tx->channel)) {
+          if (sl_si91x_dma_channel_disable(DMA_INSTANCE, usart->dma_tx->channel + 1)) {
             return ARM_DRIVER_ERROR;
           }
 #else
@@ -509,7 +509,7 @@ int32_t USART_PowerControl(ARM_POWER_STATE state,
         if ((usart->pREGS == UART0) || (usart->pREGS == USART0) || (usart->pREGS == UART1)
             || (usart->pREGS == ULP_UART)) {
 #ifdef SL_SI91X_USART_DMA
-          if (sl_si91x_dma_channel_disable(DMA_INSTANCE, usart->dma_rx->channel)) {
+          if (sl_si91x_dma_channel_disable(DMA_INSTANCE, usart->dma_rx->channel + 1)) {
             return ARM_DRIVER_ERROR;
           }
 #else
@@ -602,6 +602,7 @@ int32_t USART_Send_Data(const void *data,
   (void)udma;
   (void)chnl_info;
   (void)udmaHandle;
+  sl_status_t status;
 #else
   int32_t stat;
 #endif
@@ -676,7 +677,8 @@ int32_t USART_Send_Data(const void *data,
       dma_transfer_tx.signal         = chnl_cfg.periAck;
 
       //Allocate DMA channel for Tx
-      if (sl_si91x_dma_allocate_channel(DMA_INSTANCE, &channel, channel_priority)) {
+      status = sl_si91x_dma_allocate_channel(DMA_INSTANCE, &channel, channel_priority);
+      if (status && (status != SL_STATUS_DMA_CHANNEL_ALLOCATED)) {
         return ARM_DRIVER_ERROR;
       }
       //Register transfer complete and error callback
@@ -703,7 +705,7 @@ int32_t USART_Send_Data(const void *data,
       }
 #endif
 #ifdef SL_SI91X_USART_DMA
-      sl_si91x_dma_channel_enable(DMA_INSTANCE, usart->dma_tx->channel);
+      sl_si91x_dma_channel_enable(DMA_INSTANCE, usart->dma_tx->channel + 1);
       sl_si91x_dma_enable(DMA_INSTANCE);
 #else
       UDMAx_ChannelEnable(usart->dma_tx->channel, udma, udmaHandle);
@@ -749,6 +751,7 @@ int32_t USART_Receive_Data(const void *data,
   (void)udma;
   (void)chnl_info;
   (void)udmaHandle;
+  sl_status_t status;
 #else
   int32_t stat;
 #endif
@@ -832,7 +835,8 @@ int32_t USART_Receive_Data(const void *data,
       dma_transfer_rx.signal         = chnl_cfg.periAck;
 
       //Allocate DMA channel for Rx
-      if (sl_si91x_dma_allocate_channel(DMA_INSTANCE, &channel, channel_priority)) {
+      status = sl_si91x_dma_allocate_channel(DMA_INSTANCE, &channel, channel_priority);
+      if (status && (status != SL_STATUS_DMA_CHANNEL_ALLOCATED)) {
         return ARM_DRIVER_ERROR;
       }
       //Register transfer complete and error callback
@@ -859,7 +863,7 @@ int32_t USART_Receive_Data(const void *data,
       }
 #endif
 #ifdef SL_SI91X_USART_DMA
-      sl_si91x_dma_channel_enable(DMA_INSTANCE, usart->dma_rx->channel);
+      sl_si91x_dma_channel_enable(DMA_INSTANCE, usart->dma_rx->channel + 1);
       if (usart->sync_mode.en_usart_mode == 0) {
         sl_si91x_dma_enable(DMA_INSTANCE);
       }
@@ -1082,7 +1086,7 @@ int32_t USART_Control(uint32_t control,
         if ((usart->pREGS == UART0) || (usart->pREGS == USART0) || (usart->pREGS == UART1)
             || (usart->pREGS == ULP_UART)) {
 #ifdef SL_SI91X_USART_DMA
-          if (sl_si91x_dma_channel_disable(DMA_INSTANCE, usart->dma_tx->channel)) {
+          if (sl_si91x_dma_channel_disable(DMA_INSTANCE, usart->dma_tx->channel + 1)) {
             return ARM_DRIVER_ERROR;
           }
 #else
@@ -1113,7 +1117,7 @@ int32_t USART_Control(uint32_t control,
         if ((usart->pREGS == UART0) || (usart->pREGS == USART0) || (usart->pREGS == UART1)
             || (usart->pREGS == ULP_UART)) {
 #ifdef SL_SI91X_USART_DMA
-          if (sl_si91x_dma_channel_disable(DMA_INSTANCE, usart->dma_tx->channel)) {
+          if (sl_si91x_dma_channel_disable(DMA_INSTANCE, usart->dma_tx->channel + 1)) {
             return ARM_DRIVER_ERROR;
           }
 #else
@@ -1138,7 +1142,7 @@ int32_t USART_Control(uint32_t control,
         if ((usart->pREGS == UART0) || (usart->pREGS == USART0) || (usart->pREGS == UART1)
             || (usart->pREGS == ULP_UART)) {
 #ifdef SL_SI91X_USART_DMA
-          if (sl_si91x_dma_channel_disable(DMA_INSTANCE, usart->dma_tx->channel)) {
+          if (sl_si91x_dma_channel_disable(DMA_INSTANCE, usart->dma_tx->channel + 1)) {
             return ARM_DRIVER_ERROR;
           }
 #else
@@ -1151,7 +1155,7 @@ int32_t USART_Control(uint32_t control,
         if ((usart->pREGS == UART0) || (usart->pREGS == USART0) || (usart->pREGS == UART1)
             || (usart->pREGS == ULP_UART)) {
 #ifdef SL_SI91X_USART_DMA
-          if (sl_si91x_dma_channel_disable(DMA_INSTANCE, usart->dma_rx->channel)) {
+          if (sl_si91x_dma_channel_disable(DMA_INSTANCE, usart->dma_rx->channel + 1)) {
             return ARM_DRIVER_ERROR;
           }
 #else

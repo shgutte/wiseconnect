@@ -6,6 +6,7 @@ description: >
   This driver supports controlling GPIO based on/off type LEDs. 
   This component is instantiable, meaning that several named instances can be created. 
   For each instance a configuration is generated along with an initialization struct set according to this configuration.
+  Instances should be named as 'led0' or 'led1'.
 category: Device|Si91x|MCU|Drivers
 quality: production
 component_root_path: "components/device/silabs/si91x/mcu/drivers/hardware_drivers/led"

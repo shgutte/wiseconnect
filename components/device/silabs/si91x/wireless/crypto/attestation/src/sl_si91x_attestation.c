@@ -47,6 +47,9 @@
  */
 sl_status_t sl_si91x_attestation_get_token(uint8_t *token, uint16_t length, uint32_t *nonce)
 {
+  if ((token == NULL) || (length == 0)) {
+    return SL_STATUS_INVALID_PARAMETER;
+  }
   sl_status_t status;
   uint16_t send_size = 0;
   uint8_t *host_desc = NULL;
@@ -58,10 +61,6 @@ sl_status_t sl_si91x_attestation_get_token(uint8_t *token, uint16_t length, uint
   if (attest == NULL) {
     return SL_STATUS_ALLOCATION_FAILED;
   };
-
-  if ((token == NULL) && (length == 0)) {
-    return SL_STATUS_INVALID_PARAMETER;
-  }
 
   // Memset before filling
   memset(attest, 0, sizeof(sl_si91x_rsi_token_req_t));

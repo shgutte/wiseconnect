@@ -1,8 +1,5 @@
 name: Si91x with LwIP external stack
 
-sources:
-  - sl_net/src/sl_si91x_net_credentials.c
-
 slc:
   label: 'Hosted LwIP Network Stack'
   description: 'This component enables the LwIP network stack on the host MCU'

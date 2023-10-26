@@ -207,7 +207,7 @@ static const sl_wifi_device_configuration_t client_init_configuration = {
   .band        = SL_SI91X_WIFI_BAND_2_4GHZ,
   .region_code = US,
   .boot_config = { .oper_mode = SL_SI91X_CLIENT_MODE,
-                   .coex_mode = SL_SI91X_WLAN_MODE,
+                   .coex_mode = SL_SI91X_WLAN_ONLY_MODE,
                    .feature_bit_map =
 #ifdef RSI_M4_INTERFACE
                      (SL_SI91X_FEAT_SECURITY_OPEN | SL_SI91X_FEAT_WPS_DISABLE | SL_SI91X_FEAT_ULP_GPIO_BASED_HANDSHAKE),
@@ -227,13 +227,9 @@ static const sl_wifi_device_configuration_t client_init_configuration = {
                       | SL_SI91X_TCP_IP_FEAT_ICMP | SL_SI91X_TCP_IP_FEAT_EXTENSION_VALID),
                    .custom_feature_bit_map = SL_SI91X_FEAT_CUSTOM_FEAT_EXTENTION_VALID,
                    .ext_custom_feature_bit_map =
-                     (SL_SI91X_EXT_FEAT_XTAL_CLK_ENABLE(1) | SL_SI91X_EXT_FEAT_UART_SEL_FOR_DEBUG_PRINTS
+                     (SL_SI91X_EXT_FEAT_XTAL_CLK | SL_SI91X_EXT_FEAT_UART_SEL_FOR_DEBUG_PRINTS
                       | SL_SI91X_EXT_FEAT_FRONT_END_SWITCH_PINS_ULP_GPIO_4_5_0 | SL_SI91X_EXT_FEAT_LOW_POWER_MODE
-#ifdef RSI_M4_INTERFACE
-                      | RAM_LEVEL_NWP_BASIC_MCU_ADV
-#else
-                      | RAM_LEVEL_NWP_ALL_MCU_ZERO
-#endif
+                      | MEMORY_CONFIG
 #ifdef CHIP_917
                       | SL_SI91X_EXT_FEAT_FRONT_END_SWITCH_PINS_ULP_GPIO_4_5_0
 #endif
@@ -743,6 +739,9 @@ void m4_sleep_wakeup(void)
 
   /* Enable M4_TA interrupt */
   sli_m4_ta_interrupt_init();
+
+  /* Clear M4_wakeup_TA bit so that TA will go to sleep after M4 wakeup*/
+  sl_si91x_host_clear_sleep_indicator();
 
   //  /*Start of M4 init after wake up  */
   printf("\r\nM4 Wake Up\r\n");

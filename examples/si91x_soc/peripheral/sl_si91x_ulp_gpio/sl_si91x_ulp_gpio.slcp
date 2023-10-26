@@ -39,11 +39,10 @@ other_file:
 - {path: resources/readme/image504b.png}
 - {path: resources/readme/image504c.png}
 - {path: resources/readme/vcom.png}
+requires:
+- name: ulp_platform
 define:
 - {name: RSI_M4_INTERFACE}
-- {name: M4_PS2_STATE}
-template_contribution:
-- {name: ulp_platform, priority: 0, value: 1}
 provides:
 - {name: si91x_soc}
 ui_hints:

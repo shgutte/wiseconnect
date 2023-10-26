@@ -450,6 +450,7 @@ int sli_si91x_shutdown(int socket, int how)
   sl_si91x_socket_close_response_t *socket_close_response = NULL;
   sl_si91x_wait_period_t wait_period                      = SL_SI91X_WAIT_FOR_RESPONSE(SL_SI91X_WAIT_FOR_EVER);
   sl_wifi_buffer_t *buffer                                = NULL;
+  void *sdk_context                                       = NULL;
 
   si91x_socket_t *si91x_socket = get_si91x_socket(socket);
 
@@ -466,6 +467,7 @@ int sli_si91x_shutdown(int socket, int how)
     return SI91X_NO_ERROR;
   }
 
+  sdk_context = &(si91x_socket->id);
   /*If socket is server socket, SHUTDOWN_BY_PORT is to be used irrespective of 'how' parameter.*/
   socket_close_request.socket_id   = (close_request_type == SHUTDOWN_BY_ID) ? si91x_socket->id : 0;
   socket_close_request.port_number = (close_request_type == SHUTDOWN_BY_ID) ? 0 : si91x_socket->local_address.sin6_port;
@@ -478,7 +480,8 @@ int sli_si91x_shutdown(int socket, int how)
                                                &buffer,
                                                (void *)&socket_close_response,
                                                NULL,
-                                               &wait_period);
+                                               &wait_period,
+                                               sdk_context);
 
   // If the status is not OK and there's a buffer, free the buffer
   if ((status != SL_STATUS_OK) && (buffer != NULL)) {
@@ -622,7 +625,8 @@ sl_status_t sl_si91x_socket_driver_send_command(rsi_wlan_cmd_request_t command,
                                                 sl_wifi_buffer_t **buffer,
                                                 void **response,
                                                 uint32_t *events_to_wait_for,
-                                                sl_si91x_wait_period_t *wait_period)
+                                                sl_si91x_wait_period_t *wait_period,
+                                                void *sdk_context)
 {
   // Unused parameters (to suppress compiler warnings)
   UNUSED_PARAMETER(response_queue);
@@ -636,10 +640,11 @@ sl_status_t sl_si91x_socket_driver_send_command(rsi_wlan_cmd_request_t command,
 
   if (wait_period != NULL) {
     // Send the command and data with the specified wait period
-    status = sl_si91x_driver_send_command(command, queue, data, data_length, *wait_period, NULL, buffer);
+    status = sl_si91x_driver_send_command(command, queue, data, data_length, *wait_period, sdk_context, buffer);
   } else {
     // Send the command and data with immediate return if no wait period is specified
-    status = sl_si91x_driver_send_command(command, queue, data, data_length, SL_SI91X_RETURN_IMMEDIATELY, NULL, buffer);
+    status =
+      sl_si91x_driver_send_command(command, queue, data, data_length, SL_SI91X_RETURN_IMMEDIATELY, sdk_context, buffer);
 
     if (status != SL_STATUS_IN_PROGRESS) {
       return SL_STATUS_FAIL;

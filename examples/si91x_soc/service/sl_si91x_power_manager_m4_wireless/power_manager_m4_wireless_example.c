@@ -199,7 +199,7 @@ static sl_status_t initialize_wireless(void)
     .band        = SL_SI91X_WIFI_BAND_2_4GHZ,
     .region_code = US,
     .boot_config = { .oper_mode       = SL_SI91X_CLIENT_MODE,
-                     .coex_mode       = SL_SI91X_WLAN_MODE,
+                     .coex_mode       = SL_SI91X_WLAN_ONLY_MODE,
                      .feature_bit_map = (SL_SI91X_FEAT_SECURITY_OPEN | SL_SI91X_FEAT_WPS_DISABLE
                                          | SL_SI91X_FEAT_ULP_GPIO_BASED_HANDSHAKE),
                      .tcp_ip_feature_bit_map =

@@ -6,6 +6,7 @@ description: >
   This driver supports configurable debouncing.
   This component is instantiable, meaning that several named instances can be created. 
   For each instance a configuration is generated along with an initialization struct set according to this configuration.
+  Instances should be named as 'btn0' or 'btn1'.
 category: Device|Si91x|MCU|Drivers
 quality: production
 component_root_path: "components/device/silabs/si91x/mcu/drivers/hardware_drivers/button"

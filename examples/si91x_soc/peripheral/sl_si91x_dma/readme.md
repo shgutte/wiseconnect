@@ -65,7 +65,7 @@
 - Select DMA instance 0 or 1
 - Select the DMA channel used for transfer (1 - 32).
 - Select DMA transfer size in bytes (0 - 10000).
-- Select transfer API type (simple/generic transfer API).
+- Select transfer API type (simple/generic transfer API) by enabling/disabling SL_DMA_SIMPLE_TRANSFER macro in dma_example.c.
 
 ## Build
 

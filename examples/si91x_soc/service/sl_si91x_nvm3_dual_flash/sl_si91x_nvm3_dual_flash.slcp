@@ -13,7 +13,7 @@ source:
   - path: app.c
   - path: nvm3_app.c
 include:
-  - path:
+  - path: .
     file_list:
     - path: app.h
     - path: nvm3_app.h

@@ -36,7 +36,6 @@ sl_adc_config_t sl_adc_config;
 static uint32_t intr_cnt = 0;
 static float vref_value  = (float)VREF_VALUE;
 static int16_t adc_output[CHANNEL_SAMPLE_LENGTH];
-static uint32_t ramVector[SI91X_VECTOR_TABLE_ENTRIES] __attribute__((aligned(256)));
 /*******************************************************************************
  **********************  Local Function prototypes   ***************************
  ******************************************************************************/
@@ -54,12 +53,6 @@ void adc_example_init(void)
 {
   sl_adc_version_t version;
   sl_status_t status;
-
-  //copying the vector table from flash to ram
-  memcpy(ramVector, (uint32_t *)SCB->VTOR, sizeof(uint32_t) * SI91X_VECTOR_TABLE_ENTRIES);
-
-  //assing the ram vector adress to VTOR register
-  SCB->VTOR = (uint32_t)ramVector;
 
   sl_adc_config.num_of_channel_enable = 1;
   sl_adc_config.operation_mode        = SL_ADC_FIFO_MODE;

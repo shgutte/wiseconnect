@@ -16,3 +16,4 @@ provides:
   - name: cmsis_spi
 requires:
   - name: rsilib_spi
+  - name: udma_linker_config

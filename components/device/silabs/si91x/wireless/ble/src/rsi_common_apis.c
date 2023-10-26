@@ -122,6 +122,10 @@ int32_t rsi_ble_driver_init(uint8_t *buffer, uint32_t length)
   // Initialize bt_common_cb
   rsi_bt_cb_init(rsi_driver_cb->bt_common_cb, RSI_PROTO_BT_COMMON);
 
+  // Save the expected response type for BLE card ready event from TA
+  rsi_driver_cb->bt_common_cb->expected_response_type = RSI_BT_EVENT_CARD_READY;
+  rsi_driver_cb->bt_common_cb->sync_rsp               = 1;
+
   // Designate memory for ble_cb
   rsi_driver_cb->ble_cb = (rsi_bt_cb_t *)buffer;
   buffer += ((sizeof(rsi_bt_cb_t) + 3) & ~3);

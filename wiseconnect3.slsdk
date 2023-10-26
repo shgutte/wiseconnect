@@ -6,9 +6,9 @@ version=3.1.1
 label=WiSeConnect 3
 description=WiSeConnect 3 SDK
 
-prop.subLabel=Wi-Fi\\ SDK\\ 3.1.1-rc1
+prop.subLabel=Wi-Fi\\ SDK\\ 3.1.1-rc2
 
 prop.file.templatesFile=templates.xml
 
 prop.boardCompatibility=.*
-prop.partCompatibility=.*si917.* .*siwg917m111mgtba.* .*siwg917m141xgtba.*
+prop.partCompatibility=.*si917.* .*siwg917m111mgtba.* .*siwg917m141xgtba.* .*siwg917m100xntba.*

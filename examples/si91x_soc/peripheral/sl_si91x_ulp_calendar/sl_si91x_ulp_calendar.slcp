@@ -39,11 +39,10 @@ other_file:
 - {path: resources/readme/image501b.png}
 - {path: resources/readme/image501c.png}
 - {path: resources/readme/vcom.png}
+requires:
+- name: ulp_platform
 define:
 - {name: RSI_M4_INTERFACE}
-- {name: M4_PS2_STATE}
-template_contribution:
-- {name: ulp_platform, priority: 0, value: 1}
 ui_hints:
   highlight:
   - {path: readme.md, focus: true}

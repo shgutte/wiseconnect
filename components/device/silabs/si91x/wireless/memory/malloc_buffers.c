@@ -46,7 +46,6 @@ sl_status_t sl_si91x_host_allocate_buffer(sl_wifi_buffer_t **buffer,
   if (temp == NULL) {
     return SL_STATUS_ALLOCATION_FAILED;
   }
-  memset(temp, 0, buffer_size + sizeof(*temp));
   temp->length    = buffer_size;
   temp->node.node = NULL;
   *buffer         = temp;

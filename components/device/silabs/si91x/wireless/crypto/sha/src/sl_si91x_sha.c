@@ -43,6 +43,10 @@ static sl_status_t sha_pending(uint8_t sha_mode,
                                uint8_t pending_flag,
                                uint8_t *digest)
 {
+  // Input pointer check
+  if (msg == NULL) {
+    return SL_STATUS_INVALID_PARAMETER;
+  }
   sl_status_t status = SL_STATUS_OK;
   SL_PRINTF(SL_SHA_PEN_ENTRY, CRYPTO, LOG_INFO);
   uint16_t send_size = 0;
@@ -52,12 +56,6 @@ static sl_status_t sha_pending(uint8_t sha_mode,
 
   if (request == NULL) {
     return SL_STATUS_ALLOCATION_FAILED;
-  }
-
-  // Input pointer check
-  if (msg == NULL) {
-    free(request);
-    return SL_STATUS_INVALID_PARAMETER;
   }
 
   memset(request, 0, sizeof(sl_si91x_sha_request_t));

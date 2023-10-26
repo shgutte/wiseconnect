@@ -212,6 +212,11 @@ sl_status_t sl_si91x_host_flush_nodes_from_queue(sl_si91x_queue_type_t queue,
                                                  void *user_data,
                                                  sl_si91x_compare_function_t compare_function,
                                                  sl_si91x_node_free_function_t node_free_function);
+
+/* Function used to flush all the pending TX packets from the specified queue */
+sl_status_t sl_si91x_flush_queue_based_on_type(sl_si91x_queue_type_t queue,
+                                               sl_si91x_node_free_function_t node_free_function);
+
 uint32_t sl_si91x_host_queue_status(
   sl_si91x_queue_type_t queue); /*Function used to check whether queue is empty or not*/
 

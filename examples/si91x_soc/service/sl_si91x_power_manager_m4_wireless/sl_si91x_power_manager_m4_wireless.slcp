@@ -87,6 +87,8 @@ provides:
   - name: si91x_soc
   - name: device
 ui_hints:
-  focus: true
+  highlight:
+    - path: readme.md
+      focus: true
 post_build:
   path: ../../../../utilities/postbuild_profile/wiseconnect_soc.slpb

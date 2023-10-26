@@ -15,7 +15,7 @@ source:
   - path: main.c
   - path: memlcd_app.c
 include:
-  - path:
+  - path: .
     file_list:
     - path: app.h
     - path: memlcd_app.h

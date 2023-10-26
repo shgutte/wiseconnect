@@ -383,21 +383,11 @@ static const sl_wifi_device_configuration_t config = {
                      (SL_SI91X_TCP_IP_FEAT_DHCPV4_CLIENT | SL_SI91X_TCP_IP_FEAT_EXTENSION_VALID),
                    .custom_feature_bit_map = (SL_SI91X_FEAT_CUSTOM_FEAT_EXTENTION_VALID),
                    .ext_custom_feature_bit_map =
-                     (SL_SI91X_EXT_FEAT_LOW_POWER_MODE | SL_SI91X_EXT_FEAT_XTAL_CLK
+                     (SL_SI91X_EXT_FEAT_LOW_POWER_MODE | SL_SI91X_EXT_FEAT_XTAL_CLK | MEMORY_CONFIG
 #ifdef CHIP_917
-                      | RAM_LEVEL_NWP_ADV_MCU_BASIC | SL_SI91X_EXT_FEAT_FRONT_END_SWITCH_PINS_ULP_GPIO_4_5_0
-#else
-#ifdef RSI_M4_INTERFACE
-                      | RAM_LEVEL_NWP_MEDIUM_MCU_MEDIUM
-#else
-                      | RAM_LEVEL_NWP_ALL_MCU_ZERO
+                      | SL_SI91X_EXT_FEAT_FRONT_END_SWITCH_PINS_ULP_GPIO_4_5_0
 #endif
-#endif
-                      | (SL_SI91X_EXT_FEAT_BT_CUSTOM_FEAT_ENABLE)
-#if (defined A2DP_POWER_SAVE_ENABLE)
-                      | SL_SI91X_EXT_FEAT_XTAL_CLK
-#endif
-                      ),
+                      | SL_SI91X_EXT_FEAT_BT_CUSTOM_FEAT_ENABLE),
                    .bt_feature_bit_map = (SL_SI91X_BT_RF_TYPE | SL_SI91X_ENABLE_BLE_PROTOCOL
 #if (RSI_BT_GATT_ON_CLASSIC)
                                           | SL_SI91X_BT_ATT_OVER_CLASSIC_ACL /* to support att over classic acl link */
@@ -2438,9 +2428,9 @@ void rsi_ble_glucose_gatt_server(void)
 #elif (GATT_ROLE == CLIENT)
   static uint8_t char_srv_index = 0;
   uuid_t service_uuid;
-  profile_descriptors_t ble_servs = { 0 };
+  profile_descriptors_t ble_servs         = { 0 };
   rsi_ble_resp_char_services_t char_servs = { 0 };
-  rsi_ble_resp_att_descs_t att_desc = { 0 };
+  rsi_ble_resp_att_descs_t att_desc       = { 0 };
 #endif
   sl_wifi_version_string_t version = { 0 };
 
@@ -2600,16 +2590,16 @@ void rsi_ble_glucose_gatt_server(void)
 
 #elif (GATT_ROLE == CLIENT)
         //! clear start handler of characteristics
-        rsi_ble_glucose_val_hndl = 0;
+        rsi_ble_glucose_val_hndl         = 0;
         rsi_ble_glucose_context_val_hndl = 0;
-        rsi_ble_ctrl_point_val_hndl = 0;
+        rsi_ble_ctrl_point_val_hndl      = 0;
 
         //! clear attributes info (i.e. Each rows of gatt glucose service table)
         memset(&ble_servs, 0, sizeof(profile_descriptors_t));
         memset(&char_servs, 0, sizeof(rsi_ble_resp_char_services_t));
         memset(&att_desc, 0, sizeof(rsi_ble_resp_att_descs_t));
 
-        service_uuid.size = 2;
+        service_uuid.size      = 2;
         service_uuid.val.val16 = RSI_BLE_GLUCOSE_SERVICE_UUID;
 get_prof:
         //! query particular profile details from the connected remote device.
@@ -2640,7 +2630,7 @@ adv:
 scan:
         //! start scanning
         device_found = 0;
-        status = rsi_ble_start_scanning();
+        status       = rsi_ble_start_scanning();
         if (status != RSI_SUCCESS) {
           goto scan;
         }

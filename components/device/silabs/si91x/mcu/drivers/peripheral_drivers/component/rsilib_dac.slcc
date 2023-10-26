@@ -14,3 +14,5 @@ include:
     - path: "rsi_dac.h"
 provides:
   - name: rsilib_dac
+requires:
+  - name: udma_linker_config

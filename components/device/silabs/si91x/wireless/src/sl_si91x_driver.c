@@ -51,6 +51,7 @@
 
 #ifdef SI91X_SOCKET_FEATURE
 #include "sl_si91x_socket_utility.h"
+#include "sl_si91x_socket_callback_framework.h"
 #endif
 
 #ifndef NULL
@@ -447,6 +448,10 @@ sl_status_t sl_si91x_driver_init(const sl_wifi_device_configuration_t *config, s
   }
 #endif
 
+  if (performance_profile.coex_mode == 1) {
+    return SL_STATUS_NOT_SUPPORTED;
+  }
+
   // Send WLAN request to set the operating mode and configuration
   status = sl_si91x_driver_send_command(RSI_COMMON_REQ_OPERMODE,
                                         SI91X_COMMON_CMD_QUEUE,
@@ -841,6 +846,9 @@ sl_status_t sl_si91x_driver_send_command_packet(uint32_t command,
   uint16_t data_length              = 0;
   sl_si91x_driver_context_t context = { 0 };
   sl_si91x_wait_period_t wait_time  = 0;
+#ifdef SI91X_SOCKET_FEATURE
+  sl_si91x_socket_context_t *socket_context_t = sdk_context;
+#endif
 
   // Allocate a command packet and set flags based on the command type
   status = sl_si91x_allocate_command_buffer(&packet,
@@ -885,8 +893,20 @@ sl_status_t sl_si91x_driver_send_command_packet(uint32_t command,
   node->host_packet       = buffer;
   node->firmware_queue_id = firmware_queue_id[queue_type];
   node->command_type      = (sl_si91x_command_type_t)queue_type;
-  node->sdk_context       = sdk_context;
-  node->flags             = flags;
+  // copy the socket id to sl_si91x_socket_id member of sl_si91x_queue_type_t structure.
+#ifdef SI91X_SOCKET_FEATURE
+  if (queue_type == (sl_si91x_queue_type_t)SI91X_SOCKET_CMD) {
+    if ((command == RSI_WLAN_REQ_SOCKET_ACCEPT) && (wait_period == SL_SI91X_RETURN_IMMEDIATELY)) {
+      node->sl_si91x_socket_id = (socket_context_t->socket_id);
+    } else if (sdk_context != NULL) {
+      node->sl_si91x_socket_id = (int32_t)(*((uint8_t *)sdk_context));
+    } else {
+      node->sl_si91x_socket_id = -1;
+    }
+  }
+#endif
+  node->flags       = flags;
+  node->sdk_context = sdk_context;
 
   // Configure the context for packet handling
   context.packet  = node;

@@ -15,7 +15,7 @@ source:
   - path: main.c
   - path: button_baremetal.c
 include:
-  - path:
+  - path: .
     file_list:
     - path: app.h
     - path: button_baremetal.h

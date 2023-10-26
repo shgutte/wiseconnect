@@ -19,3 +19,4 @@ requires:
   - name: cmsis_common_driver
   - name: rsilib_usart
   - name: rsilib_clock_update
+  - name: udma_linker_config

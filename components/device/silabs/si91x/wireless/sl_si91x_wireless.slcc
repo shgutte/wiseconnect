@@ -18,6 +18,8 @@ source:
   condition: [network_manager]
 - path: sl_net/src/sl_net_si91x_integration_handler.c
   condition: [network_manager]
+- path: sl_net/src/sl_si91x_net_credentials.c
+  condition: [network_manager]
 - path: host_mcu/si91x/siwx917_soc_ncp_host.c
   condition: ["device_si91x"]
 - path: host_mcu/efx32/efx32_ncp_host.c

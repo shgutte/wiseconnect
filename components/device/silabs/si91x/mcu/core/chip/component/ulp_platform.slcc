@@ -1,0 +1,14 @@
+id: ulp_platform
+package: platform
+description: ulp_platform component is used to execute text section from the RAM.
+category: Device|Si91x|MCU|Core
+label: ULP Platform RAM Execution
+quality: production
+provides:
+  - name: ulp_platform
+define:
+  - name: ULP_PLATFORM
+  - name: M4_PS2_STATE
+template_contribution:
+  - name: ulp_platform
+    value: true

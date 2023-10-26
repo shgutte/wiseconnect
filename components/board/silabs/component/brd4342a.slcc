@@ -5,6 +5,7 @@
 - description: Board support for BRD4342A.
 - category: Board|Radio Board
 - quality: production
+- root_path: components/board/silabs/config/brd4342a
 - requires:
   - name: siwg917m111mgtba
   - name: brd4342a_config

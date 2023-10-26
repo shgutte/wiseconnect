@@ -82,8 +82,6 @@ template_contribution:
   value: 12
 
 toolchain_settings:
-- option: device_opn
-  value: si917-sb00
 - option: architecture
   value: armv7e-m
 - option: cpu

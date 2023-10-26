@@ -14,3 +14,5 @@ template_contribution:
   - name: device_ram_addr
     value: 1024
     priority: -2
+conflicts:
+  - name: text_segment_in_psram

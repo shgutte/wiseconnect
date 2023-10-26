@@ -5,9 +5,10 @@
 - description: Board support for BRD4340B.
 - category: Board|Radio Board
 - quality: production
+- root_path: components/board/silabs/config/brd4340b
 - requires:
   - name: siwg917m111mgtba
-#  - name: brd4340b_config
+  - name: brd4340b_config
   - name: hardware_board_mainboard
   - name: external_flash_none
   - name: external_psram_none

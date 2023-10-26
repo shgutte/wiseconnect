@@ -43,11 +43,6 @@
 #include "cmsis_os2.h"
 
 /*******************************************************************************
- ********************* Vector Interrupt variable  *****************************
- ******************************************************************************/
-uint32_t ramVector[SI91X_VECTOR_TABLE_ENTRIES] __attribute__((aligned(256))); // store the vector table in the Ram
-
-/*******************************************************************************
  **************  Sensor app Task Attributes structure for thread   *************
  ******************************************************************************/
 #define SL_APP_TASK_STACK_SIZE 4096
@@ -281,6 +276,36 @@ void sl_si91x_sensor_event_handler(uint8_t sensor_id, uint8_t event)
         DEBUGOUT("Single ended input: %lfV \t", (double)vout);
       }
 
+      if (SL_SENSOR_ADC_GUVA_S12D_ID == sensor_id) {
+        float vout = 0;
+        if (sensor_hub_info_t[sens_ind].sensor_mode == SL_SH_INTERRUPT_MODE) {
+          for (uint32_t i = 0; i < SL_SH_ADC_CH0_NUM_SAMPLES; i++) {
+            DEBUGOUT("%d \t", sensor_hub_info_t[sens_ind].sensor_data_ptr->sensor_data[0].adc[i]);
+          }
+        } else if (sensor_hub_info_t[sens_ind].sensor_mode == SL_SH_POLLING_MODE) {
+          if (sensor_hub_info_t[sens_ind].data_deliver.data_mode == SL_SH_TIMEOUT) {
+            for (uint32_t i = 0;
+                 i < sensor_hub_info_t[sens_ind].data_deliver.timeout / sensor_hub_info_t[sens_ind].sampling_interval;
+                 i++) {
+              DEBUGOUT("%d \t", sensor_hub_info_t[sens_ind].sensor_data_ptr->sensor_data[0].adc[i]);
+            }
+          }
+          if (sensor_hub_info_t[sens_ind].data_deliver.data_mode == SL_SH_NUM_OF_SAMPLES) {
+            for (uint32_t i = 0; i < sensor_hub_info_t[sens_ind].data_deliver.numofsamples; i++) {
+              DEBUGOUT("%d \t", sensor_hub_info_t[sens_ind].sensor_data_ptr->sensor_data[0].adc[i]);
+            }
+          }
+          if (sensor_hub_info_t[sens_ind].data_deliver.data_mode == SL_SH_THRESHOLD) {
+            for (uint32_t i = 0; i < sensor_hub_info_t[sens_ind].data_deliver.numofsamples; i++) {
+              DEBUGOUT("%d \t", sensor_hub_info_t[sens_ind].sensor_data_ptr->sensor_data[0].adc[i]);
+            }
+          }
+        }
+        vout =
+          (((float)*(sensor_hub_info_t[sens_ind].sensor_data_ptr->sensor_data[0].adc) / (float)SL_SH_ADC_MAX_OP_VALUE)
+           * SL_SH_ADC_VREF_VALUE);
+        DEBUGOUT("Single ended input: %lfV \t", (double)vout);
+      }
       DEBUGOUT(" data_deliver.mode:%d \r\n", sensor_hub_info_t[sens_ind].data_deliver.data_mode);
 
       // Acknowledge data reception
@@ -415,11 +440,6 @@ void sl_si91x_sensorhub_app_task(void)
 ******************************************************************************/
 void sensorhub_app_init(void)
 {
-  //copying the vector table from flash to ram
-  memcpy(ramVector, (uint32_t *)SCB->VTOR, sizeof(uint32_t) * SI91X_VECTOR_TABLE_ENTRIES);
-
-  // Assigning the ram vector address to VTOR register
-  SCB->VTOR = (uint32_t)ramVector;
 
   // Updating the CPU core clock by 20 MHz to work in PS2 mode
   RSI_IPMU_M20rcOsc_TrimEfuse();

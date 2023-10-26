@@ -48,6 +48,10 @@
 #define TOTAL_DMA_INSTANCES        2              // Total number of DMA instances
 #define DMA_DRIVER_ROM_BUFF_SIZE   30             // Size of dma_driver_rom_buff0
 #define EXTRACT_LSB                1
+#define DMA_CHANNEL_12             12
+#define DMA_CHANNEL_PRIORITY_HIGH  1
+#define VALID_CALLBACK_RANGE_LOW   1
+#define VALID_CALLBACK_RANGE_HIGH  3
 
 /*******************************************************************************
  ***************************  EXTERN VARIABLES  ********************************
@@ -280,14 +284,20 @@ sl_status_t sl_si91x_dma_allocate_channel(uint32_t dma_number, uint32_t *channel
 
   sl_status_t status = SL_STATUS_OK;
   do {
-    if (((*channel_no > DMA_CHANNEL_32) || (channel_no == NULL)) && (dma_number > DMA_INSTANCE1)) {
+    if ((*channel_no > DMA_CHANNEL_32) || (channel_no == NULL) || (dma_number > DMA_INSTANCE1)) {
       // Invalid channel number
       status = SL_STATUS_INVALID_PARAMETER;
       break;
     }
-    if ((*channel_no > 12) && (dma_number == 1)) {
+    if (priority > DMA_CHANNEL_PRIORITY_HIGH) {
+      // Invalid channel number
+      status = SL_STATUS_INVALID_PARAMETER;
+      break;
+    }
+    if ((*channel_no > DMA_CHANNEL_12) && (dma_number == DMA_INSTANCE1)) {
       // Invalid channel number, UDMA1 only supports 12 channels
       status = SL_STATUS_INVALID_PARAMETER;
+      break;
     }
     if (udmaHandle[dma_number] == NULL) {
       // DMA not initialized
@@ -308,7 +318,7 @@ sl_status_t sl_si91x_dma_allocate_channel(uint32_t dma_number, uint32_t *channel
           break;
         }
       }
-      if (*channel_no > DMA_CHANNEL_32) {
+      if (*channel_no == 0) {
         // No DMA channel is available
         status = SL_STATUS_DMA_NO_CHANNEL_AVAILABLE;
       }
@@ -339,8 +349,13 @@ sl_status_t sl_si91x_dma_deallocate_channel(uint32_t dma_number, uint32_t channe
 
   sl_status_t status = SL_STATUS_OK;
   do {
-    if ((channel_no > DMA_CHANNEL_32) && (channel_no == 0) && (dma_number > DMA_INSTANCE1)) {
+    if ((channel_no > DMA_CHANNEL_32) || (dma_number > DMA_INSTANCE1) || (channel_no == 0)) {
       // Invalid channel number
+      status = SL_STATUS_INVALID_PARAMETER;
+      break;
+    }
+    if ((channel_no > DMA_CHANNEL_12) && (dma_number == DMA_INSTANCE1)) {
+      // Invalid channel number, UDMA1 only supports 12 channels
       status = SL_STATUS_INVALID_PARAMETER;
       break;
     }
@@ -349,7 +364,7 @@ sl_status_t sl_si91x_dma_deallocate_channel(uint32_t dma_number, uint32_t channe
       status = SL_STATUS_NOT_INITIALIZED;
       break;
     }
-    if (channel_status(dma_number, channel_no)) {
+    if (channel_status(dma_number, channel_no - 1)) {
       // Transfer is in progress
       status = SL_STATUS_BUSY;
       break;
@@ -378,8 +393,18 @@ sl_status_t sl_si91x_dma_register_callbacks(uint32_t dma_number, uint32_t channe
 
   sl_status_t status = SL_STATUS_OK;
   do {
-    if ((channel_no > DMA_CHANNEL_32) && (channel_no == 0) && (dma_number > DMA_INSTANCE1)) {
+    if ((channel_no > DMA_CHANNEL_32) || (dma_number > DMA_INSTANCE1) || (channel_no == 0)) {
       // Invalid channel number
+      status = SL_STATUS_INVALID_PARAMETER;
+      break;
+    }
+    if (callback_t == NULL) {
+      // Invalid callback structure
+      status = SL_STATUS_NULL_POINTER;
+      break;
+    }
+    if ((channel_no > DMA_CHANNEL_12) && (dma_number == DMA_INSTANCE1)) {
+      // Invalid channel number, UDMA1 only supports 12 channels
       status = SL_STATUS_INVALID_PARAMETER;
       break;
     }
@@ -405,8 +430,18 @@ sl_status_t sl_si91x_dma_unregister_callbacks(uint32_t dma_number, uint32_t chan
 
   sl_status_t status = SL_STATUS_OK;
   do {
-    if ((channel_no > DMA_CHANNEL_32) && (channel_no == 0) && (dma_number > DMA_INSTANCE1)) {
+    if ((channel_no > DMA_CHANNEL_32) || (dma_number > DMA_INSTANCE1) || (channel_no == 0)) {
       // Invalid channel number
+      status = SL_STATUS_INVALID_PARAMETER;
+      break;
+    }
+    if ((channel_no > DMA_CHANNEL_12) && (dma_number == DMA_INSTANCE1)) {
+      // Invalid channel number, UDMA1 only supports 12 channels
+      status = SL_STATUS_INVALID_PARAMETER;
+      break;
+    }
+    if ((callback_type > VALID_CALLBACK_RANGE_HIGH) || (callback_type < VALID_CALLBACK_RANGE_LOW)) {
+      // Invalid callback type
       status = SL_STATUS_INVALID_PARAMETER;
       break;
     }
@@ -418,12 +453,10 @@ sl_status_t sl_si91x_dma_unregister_callbacks(uint32_t dma_number, uint32_t chan
     if (callback_type & TRANSFER_COMPLETE_CALLBACK) {
       // unregister transfer complete callback
       sl_channel_allocation_data_t[dma_number][channel_no - 1].dma_callback_t.transfer_complete_cb = NULL;
-    } else if (callback_type & ERROR_CALLBACK) {
+    }
+    if (callback_type & ERROR_CALLBACK) {
       // unregister error callback
       sl_channel_allocation_data_t[dma_number][channel_no - 1].dma_callback_t.error_cb = NULL;
-    } else {
-      // Invalid callback type
-      status = SL_STATUS_INVALID_PARAMETER;
     }
   } while (false);
 
@@ -445,8 +478,23 @@ sl_status_t sl_si91x_dma_simple_transfer(uint32_t dma_number,
   sl_status_t status = SL_STATUS_OK;
   uint32_t channel   = channel_no - 1;
   do {
-    if ((channel_no > DMA_CHANNEL_32) && (channel_no == 0) && (dma_number > DMA_INSTANCE1)) {
+    if ((channel_no > DMA_CHANNEL_32) || (dma_number > DMA_INSTANCE1) || (channel_no == 0)) {
       // Invalid channel number
+      status = SL_STATUS_INVALID_PARAMETER;
+      break;
+    }
+    if ((channel_no > DMA_CHANNEL_12) && (dma_number == DMA_INSTANCE1)) {
+      // Invalid channel number, UDMA1 only supports 12 channels
+      status = SL_STATUS_INVALID_PARAMETER;
+      break;
+    }
+    if ((src_addr == NULL) || (dst_addr == NULL)) {
+      // Invalid src/dst addr
+      status = SL_STATUS_NULL_POINTER;
+      break;
+    }
+    if (data_size == 0) {
+      //Invalid data size
       status = SL_STATUS_INVALID_PARAMETER;
       break;
     }
@@ -528,9 +576,24 @@ sl_status_t sl_si91x_dma_transfer(uint32_t dma_number, uint32_t channel_no, sl_d
   sl_status_t status = SL_STATUS_OK;
   uint32_t channel   = channel_no - 1;
   do {
-    if ((channel_no > DMA_CHANNEL_32) && (channel_no == 0) && (dma_number > DMA_INSTANCE1)) {
+    if ((channel_no > DMA_CHANNEL_32) || (dma_number > DMA_INSTANCE1) || (channel_no == 0)) {
       // Invalid channel number
       status = SL_STATUS_INVALID_PARAMETER;
+      break;
+    }
+    if ((channel_no > DMA_CHANNEL_12) && (dma_number == DMA_INSTANCE1)) {
+      // Invalid channel number, UDMA1 only supports 12 channels
+      status = SL_STATUS_INVALID_PARAMETER;
+      break;
+    }
+    if (dma_transfer_t->transfer_count == 0) {
+      // Invalid data size
+      status = SL_STATUS_INVALID_PARAMETER;
+      break;
+    }
+    if ((dma_transfer_t->src_addr == NULL) || (dma_transfer_t->dest_addr == NULL)) {
+      // Invalid src/dst addr
+      status = SL_STATUS_NULL_POINTER;
       break;
     }
     if ((dma_transfer_t->dst_inc > SL_TRANSFER_DST_INC_NONE) || (dma_transfer_t->src_inc > SL_TRANSFER_SRC_INC_NONE)) {
@@ -678,8 +741,13 @@ sl_status_t sl_si91x_dma_stop_transfer(uint32_t dma_number, uint32_t channel_no)
 
   sl_status_t status = SL_STATUS_OK;
   do {
-    if (dma_number > DMA_INSTANCE1) {
+    if ((channel_no > DMA_CHANNEL_32) || (dma_number > DMA_INSTANCE1) || (channel_no == 0)) {
       // Invalid DMA instance
+      status = SL_STATUS_INVALID_PARAMETER;
+      break;
+    }
+    if ((channel_no > DMA_CHANNEL_12) && (dma_number == DMA_INSTANCE1)) {
+      // Invalid channel number, UDMA1 only supports 12 channels
       status = SL_STATUS_INVALID_PARAMETER;
       break;
     }
@@ -708,8 +776,13 @@ sl_status_t sl_si91x_dma_channel_status_get(uint32_t dma_number, uint32_t channe
 
   sl_status_t status = SL_STATUS_IDLE;
   do {
-    if ((channel_no > DMA_CHANNEL_32) && (channel_no == 0) && (dma_number > DMA_INSTANCE1)) {
+    if ((channel_no > DMA_CHANNEL_32) || (dma_number > DMA_INSTANCE1) || (channel_no == 0)) {
       // Invalid channel number
+      status = SL_STATUS_INVALID_PARAMETER;
+      break;
+    }
+    if ((channel_no > DMA_CHANNEL_12) && (dma_number == DMA_INSTANCE1)) {
+      // Invalid channel number, UDMA1 only supports 12 channels
       status = SL_STATUS_INVALID_PARAMETER;
       break;
     }
@@ -742,8 +815,13 @@ sl_status_t sl_si91x_dma_channel_enable(uint32_t dma_number, uint32_t channel_no
 
   sl_status_t status = SL_STATUS_OK;
   do {
-    if (dma_number > DMA_INSTANCE1) {
+    if ((channel_no > DMA_CHANNEL_32) || (dma_number > DMA_INSTANCE1) || (channel_no == 0)) {
       // Invalid DMA instance
+      status = SL_STATUS_INVALID_PARAMETER;
+      break;
+    }
+    if ((channel_no > DMA_CHANNEL_12) && (dma_number == DMA_INSTANCE1)) {
+      // Invalid channel number, UDMA1 only supports 12 channels
       status = SL_STATUS_INVALID_PARAMETER;
       break;
     }
@@ -752,7 +830,7 @@ sl_status_t sl_si91x_dma_channel_enable(uint32_t dma_number, uint32_t channel_no
       status = SL_STATUS_NOT_INITIALIZED;
       break;
     }
-    if (RSI_UDMA_ChannelEnable(udmaHandle[dma_number], channel_no)) {
+    if (RSI_UDMA_ChannelEnable(udmaHandle[dma_number], channel_no - 1)) {
       // Invalid channel number
       status = SL_STATUS_INVALID_PARAMETER;
       break;
@@ -771,8 +849,13 @@ sl_status_t sl_si91x_dma_channel_disable(uint32_t dma_number, uint32_t channel_n
 
   sl_status_t status = SL_STATUS_OK;
   do {
-    if (dma_number > DMA_INSTANCE1) {
+    if ((channel_no > DMA_CHANNEL_32) || (dma_number > DMA_INSTANCE1) || (channel_no == 0)) {
       // Invalid DMA instance
+      status = SL_STATUS_INVALID_PARAMETER;
+      break;
+    }
+    if ((channel_no > DMA_CHANNEL_12) && (dma_number == DMA_INSTANCE1)) {
+      // Invalid channel number, UDMA1 only supports 12 channels
       status = SL_STATUS_INVALID_PARAMETER;
       break;
     }
@@ -781,7 +864,7 @@ sl_status_t sl_si91x_dma_channel_disable(uint32_t dma_number, uint32_t channel_n
       status = SL_STATUS_NOT_INITIALIZED;
       break;
     }
-    if (RSI_UDMA_ChannelDisable(udmaHandle[dma_number], channel_no)) {
+    if (RSI_UDMA_ChannelDisable(udmaHandle[dma_number], channel_no - 1)) {
       // Invalid channel number
       status = SL_STATUS_INVALID_PARAMETER;
       break;

@@ -5,9 +5,10 @@
 - description: Board support for BRD4339B.
 - category: Board|Radio Board
 - quality: production
+- root_path: components/board/silabs/config/brd4339b
 - requires:
   - name: siwg917m111mgtba
-#  - name: brd4339b_config
+  - name: brd4339b_config
   - name: hardware_board_mainboard
   - name: external_flash_8mb
   - name: external_psram_none

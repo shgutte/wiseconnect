@@ -405,7 +405,7 @@ sl_status_t si91x_set_sni_for_embedded_socket(si91x_socket_type_length_value_t *
     sizeof(si91x_sni_for_embedded_socket_request_t) + SI91X_MAX_SIZE_OF_EXTENSION_DATA);
   VERIFY_MALLOC_AND_RETURN(request);
 
-  memset(request, 0, sizeof(si91x_sni_for_embedded_socket_request_t));
+  memset(request, 0, sizeof(si91x_sni_for_embedded_socket_request_t) + SI91X_MAX_SIZE_OF_EXTENSION_DATA);
 
   request->protocol = SI91X_SNI_FOR_HTTPS;
   request->offset   = sizeof(si91x_socket_type_length_value_t);

@@ -292,9 +292,9 @@
 #define SL_STATUS_SI91X_SSL_TLS_CONTEXT_CREATION_FAILED ((sl_status_t)0x100D1) ///< SSL/TLS context create failed.
 #define SL_STATUS_SI91X_SSL_TLS_HANDSHAKE_FAIL \
   ((sl_status_t)0x100D2) ///< SSL/TLS handshake failed. Socket will be closed.
-#define SL_STATUS_SI91X_SSL_TLS_MAX_SOCKETS_REACHED_OR_FTP_CLIENT_NOT_CONNECTED \
-  ((sl_status_t)0x100D3) ///< SSL/TLS max sockets reached. Or FTP client is not connected.
-#define SL_STATUS_SI91X_CIPHER_SET_FAILED ((sl_status_t)0x100D4) ///< Cipher set failure.
+#define SL_STATUS_SI91X_SSL_TLS_MAX_SOCKETS_REACHED ((sl_status_t)0x100D3) ///< SSL/TLS max sockets reached.
+#define SL_STATUS_SI91X_FTP_CLIENT_NOT_CONNECTED    ((sl_status_t)0x100D3) ///< FTP client is not connected.
+#define SL_STATUS_SI91X_CIPHER_SET_FAILED           ((sl_status_t)0x100D4) ///< Cipher set failure.
 #define SL_STATUS_SI91X_HTTP_CREDENTIALS_MAX_LEN_EXCEEDED \
   ((sl_status_t)0x100F1)                                             ///< HTTP credentials maximum length exceeded.
 #define SL_STATUS_SI91X_FEATURE_NOT_SUPPORTED ((sl_status_t)0x100F7) ///< Feature not supported.

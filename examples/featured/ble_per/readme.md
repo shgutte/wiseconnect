@@ -34,7 +34,7 @@ Before running the application, the user will need the following things to setup
   - **PSRAM Mode**:
     - Silicon Labs [BRD4340A](https://www.silabs.com/)
 
-- Spectrum Analyzer and/or Power Analyzer
+- Spectrum Analyzer
 
 ### Software Requirements
 
@@ -63,15 +63,13 @@ The application can be configured to suit your requirements and development envi
 >
 >For NCP mode, following defines have to enabled manually in preprocessor setting of example project
 >
-> - For 917 A0 expansion board, `enable CHIP_917 = 1`
+> - For 917 A0 expansion board, enable `CHIP_917 = 1`
 > - For 917 B0 1.2 expansion board, enable `CHIP_917 = 1`, `CHIP_917B0 = 1`
 > - For 917 B0 2.0 expansion board, enable `CHIP_917 = 1`, `CHIP_917B0 = 1`, `SI917_RADIO_BOARD_V2 = 1` (This is enabled by default for all examples)
 
-- Open `app.c` file
+- Open `app.c` file and update or modify following macros
 
-Update or modify following macros
-
-- `RSI_CONFIG_PER_MODE` refers configuration mode BT PER TX or RX
+  - `RSI_CONFIG_PER_MODE` refers configuration mode BT PER TX or RX
 
   ```c
     #define RSI_CONFIG_PER_MODE RSI_BLE_PER_TRANSMIT_MODE
@@ -169,10 +167,11 @@ Update or modify following macros
     #define PLL_MODE_1 1
   ```
 
- LOOP_BACK_MODE : enable 1 or disable 0 #define LOOP_BACK_MODE_DISABLE 0
+  - `LOOP_BACK_MODE` : Enable 1 or Disable 0 
 
   ```c
-      #define LOOP_BACK_MODE_ENABLE 1
+    #define LOOP_BACK_MODE_ENABLE 1
+    #define LOOP_BACK_MODE_DISABLE 0
   ```
 
 - Open `ble_config.h` file and update/modify following macros,
@@ -180,16 +179,6 @@ Update or modify following macros
   ```c
     #define RSI_BLE_PWR_INX                                30
     #define RSI_BLE_PWR_SAVE_OPTIONS                       BLE_DISABLE_DUTY_CYCLING
-  ```
-
-### Opermode Command Parameters
-
-  ```c
-    #define RSI_FEATURE_BIT_MAP                            FEAT_SECURITY_OPEN
-    #define RSI_TCP_IP_BYPASS                              RSI_DISABLE
-    #define RSI_TCP_IP_FEATURE_BIT_MAP                     TCP_IP_FEAT_DHCPV4_CLIENT
-    #define RSI_CUSTOM_FEATURE_BIT_MAP                     FEAT_CUSTOM_FEAT_EXTENTION_VALID
-    #define RSI_EXT_CUSTOM_FEATURE_BIT_MAP                 0
   ```
 
   > **Note:** `ble_config.h` files are already set with desired configuration in respective example folders user need not change for each example.
@@ -205,15 +194,16 @@ Follow the steps as mentioned for the successful execution of the application:
 
 1. After the program gets executed, Silicon Labs module starts BLE PER transmit or BLE PER receive.
 
-2. For receiving purpose use BT dongle and keep it in BLE PER RX mode.
+2. The BLE-PER-RX can be validated between two SiWx91x device modes.
+    - Configure a SiWx91x device in PER-TX mode and configure another SiWx91x device in BLE PER RX mode.
 
-3. Check for BLE PER stats whatever configured values are affecting or not.
+3. If the SiWx91x device is configured in BLE-PER-TX Mode, the SiWx91x device sends the packets with the configured mode in the configured channel.
 
-4. After successful program execution of BLE PER Transmit the waveform on the spectrum looks as shown below.  
-![Figure: Spectrum Analyzer](resources/readme/bleperspectrum.png)
+4. Check for BLE PER stats whatever configured values are affecting or not.
 
 5. After successful program execution the prints in Tera Term looks as shown below.
 
+### BLE-PER-TX
 ![output](resources/readme/output_1.png)
-
+### BLE-PER-RX
 ![output](resources/readme/output_2.png)

@@ -30,4 +30,5 @@ void app_init(void)
  ******************************************************************************/
 void app_process_action(void)
 {
+  blinky_process_action();
 }

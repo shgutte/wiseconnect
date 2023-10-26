@@ -644,6 +644,7 @@ int sl_si91x_recvfrom(int socket,
   si91x_rsp_socket_recv_t *response  = NULL;
   si91x_socket_t *si91x_socket       = get_si91x_socket(socket);
   sl_wifi_buffer_t *buffer           = NULL;
+  void *sdk_context                  = NULL;
 
   // Check if the socket is valid
   SET_ERRNO_AND_RETURN_IF_TRUE(si91x_socket == NULL, EBADF);
@@ -675,6 +676,7 @@ int sl_si91x_recvfrom(int socket,
 
   // Initialize the socket read request with the socket ID and requested buffer length
   request.socket_id = si91x_socket->id;
+  sdk_context       = &(request.socket_id);
   memcpy(request.requested_bytes, &buf_len, sizeof(buf_len));
   wait_time = (SL_SI91X_WAIT_FOR_EVER | SL_SI91X_WAIT_FOR_RESPONSE_BIT);
 
@@ -686,7 +688,8 @@ int sl_si91x_recvfrom(int socket,
                                                            &buffer,
                                                            (void *)&response,
                                                            &event,
-                                                           &wait_time);
+                                                           &wait_time,
+                                                           sdk_context);
 
   // If the command failed and a buffer was allocated, free the buffer
   if ((status != SL_STATUS_OK) && (buffer != NULL)) {

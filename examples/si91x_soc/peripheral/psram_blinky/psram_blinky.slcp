@@ -16,7 +16,7 @@ source:
   - path: main.c
   - path: blinky.c
 include:
-  - path:
+  - path: .
     file_list:
     - path: app.h
     - path: blinky.h

@@ -97,7 +97,14 @@ void sl_si91x_watchdog_init_timer(void)
 sl_status_t sl_si91x_watchdog_configure_clock(watchdog_timer_clock_config_t *timer_clk_config_ptr)
 {
   sl_status_t status = SL_STATUS_OK;
-
+  /* WDT_TIMER_UC is defined by default. when this macro (WDT_TIMER_UC) is defined, peripheral
+   * configuration is directly taken from the configuration set in the universal configuration (UC).
+   * if the application requires the configuration to be changed in run-time, undefined this macro
+   * and change the peripheral configuration through the sl_si91x_watchdog_configure_clock API.
+   */
+#ifdef WDT_TIMER_UC
+  timer_clk_config_ptr = &sl_watchdog_timer_clk_config_handle;
+#endif
   do {
     // To validate the structure pointer, if the parameters is NULL, it
     // will return an error code

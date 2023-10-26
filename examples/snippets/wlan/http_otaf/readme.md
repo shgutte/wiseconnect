@@ -237,7 +237,7 @@ The application can be configured to suit user requirements and development envi
     ```
 
 - Certificate Loading
-  - The **sl_wifi_set_certificate()** API expects the certificate in the form of linear array. Convert the pem certificate into linear array form using python script provided in the SDK `<SDK>/resources/scripts/certificate_script.py`.
+  - The **[sl_net_set_credential()](https://docs.silabs.com/wiseconnect/3.0.13/wiseconnect-api-reference-guide-nwk-mgmt/net-credential-functions#sl-net-set-credential)** API expects the certificate in the form of linear array. Convert the pem certificate into linear array form using python script provided in the SDK `<SDK>/resources/scripts/certificate_script.py`.
 
   - For example : If the certificate is ca-certificate.pem, enter the command in the following way:
    `python certificate_script.py ca-certificate.pem`
@@ -251,10 +251,10 @@ The application can be configured to suit user requirements and development envi
 
   ```c
   // Certificate includes
-  #include "cacert.pem.h"
+  #include "ca-certificate.pem.h"
   
   // Load Security Certificates
-  status = sl_wifi_set_certificate(SL_TLS_SSL_CA_CERTIFICATE, cacert, (sizeof(cacert) - 1));
+  status = sl_net_set_credential(SL_NET_TLS_SERVER_CREDENTIAL_ID(0), SL_NET_SIGNING_CERTIFICATE, ca-certificate, sizeof(ca-certificate) - 1);
   ```
 
 - For AWS Server
@@ -264,7 +264,7 @@ The application can be configured to suit user requirements and development envi
   #include "aws_starfield_ca.pem.h"
 
   // Load Security Certificates
-  status = sl_wifi_set_certificate(SL_TLS_SSL_CA_CERTIFICATE, aws_starfield_ca, (sizeof(aws_starfield_ca) - 1));
+  status = sl_net_set_credential(SL_NET_TLS_SERVER_CREDENTIAL_ID(0), SL_NET_SIGNING_CERTIFICATE, aws_starfield_ca, (sizeof(aws_starfield_ca) - 1));
   ```
 
 - For Azure Server
@@ -274,7 +274,7 @@ The application can be configured to suit user requirements and development envi
   #include "azure_baltimore_ca.pem.h"
 
   // Load Security Certificates
-  status = sl_wifi_set_certificate(SL_TLS_SSL_CA_CERTIFICATE, azure_baltimore_ca, (sizeof(azure_baltimore_ca) - 1));
+  status = sl_net_set_credential(SL_NET_TLS_SERVER_CREDENTIAL_ID(0), SL_NET_SIGNING_CERTIFICATE, azure_baltimore_ca, (sizeof(azure_baltimore_ca) - 1));
   ```
 
 ## Test the Application

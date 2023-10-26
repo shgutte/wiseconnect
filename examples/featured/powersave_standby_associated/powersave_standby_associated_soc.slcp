@@ -58,7 +58,7 @@ requires:
   condition: [device_has_devinfo]
 - name: emlib_ldma
   condition: [device_has_devinfo]
-
+template_contribution:
 - name: event_handler
   condition: [rsi_m4_interface]
   value:

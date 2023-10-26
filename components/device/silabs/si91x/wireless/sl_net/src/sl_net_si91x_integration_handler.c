@@ -99,6 +99,11 @@ static void handle_mqtt_client_asynch_events(sl_si91x_queue_packet_t *mqtt_asyn_
 }
 #endif
 
+static void si91x_node_free_function(sl_wifi_buffer_t *buffer)
+{
+  sl_si91x_host_free_buffer(buffer, SL_WIFI_CONTROL_BUFFER);
+}
+
 void sl_net_si91x_event_dispatch_handler(sl_si91x_queue_packet_t *data, sl_si91x_packet_t *packet)
 {
   sl_status_t status;
@@ -137,6 +142,18 @@ void sl_net_si91x_event_dispatch_handler(sl_si91x_queue_packet_t *data, sl_si91x
     si91x_socket_event_handler(event_status, (sl_si91x_socket_context_t *)data->sdk_context, raw_rx_packet);
   }
 #endif
+
+  if (packet->command == RSI_WLAN_RSP_JOIN || packet->command == RSI_WLAN_RSP_IPV4_CHANGE
+      || packet->command == RSI_WLAN_RSP_IPCONFV4 || packet->command == RSI_WLAN_RSP_IPCONFV6) {
+    // free all TX queues except BT
+    for (int queue_id = 0; queue_id < SI91X_BT_CMD; queue_id++) {
+      sl_si91x_flush_queue_based_on_type(queue_id, si91x_node_free_function);
+    }
+#if defined(SI91X_NETWORK_OFFLOAD_ENABLED) && defined(SI91X_SOCKET_FEATURE)
+    // Free all allocated sockets
+    sl_si91x_vap_shutdown(CLIENT_MODE);
+#endif
+  }
 
   status = convert_si91x_event_to_sl_net_event(&packet->command, &service_event);
   if (status == SL_STATUS_OK) {

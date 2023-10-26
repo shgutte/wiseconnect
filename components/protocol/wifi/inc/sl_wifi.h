@@ -616,6 +616,9 @@ sl_status_t sl_wifi_set_advanced_client_configuration(sl_wifi_interface_t interf
  *   Wi-Fi AP configuration. See @ref sl_wifi_ap_configuration_t
  * @return
  *   sl_status_t. See https://docs.silabs.com/gecko-platform/4.1/common/api/group-status for details.
+ * @note
+ *   For AP mode with WPA3 security, only SAE-H2E method is supported. SAE Hunting and pecking method is not supported.
+ *   PMKSA is not supported in WPA3 AP mode.
  ******************************************************************************/
 sl_status_t sl_wifi_start_ap(sl_wifi_interface_t interface, const sl_wifi_ap_configuration_t *configuration);
 

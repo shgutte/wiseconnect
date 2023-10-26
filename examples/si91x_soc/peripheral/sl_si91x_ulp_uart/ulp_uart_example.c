@@ -52,7 +52,6 @@ static void compare_loop_back_data(void);
 sl_usart_handle_t usart_handle;
 usart_mode_enum_t current_mode = SL_SEND_DATA;
 
-uint32_t ramVector[SI91X_VECTOR_TABLE_ENTRIES] __attribute__((aligned(256)));
 extern void hardware_setup(void);
 /*******************************************************************************
  * USART Example Initialization function
@@ -65,10 +64,6 @@ void usart_example_init(void)
      * To reconfigure the default setting of SystemInit() function, refer to
      * startup_rs1xxxx.c file
      */
-  //copying the vector table from flash to ram
-  memcpy(ramVector, (uint32_t *)SCB->VTOR, sizeof(uint32_t) * SI91X_VECTOR_TABLE_ENTRIES);
-  // Assigning the ram vector address to VTOR register
-  SCB->VTOR = (uint32_t)ramVector;
   // Switching MCU from PS4 to PS2 state(low power state)
   // In this mode, whatever be the timer clock source value, it will run with 20MHZ only
   // To use usart in high power mode, don't call hardware_setup()

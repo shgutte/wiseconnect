@@ -88,6 +88,7 @@ typedef enum {
 // ADC sensor ids
 typedef enum {
   SL_ADC_JOYSTICK_ID = 0x00, /*!< adc joystick id*/
+  SL_ADC_GUVA_S12D_ID,       /*!< adc uv sensor */
   SL_ADC_MAX_ID,             /*!< max adc sensor id*/
 } adc_sensor_id_t;
 
@@ -108,7 +109,8 @@ typedef enum {
 #endif
   SL_GPIO_SENSE_BUTTON_ID = (SL_GPIO_SENSOR_ID << SL_SENSOR_ID_OFFSET) | SL_SH_GPIO_0, ///< GPIOs id
 #ifdef SL_CONFIG_SENSOR_ADC
-  SL_SENSOR_ADC_JOYSTICK_ID = (SL_ADC_SENSOR_ID << SL_SENSOR_ID_OFFSET) | SL_ADC_JOYSTICK_ID, ///< ADC joystick id
+  SL_SENSOR_ADC_JOYSTICK_ID  = (SL_ADC_SENSOR_ID << SL_SENSOR_ID_OFFSET) | SL_ADC_JOYSTICK_ID,  ///< ADC joystick id
+  SL_SENSOR_ADC_GUVA_S12D_ID = (SL_ADC_SENSOR_ID << SL_SENSOR_ID_OFFSET) | SL_ADC_GUVA_S12D_ID, ///< ADC joystick id
 #endif
 
 } sl_sensor_id_t;

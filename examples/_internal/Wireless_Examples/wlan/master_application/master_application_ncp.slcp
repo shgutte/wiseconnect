@@ -22,8 +22,6 @@ include:
       - path: app.h
 define:
   - name: RSI_DEBUG_PRINTS
-component:
-- {from: wiseconnect3_sdk}
 requires:
 - name: sl_system
 - name: http_client

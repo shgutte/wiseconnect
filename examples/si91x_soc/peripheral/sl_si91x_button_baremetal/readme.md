@@ -50,4 +50,6 @@
   
   2. Change the definition of macro BUTTON_INSTANCE_0 in button_baremetal.c file to button_btn1.
   
+  
   3. Build and test the output.
+  - The application will toggle the selected LED on each selected button press.

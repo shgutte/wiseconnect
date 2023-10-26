@@ -84,6 +84,15 @@ typedef struct {
   const adc_sensor_impl_t *impl;
 } sensor_adc_t;
 
+/* ADC sensor sample configuration*/
+typedef struct {
+  uint8_t channel;
+  int32_t (*sample)(uint8_t, bool);
+  int32_t (*sleep)();
+  int32_t (*wakeup)();
+  bool is_init;
+} sl_adc_sensor_data_t;
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -119,8 +128,7 @@ sl_adc_error_t sl_si91x_adc_sensor_delete(sl_sensor_adc_handle_t *sensor);
  * @fn        sl_status_t sl_si91x_adc_sensor_sample_static(sl_sensor_adc_handle_t *sensor, uint16_t *adc_value)
  * @brief     ADC sensor read static data
  *
- * @param[in] sensor : ADC sensor handle
- * @param[in] adc_value : address to store to ADC data
+ * @param[in] sensor : NONE
  * @return status 0 if successful, else error code
  *         \ref SL_STATUS_OK (0x0000) - Success
  *         \ref SL_STATUS_NULL_POINTER (0x0022) - The parameter is null pointer
@@ -128,7 +136,18 @@ sl_adc_error_t sl_si91x_adc_sensor_delete(sl_sensor_adc_handle_t *sensor);
  *         \ref SL_STATUS_FAIL (0x0001) - The function is failed
  *         \ref SL_STATUS_NOT_INITIALIZED (0x0011) - Clock is not initialized
  ******************************************************************************/
-sl_status_t sl_si91x_adc_sensor_sample_static(sl_sensor_adc_handle_t *sensor, uint16_t *adc_value);
+sl_status_t sl_si91x_adc_sensor_sample_static();
+
+/*******************************************************************************
+ * @fn        sl_status_t sl_si91x_sensor_sample(uint8_t channel)
+ * @brief     ADC read the sample
+ *            This function will read sample data from a particular sample
+ *
+ * @param[in] sensor: ADC channel number from which to sample
+ *
+ * @return    respective sl error code (SL_STATUS_OK, SL_STATUS_FAIL, ETC)
+*******************************************************************************/
+sl_adc_error_t sl_si91x_sensor_channel_sample(uint8_t channel);
 
 /***************************************************************************/ /**
  * @fn        sl_status_t sl_si91x_adc_sensor_sleep(sl_sensor_adc_handle_t sensor)

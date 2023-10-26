@@ -255,12 +255,15 @@ void Zero_Table(void)
   }
 }
 
-#ifdef M4_PS2_STATE
+#ifdef RAM_EXECUTION
+__attribute__((section(".ramVector"))) char ram_vector[sizeof(__VECTOR_TABLE)];
 __attribute__((section(".reset_handler")))
 #endif
-#if defined(RAM_EXECUTION) || defined(ULP_PLATFORM)
-__attribute__((section(".ramVector"))) char ram_vector[sizeof(__VECTOR_TABLE)];
-__attribute__ ((section(".reset_handler")))
+#ifdef ULP_PLATFORM
+static char ram_vector[sizeof(__VECTOR_TABLE)] __attribute__((aligned(256)));
+#endif
+#ifdef M4_PS2_STATE
+__attribute__((section(".reset_handler")))
 #endif
 
 /*---------------------------------------------------------------------------

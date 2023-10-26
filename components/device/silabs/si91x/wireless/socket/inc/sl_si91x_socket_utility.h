@@ -129,4 +129,5 @@ sl_status_t sl_si91x_socket_driver_send_command(rsi_wlan_cmd_request_t command,
                                                 sl_wifi_buffer_t **buffer,
                                                 void **response,
                                                 uint32_t *events_to_wait_for,
-                                                sl_si91x_wait_period_t *wait_period);
+                                                sl_si91x_wait_period_t *wait_period,
+                                                void *sdk_context);

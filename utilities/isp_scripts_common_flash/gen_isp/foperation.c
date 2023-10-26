@@ -74,7 +74,7 @@ int main(int argc, char *argv[])
     if (File_create_with == NULL) {
       return -1;
     }
-    memset(File_create_with, 0, sizeof(File_create_with));
+    memset(File_create_with, 0, sizeof(fout) * line_inc);
     if (File_create_with == NULL) {
       printf("cannot allocate memory");
     }

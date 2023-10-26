@@ -120,25 +120,12 @@ static const sl_wifi_device_configuration_t config = {
 
                    .custom_feature_bit_map =
                      (SL_SI91X_FEAT_CUSTOM_FEAT_EXTENTION_VALID | SL_SI91X_FEAT_CUSTOM_FEAT_EXTENTION_VALID),
-
+                   .ext_custom_feature_bit_map =
+                     (SL_SI91X_EXT_FEAT_LOW_POWER_MODE | SL_SI91X_EXT_FEAT_XTAL_CLK | MEMORY_CONFIG
 #ifdef CHIP_917
-                   .ext_custom_feature_bit_map =
-                     ((SL_SI91X_EXT_FEAT_LOW_POWER_MODE | SL_SI91X_EXT_FEAT_XTAL_CLK | RAM_LEVEL_NWP_ADV_MCU_BASIC
-                       | SL_SI91X_EXT_FEAT_FRONT_END_SWITCH_PINS_ULP_GPIO_4_5_0)
-#else //defaults
-#ifdef RSI_M4_INTERFACE
-                   .ext_custom_feature_bit_map =
-                     ((SL_SI91X_EXT_FEAT_256K_MODE | SL_SI91X_EXT_FEAT_LOW_POWER_MODE | SL_SI91X_EXT_FEAT_XTAL_CLK)
-#else
-                   .ext_custom_feature_bit_map =
-                     ((SL_SI91X_EXT_FEAT_384K_MODE | SL_SI91X_EXT_FEAT_LOW_POWER_MODE | SL_SI91X_EXT_FEAT_XTAL_CLK)
+                      | SL_SI91X_EXT_FEAT_FRONT_END_SWITCH_PINS_ULP_GPIO_4_5_0
 #endif
-#endif
-                      | SL_SI91X_EXT_FEAT_BT_CUSTOM_FEAT_ENABLE // Enable BT feature
-#if (defined A2DP_POWER_SAVE_ENABLE)
-                      | SL_SI91X_EXT_FEAT_XTAL_CLK
-#endif
-                      ),
+                      | SL_SI91X_EXT_FEAT_BT_CUSTOM_FEAT_ENABLE),
 #ifdef RSI_PROCESS_MAX_RX_DATA
                    .ext_tcp_ip_feature_bit_map =
                      (SL_SI91X_CONFIG_FEAT_EXTENTION_VALID | SL_SI91X_EXT_TCP_MAX_RECV_LENGTH),

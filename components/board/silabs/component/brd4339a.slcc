@@ -5,6 +5,7 @@
 - description: Board support for BRD4339A.
 - category: Board|Radio Board
 - quality: production
+- root_path: components/board/silabs/config/brd4339a
 - requires:
   - name: siwg917m141xgtba
   - name: brd4339a_config

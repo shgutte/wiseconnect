@@ -218,8 +218,6 @@ slc:
       value: 12 # 0xC
       priority: -1
   toolchain_settings:
-    - option: device_opn
-      value: si917-sb00
     - option: architecture
       value: armv7e-m
     - option: cpu

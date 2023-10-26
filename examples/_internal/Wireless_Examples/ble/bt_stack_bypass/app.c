@@ -45,6 +45,7 @@
 #include "rsi_ble_common_config.h"
 #include "rsi_bt_common.h"
 #include "rsi_bt_common_apis.h"
+#include "rsi_common_apis.h"
 #include "sl_si91x_usart.h"
 #include "rsi_debug.h"
 #include "sl_si91x_hal_soc_soft_reset.h"
@@ -180,29 +181,20 @@ static const sl_wifi_device_configuration_t config = {
 #ifdef RSI_M4_INTERFACE
                    .feature_bit_map = (SL_SI91X_FEAT_WPS_DISABLE | RSI_FEATURE_BIT_MAP),
 #else
-                   .feature_bit_map        = RSI_FEATURE_BIT_MAP,
+                   .feature_bit_map            = RSI_FEATURE_BIT_MAP,
 #endif
 #if RSI_TCP_IP_BYPASS
                    .tcp_ip_feature_bit_map = RSI_TCP_IP_FEATURE_BIT_MAP,
 #else
-                   .tcp_ip_feature_bit_map = (RSI_TCP_IP_FEATURE_BIT_MAP | SL_SI91X_TCP_IP_FEAT_EXTENSION_VALID),
+                   .tcp_ip_feature_bit_map     = (RSI_TCP_IP_FEATURE_BIT_MAP | SL_SI91X_TCP_IP_FEAT_EXTENSION_VALID),
 #endif
                    .custom_feature_bit_map = (SL_SI91X_FEAT_CUSTOM_FEAT_EXTENTION_VALID | RSI_CUSTOM_FEATURE_BIT_MAP),
-                   .ext_custom_feature_bit_map = (
+                   .ext_custom_feature_bit_map =
+                     (SL_SI91X_EXT_FEAT_LOW_POWER_MODE | MEMORY_CONFIG | SL_SI91X_EXT_FEAT_XTAL_CLK
 #ifdef CHIP_917
-                     (RSI_EXT_CUSTOM_FEATURE_BIT_MAP)
-#else //defaults
-#ifdef RSI_M4_INTERFACE
-                     (SL_SI91X_EXT_FEAT_256K_MODE | RSI_EXT_CUSTOM_FEATURE_BIT_MAP)
-#else
-                     (SL_SI91X_EXT_FEAT_384K_MODE | RSI_EXT_CUSTOM_FEATURE_BIT_MAP)
+                      | SL_SI91X_EXT_FEAT_FRONT_END_SWITCH_PINS_ULP_GPIO_4_5_0
 #endif
-#endif
-                     | (SL_SI91X_EXT_FEAT_BT_CUSTOM_FEAT_ENABLE)
-#if (defined A2DP_POWER_SAVE_ENABLE)
-                     | SL_SI91X_EXT_FEAT_XTAL_CLK
-#endif
-                     ),
+                      | SL_SI91X_EXT_FEAT_BT_CUSTOM_FEAT_ENABLE),
                    .bt_feature_bit_map = (RSI_BT_FEATURE_BITMAP
 #if (RSI_BT_GATT_ON_CLASSIC)
                                           | SL_SI91X_BT_ATT_OVER_CLASSIC_ACL /* to support att over classic acl link */
@@ -347,28 +339,36 @@ void rsi_ble_on_rcp_resp_rcvd(uint16_t status, rsi_ble_event_rcp_rcvd_info_t *re
 {
   UNUSED_PARAMETER(status);
   uint8_t ii;
+  rx_uart_queue_t *rx_queue = &g_uart_rx_queue;
+  rx_uart_pkt_t *rx_pkt     = NULL;
 
   for (ii = 0; ii < MAX_UART_RX_QUEUE_SIZE; ii++) {
-    rx_uart_pkt_t *rx_pkt     = &g_uart_rx_pkt[ii];
-    rx_uart_queue_t *rx_queue = &g_uart_rx_queue;
-    if (rx_pkt->pkt_in_use == 0) {
-      rx_pkt->pkt_in_use = 1;
-      memcpy(rx_pkt->tx_buf, (resp_buf->data - 12), 1);
-      switch (rx_pkt->tx_buf[0]) {
-        case HCI_EVENT_PKT:
-          rx_pkt->cmd_len = (uint16_t)resp_buf->data[1];
-          rx_pkt->cmd_len += 2;
-          break;
-        case HCI_ACLDATA_PKT:
-        case HCI_SCODATA_PKT:
-          rx_pkt->cmd_len = *(uint16_t *)&resp_buf->data[2];
-          rx_pkt->cmd_len += 4;
-          break;
+    rx_pkt = &g_uart_rx_pkt[ii];
+
+    if (rx_pkt != NULL) {
+      if (rx_pkt->pkt_in_use == 0) {
+        rx_pkt->pkt_in_use = 1;
+        memcpy(rx_pkt->tx_buf, (resp_buf->data - 12), 1);
+        switch (rx_pkt->tx_buf[0]) {
+          case HCI_EVENT_PKT:
+            rx_pkt->cmd_len = (uint16_t)resp_buf->data[1];
+            rx_pkt->cmd_len += 2;
+            break;
+          case HCI_ACLDATA_PKT:
+          case HCI_SCODATA_PKT:
+            rx_pkt->cmd_len = *(uint16_t *)&resp_buf->data[2];
+            rx_pkt->cmd_len += 4;
+            break;
+        }
+        memcpy(&rx_pkt->tx_buf[1], resp_buf->data, rx_pkt->cmd_len);
+        __disable_irq();
+
+        ADD_TO_LIST(rx_queue, rx_pkt);
+        __enable_irq();
+
+        rsi_ble_app_set_event(RSI_APP_EVENT_RCP);
+        return;
       }
-      memcpy(&rx_pkt->tx_buf[1], resp_buf->data, rx_pkt->cmd_len);
-      ADD_TO_LIST(rx_queue, rx_pkt);
-      rsi_ble_app_set_event(RSI_APP_EVENT_RCP);
-      return;
     }
   }
 
@@ -443,8 +443,10 @@ void ARM_USART_SignalEvent(uint32_t event)
       if (!dummy_tx) {
         rx_uart_queue_t *rx_queue = &g_uart_rx_queue;
         rx_uart_pkt_t *rx_pkt     = rx_queue->head;
-        rx_pkt->pkt_in_use        = 0;
-        DEL_FROM_LIST(rx_queue);
+        if (rx_pkt != NULL) {
+          rx_pkt->pkt_in_use = 0;
+          DEL_FROM_LIST(rx_queue);
+        }
         if (g_uart_rx_queue.pkt_cnt) {
           rsi_ble_app_set_event(RSI_APP_EVENT_RCP);
         }
@@ -548,7 +550,7 @@ void rsi_ble_hci_raw_task(void *argument)
   uint32_t reg_read = 0;
   /* checking the bit(5) in MCU_STORAGE_REG2 to know the WWD reset source */
   reg_read = *(volatile uint32_t *)(0x24048138);
-  printf("\n Reset reason : 0x%ld \n", reg_read);
+  DEBUGOUT("\n Reset reason : 0x%ld \n", reg_read);
   if (reg_read & BIT(5)) {
     //! If we are sending response immediately for hci reset command remote device not able to understand it. So adding the delay.
     USARTdrv->Send(tx_buf_dummy, (tx_buf_dummy[2] + 3));
@@ -566,10 +568,10 @@ void rsi_ble_hci_raw_task(void *argument)
 
   status = sl_wifi_init(&config, default_wifi_event_handler);
   if (status != SL_STATUS_OK) {
-    printf("\r\nWi-Fi Initialization Failed, Error Code : 0x%lX\r\n", status);
+    LOG_PRINT("\r\nWi-Fi Initialization Failed, Error Code : 0x%lX\r\n", status);
     return;
   } else {
-    printf("\r\n Wi-Fi Initialization Successful\n");
+    LOG_PRINT("\r\n Wi-Fi Initialization Successful\n");
   }
 
 #ifdef FW_LOGGING_ENABLE
@@ -583,7 +585,7 @@ void rsi_ble_hci_raw_task(void *argument)
                                FW_LOG_BUFFER_SIZE,
                                sl_fw_log_callback);
   if (status != RSI_SUCCESS) {
-    printf("\r\n Firmware Logging Init Failed\r\n");
+    LOG_PRINT("\r\n Firmware Logging Init Failed\r\n");
   }
   //! Create firmware logging semaphore
   rsi_semaphore_create(&fw_log_app_sem, 0);
@@ -598,10 +600,10 @@ void rsi_ble_hci_raw_task(void *argument)
 #if RSI_SET_REGION_SUPPORT
   status = sl_si91x_set_device_region(0, 0, 4);
   if (status != RSI_SUCCESS) {
-    printf("\r\nSet Region Failed, Error Code : %ld\r\n", status);
+    LOG_PRINT("\r\nSet Region Failed, Error Code : %ld\r\n", status);
     return;
   } else {
-    printf("\r\nSet Region Success\r\n");
+    LOG_PRINT("\r\nSet Region Success\r\n");
   }
 #endif
 
@@ -634,13 +636,17 @@ void rsi_ble_hci_raw_task(void *argument)
         rsi_data_tx_send();
       } break;
       case RSI_APP_EVENT_RCP: {
+        __disable_irq();
         rx_uart_queue_t *rx_queue = &g_uart_rx_queue;
         if ((rx_queue->pkt_cnt) && (uart_rx_in_progress == 0)) {
           rx_uart_pkt_t *rx_pkt = rx_queue->head;
-          USARTdrv->Send(rx_pkt->tx_buf, (rx_pkt->cmd_len + 1));
-          uart_rx_in_progress = 1;
+          if (rx_pkt != NULL) {
+            USARTdrv->Send(rx_pkt->tx_buf, (rx_pkt->cmd_len + 1));
+            uart_rx_in_progress = 1;
+          }
         }
         rsi_ble_app_clear_event(RSI_APP_EVENT_RCP);
+        __enable_irq();
       } break;
     }
     if (uart_tx_done == 1) {

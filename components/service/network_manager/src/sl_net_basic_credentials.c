@@ -86,8 +86,8 @@ sl_status_t sl_net_set_credential(sl_net_credential_id_t id,
       if (credentials[cred_id] == NULL) {
         return SL_STATUS_ALLOCATION_FAILED;
       }
-      credentials[cred_id]->data_length = credential_length;
       memset(credentials[cred_id], 0, sizeof(sl_net_basic_credential_entry_t) + credential_length);
+      credentials[cred_id]->data_length = credential_length;
     }
     entry = credentials[cred_id];
   }

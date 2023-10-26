@@ -59,7 +59,8 @@ other_file:
 readme:
   - path: readme.md
 ui_hints:
-  highlight: readme.md
-  focus: true
+  highlight:
+    - path: readme.md
+      focus: true
 post_build:
   path: ../../../../utilities/postbuild_profile/wiseconnect_soc.slpb

@@ -183,7 +183,7 @@ sl_status_t sl_si91x_trng_program_key(uint32_t *trng_key, uint16_t key_length)
  * @fn          sl_status_t sl_si91x_trng_get_random_num(uint32_t *random_number, uint16_t length)
  * @brief       This API generated random number of desired length
  * @param[in]   random_number - Address for Random number
- * @param[in]   length - length of random number in Dwords (uint32_t)
+ * @param[in]   length - length of random number in bytes
  * @return     0              - Success \n
  *             Non-Zero Value - Failure
  * @note Refer Error Codes section for above error codes \ref error-codes.
@@ -230,7 +230,7 @@ sl_status_t sl_si91x_trng_get_random_num(uint32_t *random_number, uint16_t lengt
   VERIFY_STATUS_AND_RETURN(status);
 
   packet = sl_si91x_host_get_buffer_data(buffer, 0, NULL);
-  memcpy(random_number, packet->data, packet->length);
+  memcpy(random_number, packet->data, length);
 
   //! Check for any duplicate elements
   status = sl_si91x_duplicate_element((uint32_t *)random_number, length / 4);
@@ -238,6 +238,8 @@ sl_status_t sl_si91x_trng_get_random_num(uint32_t *random_number, uint16_t lengt
     printf("\r\n Duplicate elements present \r\n");
   }
   free(request);
+  sl_si91x_host_free_buffer(buffer, SL_WIFI_RX_FRAME_BUFFER);
+
   return status;
 }
 
@@ -257,6 +259,8 @@ sl_status_t sl_si91x_trng_get_random_num(uint32_t *random_number, uint16_t lengt
 
 sl_status_t sl_si91x_duplicate_element(uint32_t *a, uint32_t length)
 {
+  if (length == 0)
+    return SL_STATUS_OK;
   uint32_t i, j;
   for (i = 0; i < (length - 1); i++) {
     for (j = i + 1; j < length; j++) {

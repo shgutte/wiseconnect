@@ -5,6 +5,7 @@
 - description: Board support for BRD4325E.
 - category: Board|Radio Board
 - quality: production
+- root_path: components/board/silabs/config/brd4325e
 - requires:
   - name: siwg917m111mgtba
   - name: brd4325e_config
@@ -32,10 +33,6 @@
     value: '1'
   - name: FLASH_BASED_EXECUTION_ENABLE
     value: '1'
-  - name: IVT_OFFSET_ADDR
-    value: 0x8012000
-  - name: WKP_RAM_USAGE_LOCATION
-    value: 0x24061EFC
 
 - template_contribution:
   # Default Memory configuration

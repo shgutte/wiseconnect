@@ -990,6 +990,9 @@ void m4_sleep_wakeup(void)
   /* Enable M4_TA interrupt */
   sli_m4_ta_interrupt_init();
 
+  /* Clear M4_wakeup_TA bit so that TA will go to sleep after M4 wakeup*/
+  sl_si91x_host_clear_sleep_indicator();
+
   //  /*Start of M4 init after wake up  */
 
   printf("\r\nM4 Wake Up\r\n");
