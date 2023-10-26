@@ -18,7 +18,7 @@
   - name: hardware_board
   - name: hardware_board_rb
   - name: si91x_dual_flash
-  - name: si91x_b0_board
+  - name: si91x_a0_board
 - recommends:
   - id: brd4002a
 - define:
