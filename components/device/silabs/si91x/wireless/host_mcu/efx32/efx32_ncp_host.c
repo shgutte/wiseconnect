@@ -91,8 +91,13 @@ sl_status_t sl_si91x_host_init(void)
   GPIO_PinModeSet(SPI_MOSI_PIN.port, SPI_MOSI_PIN.pin, gpioModePushPull, 0);
   GPIO_PinModeSet(SPI_CLOCK_PIN.port, SPI_CLOCK_PIN.pin, gpioModePushPullAlternate, 0);
   GPIO_PinModeSet(SPI_CS_PIN.port, SPI_CS_PIN.pin, gpioModePushPull, 1);
+#if (defined(EFR32MG24_BRD4187C) || defined(BRD4187C) || defined(EFR32MG24_BRD4186C) || defined(BRD4186C))
+  // Enable clock (not needed on xG21)
+  CMU_ClockEnable(cmuClock_USART0, true);
+#else
   // Enable clock (not needed on xG21)
   CMU_ClockEnable(cmuClock_USART2, true);
+#endif
 
   // Default asynchronous initializer (master mode, 1 Mbps, 8-bit data)
   USART_InitSync_TypeDef init = USART_INITSYNC_DEFAULT;
@@ -122,11 +127,14 @@ sl_status_t sl_si91x_host_init(void)
   // Set slew rate for alternate usage pins
   GPIO_SlewrateSet(SPI_CLOCK_PIN.port, 7, 7);
 
+#if (defined(EFR32MG24_BRD4187C) || defined(BRD4187C) || defined(EFR32MG24_BRD4186C) || defined(BRD4186C))
   // Configure and enable USART0
+  USART_InitSync(USART0, &init);
+  USART0->TIMING |= /*USART_TIMING_TXDELAY_ONE | USART_TIMING_CSSETUP_ONE |*/ USART_TIMING_CSHOLD_ONE;
+#else
   USART_InitSync(USART2, &init);
-
   USART2->TIMING |= /*USART_TIMING_TXDELAY_ONE | USART_TIMING_CSSETUP_ONE |*/ USART_TIMING_CSHOLD_ONE;
-
+#endif
   //USART2->CTRL_SET |= USART_CTRL_SMSDELAY;
   if (transfer_done_semaphore == NULL) {
     transfer_done_semaphore = osSemaphoreNew(1, 0, NULL);
@@ -161,82 +169,121 @@ sl_status_t sl_si91x_host_deinit(void)
   return SL_STATUS_OK;
 }
 
-void sl_si91x_host_enable_high_speed_bus()
-{
-  USART2->CTRL_SET |= USART_CTRL_SMSDELAY | USART_CTRL_SSSEARLY;
-  USART_BaudrateSyncSet(USART2, 0, 20000000);
-}
-
-/*==================================================================*/
-/**
- * @fn         sl_status_t sl_si91x_host_spi_transfer(const void *tx_buffer, void *rx_buffer, uint16_t buffer_length)
- * @param[in]  uint8_t *tx_buff, pointer to the buffer with the data to be transferred
- * @param[in]  uint8_t *rx_buff, pointer to the buffer to store the data received
- * @param[in]  uint16_t transfer_length, Number of bytes to send and receive
- * @param[in]  uint8_t mode, To indicate mode 8 BIT/32 BIT mode transfers.
- * @param[out] None
- * @return     0, 0=success
- * @section description
- * This API is used to transfer/receive data to the Wi-Fi module through the SPI interface.
- */
-sl_status_t sl_si91x_host_spi_transfer(const void *tx_buffer, void *rx_buffer, uint16_t buffer_length)
-{
-  osMutexAcquire(spi_transfer_mutex, 0xFFFFFFFFUL);
-
-  if (buffer_length < 16) {
-    uint8_t *tx = (tx_buffer != NULL) ? (uint8_t *)tx_buffer : (uint8_t *)&dummy_buffer;
-    uint8_t *rx = (rx_buffer != NULL) ? (uint8_t *)rx_buffer : (uint8_t *)&dummy_buffer;
-    while (buffer_length > 0) {
-      while (!(USART2->STATUS & USART_STATUS_TXBL)) {
-      }
-      USART2->TXDATA = (uint32_t)*tx;
-      while (!(USART2->STATUS & USART_STATUS_TXC)) {
-      }
-      *rx = (uint8_t)USART2->RXDATA;
-      if (tx_buffer != NULL) {
-        tx++;
-      }
-      if (rx_buffer != NULL) {
-        rx++;
-      }
-      buffer_length--;
-    }
-  } else {
-    if (tx_buffer == NULL) {
-      dummy_buffer = 0;
-      ldmaTXDescriptor =
-        (LDMA_Descriptor_t)LDMA_DESCRIPTOR_SINGLE_P2P_BYTE(&dummy_buffer, &(USART2->TXDATA), buffer_length);
-    } else {
-      ldmaTXDescriptor =
-        (LDMA_Descriptor_t)LDMA_DESCRIPTOR_SINGLE_M2P_BYTE(tx_buffer, &(USART2->TXDATA), buffer_length);
-    }
-
-    if (rx_buffer == NULL) {
-      ldmaRXDescriptor =
-        (LDMA_Descriptor_t)LDMA_DESCRIPTOR_SINGLE_P2P_BYTE(&(USART2->RXDATA), &dummy_buffer, buffer_length);
-    } else {
-      ldmaRXDescriptor =
-        (LDMA_Descriptor_t)LDMA_DESCRIPTOR_SINGLE_P2M_BYTE(&(USART2->RXDATA), rx_buffer, buffer_length);
-    }
-
-    // Transfer a byte on free space in the USART buffer
-    ldmaTXConfig = (LDMA_TransferCfg_t)LDMA_TRANSFER_CFG_PERIPHERAL(ldmaPeripheralSignal_USART2_TXBL);
-
-    // Transfer a byte on receive data valid
-    ldmaRXConfig = (LDMA_TransferCfg_t)LDMA_TRANSFER_CFG_PERIPHERAL(ldmaPeripheralSignal_USART2_RXDATAV);
-
-    // Start both channels
-    DMADRV_LdmaStartTransfer(rx_ldma_channel, &ldmaRXConfig, &ldmaRXDescriptor, dma_callback, NULL);
-    DMADRV_LdmaStartTransfer(tx_ldma_channel, &ldmaTXConfig, &ldmaTXDescriptor, NULL, NULL);
-
-    if (osSemaphoreAcquire(transfer_done_semaphore, 1000) != osOK) {
-      BREAKPOINT();
-    }
-  }
-
-  osMutexRelease(spi_transfer_mutex);
-  return SL_STATUS_OK;
-}
+//void sl_si91x_host_enable_high_speed_bus()
+//{
+//#if (defined(EFR32MG24_BRD4187C) || defined(BRD4187C) || defined(EFR32MG24_BRD4186C) || defined(BRD4186C))
+//  USART0->CTRL_SET |= USART_CTRL_SMSDELAY | USART_CTRL_SSSEARLY;
+//  USART_BaudrateSyncSet(USART0, 0, 20000000);
+//#else
+//  USART2->CTRL_SET |= USART_CTRL_SMSDELAY | USART_CTRL_SSSEARLY;
+//  USART_BaudrateSyncSet(USART2, 0, 20000000);
+//#endif
+//}
+//
+///*==================================================================*/
+///**
+// * @fn         sl_status_t sl_si91x_host_spi_transfer(const void *tx_buffer, void *rx_buffer, uint16_t buffer_length)
+// * @param[in]  uint8_t *tx_buff, pointer to the buffer with the data to be transferred
+// * @param[in]  uint8_t *rx_buff, pointer to the buffer to store the data received
+// * @param[in]  uint16_t transfer_length, Number of bytes to send and receive
+// * @param[in]  uint8_t mode, To indicate mode 8 BIT/32 BIT mode transfers.
+// * @param[out] None
+// * @return     0, 0=success
+// * @section description
+// * This API is used to transfer/receive data to the Wi-Fi module through the SPI interface.
+// */
+//sl_status_t sl_si91x_host_spi_transfer(const void *tx_buffer, void *rx_buffer, uint16_t buffer_length)
+//{
+//  osMutexAcquire(spi_transfer_mutex, 0xFFFFFFFFUL);
+//
+//  if (buffer_length < 16) {
+//    uint8_t *tx = (tx_buffer != NULL) ? (uint8_t *)tx_buffer : (uint8_t *)&dummy_buffer;
+//    uint8_t *rx = (rx_buffer != NULL) ? (uint8_t *)rx_buffer : (uint8_t *)&dummy_buffer;
+//
+//    while (buffer_length > 0) {
+//#if (defined(EFR32MG24_BRD4187C) || defined(BRD4187C) || defined(EFR32MG24_BRD4186C) || defined(BRD4186C))
+//      while (!(USART0->STATUS & USART_STATUS_TXBL)) {
+//      }
+//      USART0->TXDATA = (uint32_t)*tx;
+//      while (!(USART0->STATUS & USART_STATUS_TXC)) {
+//      }
+//      *rx = (uint8_t)USART0->RXDATA;
+//#else
+//      while (!(USART2->STATUS & USART_STATUS_TXBL)) {
+//      }
+//      USART2->TXDATA = (uint32_t)*tx;
+//      while (!(USART2->STATUS & USART_STATUS_TXC)) {
+//      }
+//      *rx = (uint8_t)USART2->RXDATA;
+//#endif
+//      if (tx_buffer != NULL) {
+//        tx++;
+//      }
+//      if (rx_buffer != NULL) {
+//        rx++;
+//      }
+//      buffer_length--;
+//    }
+//  } else {
+//#if (defined(EFR32MG24_BRD4187C) || defined(BRD4187C) || defined(EFR32MG24_BRD4186C) || defined(BRD4186C))
+//    if (tx_buffer == NULL) {
+//      dummy_buffer = 0;
+//      ldmaTXDescriptor =
+//        (LDMA_Descriptor_t)LDMA_DESCRIPTOR_SINGLE_P2P_BYTE(&dummy_buffer, &(USART0->TXDATA), buffer_length);
+//    } else {
+//      ldmaTXDescriptor =
+//        (LDMA_Descriptor_t)LDMA_DESCRIPTOR_SINGLE_M2P_BYTE(tx_buffer, &(USART0->TXDATA), buffer_length);
+//    }
+//
+//    if (rx_buffer == NULL) {
+//      ldmaRXDescriptor =
+//        (LDMA_Descriptor_t)LDMA_DESCRIPTOR_SINGLE_P2P_BYTE(&(USART0->RXDATA), &dummy_buffer, buffer_length);
+//    } else {
+//      ldmaRXDescriptor =
+//        (LDMA_Descriptor_t)LDMA_DESCRIPTOR_SINGLE_P2M_BYTE(&(USART0->RXDATA), rx_buffer, buffer_length);
+//    }
+//    // Transfer a byte on free space in the USART buffer
+//    ldmaTXConfig = (LDMA_TransferCfg_t)LDMA_TRANSFER_CFG_PERIPHERAL(ldmaPeripheralSignal_USART0_TXBL);
+//
+//    // Transfer a byte on receive data valid
+//    ldmaRXConfig = (LDMA_TransferCfg_t)LDMA_TRANSFER_CFG_PERIPHERAL(ldmaPeripheralSignal_USART0_RXDATAV);
+//#else
+//
+//    if (tx_buffer == NULL) {
+//      dummy_buffer = 0;
+//      ldmaTXDescriptor =
+//        (LDMA_Descriptor_t)LDMA_DESCRIPTOR_SINGLE_P2P_BYTE(&dummy_buffer, &(USART2->TXDATA), buffer_length);
+//    } else {
+//      ldmaTXDescriptor =
+//        (LDMA_Descriptor_t)LDMA_DESCRIPTOR_SINGLE_M2P_BYTE(tx_buffer, &(USART2->TXDATA), buffer_length);
+//    }
+//
+//    if (rx_buffer == NULL) {
+//      ldmaRXDescriptor =
+//        (LDMA_Descriptor_t)LDMA_DESCRIPTOR_SINGLE_P2P_BYTE(&(USART2->RXDATA), &dummy_buffer, buffer_length);
+//    } else {
+//      ldmaRXDescriptor =
+//        (LDMA_Descriptor_t)LDMA_DESCRIPTOR_SINGLE_P2M_BYTE(&(USART2->RXDATA), rx_buffer, buffer_length);
+//    }
+//
+//    // Transfer a byte on free space in the USART buffer
+//    ldmaTXConfig = (LDMA_TransferCfg_t)LDMA_TRANSFER_CFG_PERIPHERAL(ldmaPeripheralSignal_USART2_TXBL);
+//
+//    // Transfer a byte on receive data valid
+//    ldmaRXConfig = (LDMA_TransferCfg_t)LDMA_TRANSFER_CFG_PERIPHERAL(ldmaPeripheralSignal_USART2_RXDATAV);
+//#endif
+//    // Start both channels
+//    DMADRV_LdmaStartTransfer(rx_ldma_channel, &ldmaRXConfig, &ldmaRXDescriptor, dma_callback, NULL);
+//    DMADRV_LdmaStartTransfer(tx_ldma_channel, &ldmaTXConfig, &ldmaTXDescriptor, NULL, NULL);
+//
+//    if (osSemaphoreAcquire(transfer_done_semaphore, 1000) != osOK) {
+//      BREAKPOINT();
+//    }
+//  }
+//
+//  osMutexRelease(spi_transfer_mutex);
+//  return SL_STATUS_OK;
+//}
 
 void sl_si91x_host_hold_in_reset(void)
 {
